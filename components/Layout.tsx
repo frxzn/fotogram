@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
-import Link from 'next/link';
+// import Link from 'next/link';
 import Head from 'next/head';
+import Navbar from './Navbar';
 
 type Props = {
   children?: ReactNode;
@@ -14,7 +15,8 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
       <meta charSet="utf-8" />
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     </Head>
-    <header>
+    <Navbar />
+    {/* <header>
       <nav>
         <Link href="/">
           <a>Home</a>
@@ -24,7 +26,7 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => (
           <a>About</a>
         </Link>
       </nav>
-    </header>
+    </header> */}
     {children}
     <footer>
       <hr />
