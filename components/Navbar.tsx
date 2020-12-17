@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import Dropdown from './Dropdown';
 
 interface Props {}
 
@@ -27,11 +28,17 @@ const StyledHeader = styled.header`
 `;
 
 const Navbar: React.FC<Props> = () => {
+  const [selected, setSelected] = useState('English');
+
   return (
     <StyledHeader>
       <div className="center">
         <div className="logo">Fotogram</div>
-        <div>Dropdown</div>
+        <Dropdown
+          dropdownButton={selected}
+          menuItems={['English', 'Español', 'Portuguese', 'Italiano']}
+          setSelected={setSelected}
+        />
       </div>
     </StyledHeader>
   );
