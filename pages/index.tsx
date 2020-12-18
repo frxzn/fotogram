@@ -1,6 +1,8 @@
 import Link from 'next/link';
-import Layout from '../components/Layout';
 import styled from 'styled-components';
+import Layout from '../components/Layout';
+import SearchBar from '../components/SearchBar';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Title = styled.h1`
   font-size: 1.5em;
@@ -10,7 +12,8 @@ const Title = styled.h1`
 
 const IndexPage = () => (
   <Layout title="Home | Next.js + TypeScript Example">
-    <Title>Hello Next.js 👋</Title>
+    <Title>Watch, Zoom & Download HD Instagram Pictures</Title>
+    <SearchBar />
     <p>
       <Link href="/about">
         <a>About</a>
