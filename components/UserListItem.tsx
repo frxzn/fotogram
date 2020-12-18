@@ -9,11 +9,12 @@ interface Props {
 
 const ListItem = styled.li`
   display: flex;
+  align-items: center;
   list-style: none;
   white-space: nowrap;
   overflow: hidden;
   margin: 0;
-  padding: 0.5rem 2rem;
+  padding: 0.5rem 1rem;
   border-bottom: 1px solid #dbdbdb;
   cursor: pointer;
 
