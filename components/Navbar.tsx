@@ -23,7 +23,6 @@ const StyledHeader = styled.header`
   .logo {
     color: ${(props) => props.theme.colors.primary};
     font-size: 1.4rem;
-    font-weight: bold;
   }
 `;
 
@@ -33,7 +32,7 @@ const Navbar: React.FC<Props> = () => {
   return (
     <StyledHeader>
       <div className="center">
-        <div className="logo">Fotogram</div>
+        <div className="logo">fotogram</div>
         <Dropdown
           dropdownButton={selected}
           menuItems={['English', 'Español', 'Portuguese', 'Italiano']}

@@ -4,7 +4,17 @@ import axios from 'axios';
 import Spinner from 'react-bootstrap/Spinner';
 import UserListItem from './UserListItem';
 
-interface Props {}
+interface User {
+  pk: string;
+  full_name: string;
+  username: string;
+  profile_pic_url: string;
+  is_private: boolean;
+}
+
+interface Users {
+  user: User;
+}
 
 const Center = styled.div`
   display: flex;
@@ -14,10 +24,11 @@ const Center = styled.div`
 `;
 
 const SearchContainer = styled.div`
-  border: 1px solid ${(props) => props.theme.colors.primary};
+  background-color: #fff;
+  border: 1px solid ${(props) => props.theme.colors.borderColor};
+  border-radius: 3px;
   display: flex;
   align-items: center;
-  border-radius: 6px;
 `;
 
 const Icon = styled.img`
@@ -29,7 +40,7 @@ const Icon = styled.img`
 const Close = styled.img`
   height: 1.2rem;
   width: 1.2rem;
-  margin-right: 1rem;
+  margin: 0 1rem;
 
   :hover {
     cursor: pointer;
@@ -59,10 +70,16 @@ const SearchButton = styled.div`
   border-radius: 0 2px 2px 0;
   font-weight: bold;
   cursor: pointer;
+
+  :hover,
+  :focus {
+    background-color: #c8005e;
+  }
 `;
 
-const List = styled.ul`
-  border: 1px solid ${(props) => props.theme.colors.primary};
+const UserList = styled.ul`
+  border: 1px solid ${(props) => props.theme.colors.borderColor};
+  border-radius: 3px;
   background-color: #fff;
   width: 100%;
   max-width: 800px;
@@ -72,12 +89,12 @@ const List = styled.ul`
   padding: 0;
 `;
 
-const SearchBar: React.FC<Props> = () => {
+const SearchBar: React.FC = () => {
   const [input, setInput] = useState('');
   const [show, setShow] = useState(false);
   const [closed, setClosed] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [searchList, setSearchList] = useState<any[]>([]);
+  const [searchList, setSearchList] = useState<Users[]>([]);
   const node = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -92,17 +109,24 @@ const SearchBar: React.FC<Props> = () => {
     const source = axios.CancelToken.source();
     const search = async () => {
       try {
-        if (!loading) {
-          setLoading(true);
-        }
-        const res = await axios.get(
-          `https://www.instagram.com/web/search/topsearch/?query=${input}`,
-          {
-            cancelToken: source.token,
+        if (input.length) {
+          if (!loading) {
+            setLoading(true);
           }
-        );
-        setSearchList(res.data.users);
-        setLoading(false);
+          const res = await axios.get(
+            `https://www.instagram.com/web/search/topsearch/?query=${input}`,
+            {
+              cancelToken: source.token,
+            }
+          );
+          console.log(res.data.users);
+          if (res.data.users) {
+            setSearchList(res.data.users);
+          }
+          setLoading(false);
+        } else {
+          setSearchList([]);
+        }
       } catch (error) {
         if (axios.isCancel(error)) return;
       }
@@ -112,8 +136,8 @@ const SearchBar: React.FC<Props> = () => {
   }, [input]);
 
   useEffect(() => {
-    if (input.length && searchList.length && !closed) {
-      if (!show) {
+    if (input.length) {
+      if (!show && searchList?.length && !closed) {
         setShow(true);
       }
     } else {
@@ -141,16 +165,39 @@ const SearchBar: React.FC<Props> = () => {
     }
   };
 
-  let renderList = searchList.map(({ user }) => {
-    return (
-      <UserListItem
-        key={user.pk}
-        name={user.full_name}
-        username={user.username}
-        profilePicUrl={user.profile_pic_url}
+  const renderList = searchList
+    ?.filter(({ user }) => !user.is_private)
+    .map(({ user }) => {
+      return (
+        <UserListItem
+          key={user.pk}
+          name={user.full_name}
+          username={user.username}
+          profilePicUrl={user.profile_pic_url}
+        />
+      );
+    });
+
+  let renderSpinner;
+  if (loading && input.length !== 0) {
+    renderSpinner = (
+      <Spinner
+        animation="border"
+        size="sm"
+        style={{
+          color: '#ff0078',
+          borderColor: '#ff0078',
+          borderRightColor: '#fff',
+          margin: '0 1rem',
+        }}
       />
     );
-  });
+  }
+
+  let renderClose;
+  if (!loading && input.length !== 0) {
+    renderClose = <Close src="/icons/close.svg" onClick={() => setInput('')} />;
+  }
 
   return (
     <Center>
@@ -167,24 +214,13 @@ const SearchBar: React.FC<Props> = () => {
             onFocus={handleFocus}
             placeholder="Search User..."
           />
-          {loading && input.length !== 0 && (
-            <Spinner
-              animation="border"
-              size="sm"
-              style={{
-                color: '#ff0078',
-                borderColor: '#ff0078',
-                borderRightColor: '#fff',
-                marginRight: '1rem',
-              }}
-            />
-          )}
-          {!loading && input.length !== 0 && (
-            <Close src="/icons/close.svg" onClick={() => setInput('')} />
-          )}
-          <SearchButton>Search</SearchButton>
+          {renderSpinner}
+          {renderClose}
+          <SearchButton tabIndex={0} role="button">
+            Search
+          </SearchButton>
         </SearchContainer>
-        {show && <List>{renderList}</List>}
+        {show && <UserList>{renderList}</UserList>}
       </div>
     </Center>
   );

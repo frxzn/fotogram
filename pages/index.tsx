@@ -5,9 +5,11 @@ import SearchBar from '../components/SearchBar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Title = styled.h1`
-  font-size: 1.5em;
+  font-size: 2em;
+  font-weight: 300;
   text-align: center;
-  color: ${(props) => props.theme.colors.primary};
+  color: ${(props) => props.theme.colors.primaryText};
+  margin: 4rem 0;
 `;
 
 const IndexPage = () => (

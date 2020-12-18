@@ -17,10 +17,10 @@ const StyledList = styled.ul`
   padding: 8px 0;
   min-width: 160px;
   background-color: #fff;
-  box-shadow: 0 0 37px rgba(70, 90, 118, 0.25);
-  -webkit-box-shadow: 0 0 37px rgba(70, 90, 118, 0.25);
-  border-radius: 6px;
+  border: 1px solid ${(props) => props.theme.colors.borderColor};
+  border-radius: 3px;
   right: 0;
+  margin-top: 1rem;
 `;
 
 const ListItem = styled.li`

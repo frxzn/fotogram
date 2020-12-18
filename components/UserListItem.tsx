@@ -21,7 +21,8 @@ const ListItem = styled.li`
     border: none;
   }
 
-  :hover {
+  :hover,
+  :focus {
     background-color: #fafafa;
   }
 `;
@@ -50,7 +51,7 @@ const UserInfo = styled.div`
 
 const UserListItem: React.FC<Props> = ({ name, username, profilePicUrl }) => {
   return (
-    <ListItem>
+    <ListItem tabIndex={0} role="button">
       <ProfilePic src={profilePicUrl} />
       <UserInfo>
         <div className="name">{name}</div>

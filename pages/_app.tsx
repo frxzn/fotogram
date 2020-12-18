@@ -6,7 +6,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     background-color: #fafafa;
-    font-family: arial;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 `;
 
@@ -14,6 +14,7 @@ const theme = {
   colors: {
     primary: '#ff0078',
     primaryText: '#262626',
+    borderColor: '#dbdbdb',
   },
 };
 
