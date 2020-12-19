@@ -89,11 +89,23 @@ const UserList = styled.ul`
   padding: 0;
 `;
 
+const Checkbox = styled.div`
+  input {
+    margin-right: 0.5rem;
+  }
+
+  label {
+    color: ${(props) => props.theme.colors.secondaryText};
+    font-weight: 300;
+  }
+`;
+
 const SearchBar: React.FC = () => {
   const [input, setInput] = useState('');
   const [show, setShow] = useState(false);
   const [closed, setClosed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [checked, setChecked] = useState(true);
   const [searchList, setSearchList] = useState<Users[]>([]);
   const node = useRef<HTMLDivElement>(null);
 
@@ -119,7 +131,6 @@ const SearchBar: React.FC = () => {
               cancelToken: source.token,
             }
           );
-          console.log(res.data.users);
           if (res.data.users) {
             setSearchList(res.data.users);
           }
@@ -165,8 +176,18 @@ const SearchBar: React.FC = () => {
     }
   };
 
+  const handleCheck = (e: any) => {
+    setChecked(e.target.checked);
+  };
+
   const renderList = searchList
-    ?.filter(({ user }) => !user.is_private)
+    ?.filter(({ user }) => {
+      if (checked) {
+        return !user.is_private;
+      } else {
+        return user;
+      }
+    })
     .map(({ user }) => {
       return (
         <UserListItem
@@ -202,6 +223,16 @@ const SearchBar: React.FC = () => {
   return (
     <Center>
       <div ref={node} style={{ width: '100%', maxWidth: '800px' }}>
+        <Checkbox>
+          <input
+            type="checkbox"
+            id="scales"
+            name="scales"
+            checked={checked}
+            onChange={handleCheck}
+          />
+          <label htmlFor="scales">Hide private accounts</label>
+        </Checkbox>
         <SearchContainer>
           <Icon
             className="icon"

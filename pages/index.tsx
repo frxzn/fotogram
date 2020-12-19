@@ -14,7 +14,7 @@ const Title = styled.h1`
 
 const IndexPage = () => (
   <Layout title="Home | Next.js + TypeScript Example">
-    <Title>Watch, Zoom & Download HD Instagram Pictures</Title>
+    <Title>Watch, zoom & download HD Instagram pictures</Title>
     <SearchBar />
     <p>
       <Link href="/about">

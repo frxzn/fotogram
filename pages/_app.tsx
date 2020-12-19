@@ -14,6 +14,7 @@ const theme = {
   colors: {
     primary: '#ff0078',
     primaryText: '#262626',
+    secondaryText: '#8e8e8e',
     borderColor: '#dbdbdb',
   },
 };
