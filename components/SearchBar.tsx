@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
 import Spinner from 'react-bootstrap/Spinner';
@@ -60,7 +61,7 @@ const StyledInput = styled.input`
   }
 `;
 
-const SearchButton = styled.div`
+const SearchButton = styled.button`
   display: flex;
   align-items: center;
   align-self: stretch;
@@ -68,6 +69,7 @@ const SearchButton = styled.div`
   background-color: ${(props) => props.theme.colors.primary};
   padding: 0 1rem;
   border-radius: 0 2px 2px 0;
+  border: none;
   font-weight: bold;
   cursor: pointer;
 
@@ -110,7 +112,10 @@ const SearchBar: React.FC = () => {
   const [checked, setChecked] = useState(false);
   const [searchList, setSearchList] = useState<Users[]>([]);
   const node = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  console.log(searchList);
 
+  // Effect to close modal on outsides click
   useEffect(() => {
     document.addEventListener('mousedown', handleClick);
 
@@ -119,6 +124,7 @@ const SearchBar: React.FC = () => {
     };
   }, []);
 
+  // Effect to fetch IG's search API
   useEffect(() => {
     const source = axios.CancelToken.source();
     const search = async () => {
@@ -148,6 +154,7 @@ const SearchBar: React.FC = () => {
     return () => source.cancel();
   }, [input]);
 
+  // Effect to open/close search modal
   useEffect(() => {
     if (input.length) {
       if (!show && searchList?.length && !closed) {
@@ -178,8 +185,15 @@ const SearchBar: React.FC = () => {
     }
   };
 
-  const handleCheck = (e: any) => {
+  const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(e.target.checked);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (input.length && searchList.length && !loading) {
+      router.push(`/user/${searchList[0].user.username}`);
+    }
   };
 
   const renderList = searchList
@@ -235,24 +249,31 @@ const SearchBar: React.FC = () => {
           />
           <label htmlFor="scales">Hide private accounts</label>
         </Checkbox>
-        <SearchContainer>
-          <Icon
-            className="icon"
-            src="/icons/magnifying-glass.svg"
-            alt="magnifying glass icon"
-          />
-          <StyledInput
-            value={input}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            placeholder="Search User..."
-          />
-          {renderSpinner}
-          {renderClose}
-          <SearchButton tabIndex={0} role="button">
-            Search
-          </SearchButton>
-        </SearchContainer>
+        <form onSubmit={handleSubmit}>
+          <SearchContainer>
+            <Icon
+              className="icon"
+              src="/icons/magnifying-glass.svg"
+              alt="magnifying glass icon"
+            />
+            <StyledInput
+              value={input}
+              onChange={handleChange}
+              onFocus={handleFocus}
+              placeholder="Search User..."
+            />
+            {renderSpinner}
+            {renderClose}
+            <SearchButton
+              type="submit"
+              tabIndex={0}
+              role="button"
+              // onClick={handleSubmit}
+            >
+              Search
+            </SearchButton>
+          </SearchContainer>
+        </form>
         {show && <UserList>{renderList}</UserList>}
       </div>
     </Center>
