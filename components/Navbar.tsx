@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import styled from 'styled-components';
 import Dropdown from './Dropdown';
 
@@ -32,7 +33,11 @@ const Navbar: React.FC<Props> = () => {
   return (
     <StyledHeader>
       <div className="center">
-        <div className="logo">fotogram</div>
+        <Link href="/">
+          <a>
+            <div className="logo">fotogram</div>
+          </a>
+        </Link>
         <Dropdown
           dropdownButton={selected}
           menuItems={['English', 'Español', 'Portuguese', 'Italiano']}

@@ -77,7 +77,7 @@ const SearchButton = styled.div`
   }
 `;
 
-const UserList = styled.ul`
+const UserList = styled.div`
   border: 1px solid ${(props) => props.theme.colors.borderColor};
   border-radius: 3px;
   background-color: #fff;
@@ -92,11 +92,13 @@ const UserList = styled.ul`
 const Checkbox = styled.div`
   input {
     margin-right: 0.5rem;
+    cursor: pointer;
   }
 
   label {
     color: ${(props) => props.theme.colors.secondaryText};
     font-weight: 300;
+    cursor: pointer;
   }
 `;
 
@@ -105,7 +107,7 @@ const SearchBar: React.FC = () => {
   const [show, setShow] = useState(false);
   const [closed, setClosed] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [checked, setChecked] = useState(true);
+  const [checked, setChecked] = useState(false);
   const [searchList, setSearchList] = useState<Users[]>([]);
   const node = useRef<HTMLDivElement>(null);
 

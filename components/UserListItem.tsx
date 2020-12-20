@@ -1,32 +1,13 @@
 import React from 'react';
+import Link from 'next/link';
 import styled from 'styled-components';
+import classes from '../styles/anchor.module.css';
 
 interface Props {
   name: string;
   username: string;
   profilePicUrl: string;
 }
-
-const ListItem = styled.li`
-  display: flex;
-  align-items: center;
-  list-style: none;
-  white-space: nowrap;
-  overflow: hidden;
-  margin: 0;
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid #dbdbdb;
-  cursor: pointer;
-
-  :last-child {
-    border: none;
-  }
-
-  :hover,
-  :focus {
-    background-color: #fafafa;
-  }
-`;
 
 const ProfilePic = styled.img`
   height: 32px;
@@ -52,13 +33,15 @@ const UserInfo = styled.div`
 
 const UserListItem: React.FC<Props> = ({ name, username, profilePicUrl }) => {
   return (
-    <ListItem tabIndex={0} role="button">
-      <ProfilePic src={profilePicUrl} />
-      <UserInfo>
-        <div className="name">{name}</div>
-        <div className="username">{username}</div>
-      </UserInfo>
-    </ListItem>
+    <Link href={`/user/${username}`}>
+      <a className={classes.anchor}>
+        <ProfilePic src={profilePicUrl} />
+        <UserInfo>
+          <div className="name">{name}</div>
+          <div className="username">{username}</div>
+        </UserInfo>
+      </a>
+    </Link>
   );
 };
 

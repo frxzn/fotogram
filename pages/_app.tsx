@@ -8,10 +8,15 @@ const GlobalStyle = createGlobalStyle`
     background-color: #fafafa;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
+
+  a:hover {
+    text-decoration: none;
+  }
 `;
 
 const theme = {
   colors: {
+    backgroundColor: '#fafafa',
     primary: '#ff0078',
     primaryText: '#262626',
     secondaryText: '#8e8e8e',
