@@ -3,19 +3,8 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
 import Spinner from 'react-bootstrap/Spinner';
+import { Users } from '../interfaces/index';
 import UserListItem from './UserListItem';
-
-interface User {
-  pk: string;
-  full_name: string;
-  username: string;
-  profile_pic_url: string;
-  is_private: boolean;
-}
-
-interface Users {
-  user: User;
-}
 
 const Center = styled.div`
   display: flex;
@@ -113,7 +102,6 @@ const SearchBar: React.FC = () => {
   const [searchList, setSearchList] = useState<Users[]>([]);
   const node = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  console.log(searchList);
 
   // Effect to close modal on outsides click
   useEffect(() => {

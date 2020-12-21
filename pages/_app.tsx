@@ -9,11 +9,7 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 
-  a {
-    text-decoration: none;
-  }
-
-  a:hover {
+  a, a:hover {
     text-decoration: none;
   }
 `;
