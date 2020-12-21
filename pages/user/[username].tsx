@@ -171,7 +171,7 @@ const User: React.FC = () => {
         <GridContainer>
           {displayList.map((src) => (
             <GridItem onClick={() => handleSelect(src)}>
-              <StyledImage src={src} />
+              <StyledImage src={src} alt={`${fullName}'s photo`} />
             </GridItem>
           ))}
         </GridContainer>

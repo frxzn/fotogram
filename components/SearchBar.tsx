@@ -240,8 +240,7 @@ const SearchBar: React.FC = () => {
         <form onSubmit={handleSubmit}>
           <SearchContainer>
             <Icon
-              className="icon"
-              src="/icons/magnifying-glass.svg"
+              src="/icons/magnifying-glass1.svg"
               alt="magnifying glass icon"
             />
             <StyledInput

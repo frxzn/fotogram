@@ -5,6 +5,8 @@ interface Props {
   src: string;
 }
 
+const overflowModal = '5rem';
+
 const Container = styled.div`
   position: fixed;
   top: 0;
@@ -13,6 +15,11 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   background-color: rgba(0, 0, 0, 0.9);
+
+  @media (max-width: 735px) {
+    height: calc(100% + ${overflowModal});
+    padding-bottom: ${overflowModal};
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -25,6 +32,20 @@ const StyledImage = styled.img`
   object-fit: contain;
 `;
 
+const Icon = styled.img`
+  height: 2rem;
+  width: 2rem;
+  margin: auto 0;
+
+  :hover {
+    cursor: pointer;
+  }
+
+  @media (max-width: 735px) {
+    display: none;
+  }
+`;
+
 const PictureModal: React.FC<Props> = ({ src }) => {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -35,11 +56,11 @@ const PictureModal: React.FC<Props> = ({ src }) => {
 
   return (
     <Container>
-      <div style={{ margin: 'auto 0' }}></div>
+      <Icon src="/icons/prev.svg" alt="prev icon" />
       <ImageContainer>
         <StyledImage src={src} />
       </ImageContainer>
-      <div></div>
+      <Icon src="/icons/next.svg" alt="next icon" />
     </Container>
   );
 };
