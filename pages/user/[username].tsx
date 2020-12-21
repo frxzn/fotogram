@@ -4,8 +4,37 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { Users, UserResponse, MediaResponse } from '../../interfaces/index';
 import Layout from '../../components/Layout';
+import PictureModal from '../../components/PictureModal';
 
-const Container = styled.div``;
+const Profile = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
+  font-size: 1.75em;
+
+  img {
+    border-radius: 50%;
+    margin: 1rem 0;
+  }
+
+  a {
+    /* font-size: 1.75em; */
+    color: ${(props) => props.theme.colors.primaryText};
+
+    :hover {
+      color: #000;
+    }
+  }
+
+  @media (max-width: 735px) {
+    font-size: 1.2em;
+
+    img {
+      width: 80px;
+    }
+  }
+`;
 
 const Center = styled.div`
   max-width: 935px;
@@ -36,19 +65,22 @@ const GridItem = styled.div`
     padding-bottom: 100%;
     display: block;
   }
+
+  :hover {
+    cursor: pointer;
+    filter: brightness(calc(2 / 3));
+  }
 `;
 
 const StyledImage = styled.img`
-  /* max-width: 100%;
-  max-height: 100%;
-  min-width: 100%;
-  min-height: 100%;
-  height: auto; */
   width: 100%;
   height: 100%;
   position: absolute;
   object-fit: cover;
-  /* flex-shrink: 0; */
+
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const mediaUrl = (pk: string) => {
@@ -58,7 +90,10 @@ const mediaUrl = (pk: string) => {
 const User: React.FC = () => {
   const router = useRouter();
   const { username } = router.query;
+
   const [loading, setLoading] = useState(false);
+  const [show, setShow] = useState(false);
+  const [selected, setSelected] = useState('');
   const [error, setError] = useState(false);
   const [noMedia, setNoMedia] = useState(false);
   const [fullName, setFullName] = useState('');
@@ -119,21 +154,28 @@ const User: React.FC = () => {
     };
   }, [username]);
 
+  const handleSelect = (src: string) => {
+    setSelected(src);
+    setShow(true);
+  };
+
   return (
     <Layout title="Home | Next.js + TypeScript Example">
       <Center>
-        <Container>
-          {fullName}
+        <Profile>
           <img src={profilePicUrl} />
-          {username}
-        </Container>
+          <a href={`https://www.instagram.com/${username}`} target="blank">
+            @{username}
+          </a>
+        </Profile>
         <GridContainer>
           {displayList.map((src) => (
-            <GridItem>
+            <GridItem onClick={() => handleSelect(src)}>
               <StyledImage src={src} />
             </GridItem>
           ))}
         </GridContainer>
+        {show && <PictureModal src={selected} />}
       </Center>
     </Layout>
   );
