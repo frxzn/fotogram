@@ -3,14 +3,16 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
 import {
+  User,
   Users,
   Display,
+  Media,
+  PageInfo,
   UserResponse,
   MediaResponse,
 } from '../../interfaces/index';
 import Layout from '../../components/Layout';
 import PictureModal from '../../components/PictureModal';
-import SearchBar from '../../components/SearchBar';
 
 const Profile = styled.div`
   display: flex;
@@ -89,11 +91,26 @@ const StyledImage = styled.img`
   }
 `;
 
-const mediaUrl = (pk: string) => {
-  return `https://www.instagram.com/graphql/query?query_hash=6305d415e36c0a5f0abb6daba312f2dd&variables={"id":${pk},"first":50,"after":""}`;
+const mediaUrl = (pk: string, endcursor = '') => {
+  return `https://www.instagram.com/graphql/query?query_hash=6305d415e36c0a5f0abb6daba312f2dd&variables={"id":${JSON.stringify(
+    pk
+  )},"first":50,"after":${JSON.stringify(endcursor)}}`;
 };
 
-const User: React.FC = () => {
+const bakeDisplayList = (arr: Media[], mediaCount = 0) => {
+  const display = arr
+    .filter((item) => !item.node.is_video)
+    .map((item, index) => ({
+      src:
+        item.node.display_resources[item.node.display_resources.length - 1].src,
+      id: item.node.id,
+      selected: false,
+      index: index + mediaCount,
+    }));
+  return display;
+};
+
+const UserProfile: React.FC = () => {
   const router = useRouter();
   const { username } = router.query;
 
@@ -102,11 +119,9 @@ const User: React.FC = () => {
   const [selected, setSelected] = useState(0);
   const [error, setError] = useState(false);
   const [noMedia, setNoMedia] = useState(false);
-  const [fullName, setFullName] = useState('');
-  const [profilePicUrl, setProfilePicUrl] = useState('');
-  const [isPrivate, setIsPrivate] = useState(false);
+  const [pageInfo, setPageInfo] = useState<PageInfo>();
   const [displayList, setDisplayList] = useState<Display[]>([]);
-  console.log('i ran');
+  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyboard);
@@ -130,8 +145,7 @@ const User: React.FC = () => {
           (users: Users) => users.user.username === username
         );
         if (currentUser) {
-          setFullName(currentUser.user.full_name);
-          setProfilePicUrl(currentUser.user.profile_pic_url);
+          setUser(currentUser.user);
           if (!currentUser.user.is_private) {
             const mediaRes = await axios.get<MediaResponse>(
               mediaUrl(currentUser.user.pk),
@@ -139,21 +153,13 @@ const User: React.FC = () => {
                 cancelToken: mediaSource.token,
               }
             );
-            const display = mediaRes.data.data.user.edge_owner_to_timeline_media.edges
-              .filter((item) => !item.node.is_video)
-              .map((item, index) => ({
-                src:
-                  item.node.display_resources[
-                    item.node.display_resources.length - 1
-                  ].src,
-                id: item.node.id,
-                selected: false,
-                index,
-              }));
-            console.log(display);
+            const display = bakeDisplayList(
+              mediaRes.data.data.user.edge_owner_to_timeline_media.edges
+            );
+            setPageInfo(
+              mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
+            );
             setDisplayList(display);
-          } else {
-            setIsPrivate(currentUser.user.is_private);
           }
         }
         setError(false);
@@ -194,27 +200,53 @@ const User: React.FC = () => {
     setShow(true);
   };
 
+  const handleLoadMore = async () => {
+    if (user && pageInfo) {
+      if (pageInfo.has_next_page) {
+        const mediaRes = await axios.get<MediaResponse>(
+          mediaUrl(user.pk, pageInfo.end_cursor)
+        );
+        const display = bakeDisplayList(
+          mediaRes.data.data.user.edge_owner_to_timeline_media.edges,
+          displayList.length
+        );
+        setPageInfo(
+          mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
+        );
+        setDisplayList((prev) => [...prev, ...display]);
+      }
+    }
+  };
+
   return (
     <Layout title="Home | Next.js + TypeScript Example">
       <Center>
         <Profile>
-          <img src={profilePicUrl} />
+          <img src={user?.profile_pic_url} />
           <a href={`https://www.instagram.com/${username}`} target="blank">
             @{username}
           </a>
-          {/* <SearchBar /> */}
         </Profile>
         <GridContainer>
           {displayList.map((picture) => (
-            <GridItem onClick={() => handleSelect(picture.index)}>
-              <StyledImage src={picture.src} alt={`${fullName}'s photo`} />
+            <GridItem
+              key={picture.id}
+              onClick={() => handleSelect(picture.index)}
+            >
+              <StyledImage
+                src={picture.src}
+                alt={`${user?.full_name}'s photo`}
+              />
             </GridItem>
           ))}
         </GridContainer>
+        {pageInfo?.has_next_page && (
+          <button onClick={handleLoadMore}>Load More</button>
+        )}
         {show && <PictureModal src={displayList[selected].src} />}
       </Center>
     </Layout>
   );
 };
 
-export default User;
+export default UserProfile;

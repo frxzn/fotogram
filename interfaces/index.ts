@@ -4,7 +4,7 @@
 //
 // import User from 'path/to/interfaces';
 
-interface User {
+export interface User {
   pk: string;
   full_name: string;
   username: string;
@@ -29,7 +29,7 @@ export interface Display {
   index: number;
 }
 
-interface Media {
+export interface Media {
   node: {
     display_resources: Display[];
     is_video: boolean;
@@ -37,11 +37,17 @@ interface Media {
   };
 }
 
+export interface PageInfo {
+  end_cursor: string;
+  has_next_page: boolean;
+}
+
 export interface MediaResponse {
   data: {
     user: {
       edge_owner_to_timeline_media: {
         edges: Media[];
+        page_info: PageInfo;
       };
     };
   };
