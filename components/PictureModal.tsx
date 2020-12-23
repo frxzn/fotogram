@@ -17,8 +17,8 @@ const Container = styled.div`
   background-color: rgba(0, 0, 0, 0.9);
 
   @media (max-width: 735px) {
-    height: calc(100% + ${overflowModal});
-    padding-bottom: ${overflowModal};
+    /* height: calc(100% + ${overflowModal});
+    padding-bottom: ${overflowModal}; */
   }
 `;
 

@@ -10,7 +10,6 @@ const Center = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin: 0 auto;
 `;
 
 const SearchContainer = styled.div`

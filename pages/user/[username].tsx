@@ -2,9 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
-import { Users, UserResponse, MediaResponse } from '../../interfaces/index';
+import {
+  Users,
+  Display,
+  UserResponse,
+  MediaResponse,
+} from '../../interfaces/index';
 import Layout from '../../components/Layout';
 import PictureModal from '../../components/PictureModal';
+import SearchBar from '../../components/SearchBar';
 
 const Profile = styled.div`
   display: flex;
@@ -93,13 +99,19 @@ const User: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
-  const [selected, setSelected] = useState('');
+  const [selected, setSelected] = useState(0);
   const [error, setError] = useState(false);
   const [noMedia, setNoMedia] = useState(false);
   const [fullName, setFullName] = useState('');
   const [profilePicUrl, setProfilePicUrl] = useState('');
   const [isPrivate, setIsPrivate] = useState(false);
-  const [displayList, setDisplayList] = useState<string[]>([]);
+  const [displayList, setDisplayList] = useState<Display[]>([]);
+  console.log('i ran');
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyboard);
+    return () => window.removeEventListener('keydown', handleKeyboard);
+  }, [show, displayList]);
 
   useEffect(() => {
     const userSource = axios.CancelToken.source();
@@ -129,12 +141,15 @@ const User: React.FC = () => {
             );
             const display = mediaRes.data.data.user.edge_owner_to_timeline_media.edges
               .filter((item) => !item.node.is_video)
-              .map(
-                (item) =>
+              .map((item, index) => ({
+                src:
                   item.node.display_resources[
                     item.node.display_resources.length - 1
-                  ].src
-              );
+                  ].src,
+                id: item.node.id,
+                selected: false,
+                index,
+              }));
             console.log(display);
             setDisplayList(display);
           } else {
@@ -154,8 +169,28 @@ const User: React.FC = () => {
     };
   }, [username]);
 
-  const handleSelect = (src: string) => {
-    setSelected(src);
+  const handleKeyboard = (e: KeyboardEvent) => {
+    if (show) {
+      switch (e.key) {
+        case 'Escape':
+          setShow(false);
+          break;
+        case 'ArrowRight':
+          setSelected((prev) =>
+            prev + 1 < displayList.length ? prev + 1 : prev
+          );
+          break;
+        case 'ArrowLeft':
+          setSelected((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  const handleSelect = (index: number) => {
+    setSelected(index);
     setShow(true);
   };
 
@@ -167,15 +202,16 @@ const User: React.FC = () => {
           <a href={`https://www.instagram.com/${username}`} target="blank">
             @{username}
           </a>
+          {/* <SearchBar /> */}
         </Profile>
         <GridContainer>
-          {displayList.map((src) => (
-            <GridItem onClick={() => handleSelect(src)}>
-              <StyledImage src={src} alt={`${fullName}'s photo`} />
+          {displayList.map((picture) => (
+            <GridItem onClick={() => handleSelect(picture.index)}>
+              <StyledImage src={picture.src} alt={`${fullName}'s photo`} />
             </GridItem>
           ))}
         </GridContainer>
-        {show && <PictureModal src={selected} />}
+        {show && <PictureModal src={displayList[selected].src} />}
       </Center>
     </Layout>
   );

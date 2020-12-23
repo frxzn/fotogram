@@ -22,14 +22,18 @@ export interface UserResponse {
 
 // Media
 
-interface Display {
+export interface Display {
+  id: string;
   src: string;
+  selected: boolean;
+  index: number;
 }
 
 interface Media {
   node: {
     display_resources: Display[];
     is_video: boolean;
+    id: string;
   };
 }
 
