@@ -5,11 +5,11 @@ import axios from 'axios';
 import {
   User,
   Users,
+  UserResponse,
   Display,
   Media,
-  PageInfo,
-  UserResponse,
   MediaResponse,
+  PageInfo,
 } from '../../interfaces/index';
 import Layout from '../../components/Layout';
 import PictureModal from '../../components/PictureModal';
@@ -27,7 +27,6 @@ const Profile = styled.div`
   }
 
   a {
-    /* font-size: 1.75em; */
     color: ${(props) => props.theme.colors.primaryText};
 
     :hover {
@@ -162,7 +161,9 @@ const UserProfile: React.FC = () => {
             setDisplayList(display);
           }
         }
-        setError(false);
+        if (error) {
+          setError(false);
+        }
       } catch (e) {
         setError(true);
       }
@@ -219,10 +220,13 @@ const UserProfile: React.FC = () => {
   };
 
   return (
-    <Layout title="Home | Next.js + TypeScript Example">
+    <Layout title={`${user?.full_name} | Fotogram.app`}>
       <Center>
         <Profile>
-          <img src={user?.profile_pic_url} />
+          <img
+            src={user?.profile_pic_url}
+            alt={`${user?.full_name}'s profile picture`}
+          />
           <a href={`https://www.instagram.com/${username}`} target="blank">
             @{username}
           </a>

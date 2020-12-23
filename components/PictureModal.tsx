@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 
 interface Props {
   src: string;
@@ -23,7 +24,14 @@ const Container = styled.div`
 `;
 
 const ImageContainer = styled.div`
+  display: flex;
+  align-items: center;
   margin: 0 auto;
+
+  div.react-transform-component,
+  div.react-transform-element {
+    height: 100%;
+  }
 `;
 
 const StyledImage = styled.img`
@@ -32,9 +40,10 @@ const StyledImage = styled.img`
   object-fit: contain;
 `;
 
-const Icon = styled.img`
-  height: 2rem;
-  width: 2rem;
+const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  height: 10rem;
   margin: auto 0;
 
   :hover {
@@ -44,6 +53,11 @@ const Icon = styled.img`
   @media (max-width: 735px) {
     display: none;
   }
+`;
+
+const Icon = styled.img`
+  height: 2rem;
+  width: 2rem;
 `;
 
 const PictureModal: React.FC<Props> = ({ src }) => {
@@ -56,11 +70,20 @@ const PictureModal: React.FC<Props> = ({ src }) => {
 
   return (
     <Container>
-      <Icon src="/icons/prev.svg" alt="prev icon" />
+      <IconContainer>
+        <Icon src="/icons/prev.svg" alt="prev icon" />
+      </IconContainer>
       <ImageContainer>
-        <StyledImage src={src} />
+        <TransformWrapper>
+          <TransformComponent>
+            <StyledImage src={src} />
+          </TransformComponent>
+        </TransformWrapper>
+        {/* <StyledImage src={src} /> */}
       </ImageContainer>
-      <Icon src="/icons/next.svg" alt="next icon" />
+      <IconContainer>
+        <Icon src="/icons/next.svg" alt="next icon" />
+      </IconContainer>
     </Container>
   );
 };

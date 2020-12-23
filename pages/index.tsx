@@ -13,7 +13,7 @@ const Title = styled.h1`
 `;
 
 const IndexPage = () => (
-  <Layout title="Home | Next.js + TypeScript Example">
+  <Layout title="Fotogram.app">
     <Title>View, zoom & download HD Instagram pictures</Title>
     <SearchBar />
     <p>

@@ -20,8 +20,6 @@ export interface UserResponse {
   users: Users[];
 }
 
-// Media
-
 export interface Display {
   id: string;
   src: string;
