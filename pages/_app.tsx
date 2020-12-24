@@ -22,6 +22,9 @@ const theme = {
     secondaryText: '#8e8e8e',
     borderColor: '#dbdbdb',
   },
+  dimensions: {
+    maxWidth: 935,
+  },
 };
 
 export default function App({ Component, pageProps }: AppProps) {

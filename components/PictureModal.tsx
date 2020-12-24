@@ -6,8 +6,6 @@ interface Props {
   src: string;
 }
 
-const overflowModal = '5rem';
-
 const Container = styled.div`
   position: fixed;
   top: 0;
@@ -16,11 +14,6 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   background-color: rgba(0, 0, 0, 0.9);
-
-  @media (max-width: 735px) {
-    /* height: calc(100% + ${overflowModal});
-    padding-bottom: ${overflowModal}; */
-  }
 `;
 
 const ImageContainer = styled.div`
@@ -79,7 +72,6 @@ const PictureModal: React.FC<Props> = ({ src }) => {
             <StyledImage src={src} />
           </TransformComponent>
         </TransformWrapper>
-        {/* <StyledImage src={src} /> */}
       </ImageContainer>
       <IconContainer>
         <Icon src="/icons/next.svg" alt="next icon" />

@@ -72,7 +72,7 @@ const UserList = styled.div`
   border-radius: 3px;
   background-color: #fff;
   width: 100%;
-  max-width: 800px;
+  max-width: ${(props) => props.theme.dimensions.maxWidth}px;
   margin-top: 1rem;
   max-height: 260px;
   overflow-y: auto;
@@ -225,7 +225,7 @@ const SearchBar: React.FC = () => {
 
   return (
     <Center>
-      <div ref={node} style={{ width: '100%', maxWidth: '800px' }}>
+      <div ref={node} style={{ width: '100%', maxWidth: '935px' }}>
         <Checkbox>
           <input
             type="checkbox"

@@ -13,8 +13,7 @@ const StyledHeader = styled.header`
   .center {
     margin: 0 auto;
     height: 100%;
-    width: 60%;
-    max-width: 800px;
+    max-width: ${(props) => props.theme.dimensions.maxWidth}px;
     min-width: 300px;
     display: flex;
     align-items: center;

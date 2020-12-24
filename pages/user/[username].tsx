@@ -7,10 +7,10 @@ import {
   Users,
   UserResponse,
   Display,
-  Media,
   MediaResponse,
   PageInfo,
 } from '../../interfaces/index';
+import { bakeDisplayList } from '../../utils';
 import Layout from '../../components/Layout';
 import PictureModal from '../../components/PictureModal';
 
@@ -44,7 +44,7 @@ const Profile = styled.div`
 `;
 
 const Center = styled.div`
-  max-width: 935px;
+  max-width: ${(props) => props.theme.dimensions.maxWidth}px;
   margin: 0 auto;
 `;
 
@@ -94,19 +94,6 @@ const mediaUrl = (pk: string, endcursor = '') => {
   return `https://www.instagram.com/graphql/query?query_hash=6305d415e36c0a5f0abb6daba312f2dd&variables={"id":${JSON.stringify(
     pk
   )},"first":50,"after":${JSON.stringify(endcursor)}}`;
-};
-
-const bakeDisplayList = (arr: Media[], mediaCount = 0) => {
-  const display = arr
-    .filter((item) => !item.node.is_video)
-    .map((item, index) => ({
-      src:
-        item.node.display_resources[item.node.display_resources.length - 1].src,
-      id: item.node.id,
-      selected: false,
-      index: index + mediaCount,
-    }));
-  return display;
 };
 
 const UserProfile: React.FC = () => {

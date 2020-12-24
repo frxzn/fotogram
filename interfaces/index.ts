@@ -23,8 +23,15 @@ export interface UserResponse {
 export interface Display {
   id: string;
   src: string;
-  selected: boolean;
   index: number;
+}
+
+interface SidecarItem {
+  node: {
+    display_resources: Display[];
+    is_video: boolean;
+    id: string;
+  };
 }
 
 export interface Media {
@@ -32,6 +39,9 @@ export interface Media {
     display_resources: Display[];
     is_video: boolean;
     id: string;
+    edge_sidecar_to_children: {
+      edges: SidecarItem[];
+    };
   };
 }
 
