@@ -23,6 +23,7 @@ export interface UserResponse {
 export interface Display {
   id: string;
   src: string;
+  selected: boolean;
   index: number;
 }
 

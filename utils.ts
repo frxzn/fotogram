@@ -14,6 +14,7 @@ export const bakeDisplayList = (arr: Media[], mediaCount = 0) => {
                 item.node.display_resources.length - 1
               ].src,
             id: item.node.id,
+            selected: false,
           };
         });
         return sideCarMedia;
@@ -23,6 +24,7 @@ export const bakeDisplayList = (arr: Media[], mediaCount = 0) => {
           item.node.display_resources[item.node.display_resources.length - 1]
             .src,
         id: item.node.id,
+        selected: false,
       };
     })
     .flat()
