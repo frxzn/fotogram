@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../store/reducers';
-import { setMedia, addMedia } from '../../store/actions';
 import {
   User,
   Users,
   UserResponse,
   MediaResponse,
   PageInfo,
+  Display,
 } from '../../interfaces/index';
 import { bakeDisplayList, mediaUrl } from '../../utils';
 import Layout from '../../components/Layout';
@@ -94,17 +92,15 @@ const StyledImage = styled.img`
 
 const UserProfile: React.FC = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { username } = router.query;
 
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [selected, setSelected] = useState(0);
   const [error, setError] = useState(false);
+  const [displayList, setDisplayList] = useState<Display[]>([]);
   const [pageInfo, setPageInfo] = useState<PageInfo>();
   const [user, setUser] = useState<User>();
-
-  const displayList = useSelector((state: RootState) => state.media.mediaList);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyboard);
@@ -142,7 +138,7 @@ const UserProfile: React.FC = () => {
             setPageInfo(
               mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
             );
-            dispatch(setMedia(display));
+            setDisplayList(display);
           }
         }
         if (error) {
@@ -198,7 +194,7 @@ const UserProfile: React.FC = () => {
         setPageInfo(
           mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
         );
-        dispatch(addMedia(display));
+        setDisplayList((prev) => [...prev, ...display]);
       }
     }
   };
