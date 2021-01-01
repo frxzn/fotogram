@@ -67,7 +67,7 @@ const PictureModal: React.FC<Props> = ({ src }) => {
         <Icon src="/icons/prev.svg" alt="prev icon" />
       </IconContainer>
       <ImageContainer>
-        <TransformWrapper>
+        <TransformWrapper scale={1} positionX={0} positionY={0}>
           <TransformComponent>
             <StyledImage src={src} />
           </TransformComponent>

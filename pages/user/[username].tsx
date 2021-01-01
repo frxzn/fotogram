@@ -2,15 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../store/reducers';
+import { setMedia, addMedia } from '../../store/actions';
 import {
   User,
   Users,
   UserResponse,
-  Display,
   MediaResponse,
   PageInfo,
 } from '../../interfaces/index';
-import { bakeDisplayList } from '../../utils';
+import { bakeDisplayList, mediaUrl } from '../../utils';
 import Layout from '../../components/Layout';
 import PictureModal from '../../components/PictureModal';
 
@@ -90,24 +92,19 @@ const StyledImage = styled.img`
   }
 `;
 
-const mediaUrl = (pk: string, endcursor = '') => {
-  return `https://www.instagram.com/graphql/query?query_hash=6305d415e36c0a5f0abb6daba312f2dd&variables={"id":${JSON.stringify(
-    pk
-  )},"first":50,"after":${JSON.stringify(endcursor)}}`;
-};
-
 const UserProfile: React.FC = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { username } = router.query;
 
   const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [selected, setSelected] = useState(0);
   const [error, setError] = useState(false);
-  const [noMedia, setNoMedia] = useState(false);
   const [pageInfo, setPageInfo] = useState<PageInfo>();
-  const [displayList, setDisplayList] = useState<Display[]>([]);
   const [user, setUser] = useState<User>();
+
+  const displayList = useSelector((state: RootState) => state.media.mediaList);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyboard);
@@ -145,7 +142,7 @@ const UserProfile: React.FC = () => {
             setPageInfo(
               mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
             );
-            setDisplayList(display);
+            dispatch(setMedia(display));
           }
         }
         if (error) {
@@ -201,41 +198,43 @@ const UserProfile: React.FC = () => {
         setPageInfo(
           mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
         );
-        setDisplayList((prev) => [...prev, ...display]);
+        dispatch(addMedia(display));
       }
     }
   };
 
   return (
     <Layout title={`${user?.full_name} | Fotogram.app`}>
-      <Center>
-        <Profile>
-          <img
-            src={user?.profile_pic_url}
-            alt={`${user?.full_name}'s profile picture`}
-          />
-          <a href={`https://www.instagram.com/${username}`} target="blank">
-            @{username}
-          </a>
-        </Profile>
-        <GridContainer>
-          {displayList.map((picture) => (
-            <GridItem
-              key={picture.id}
-              onClick={() => handleSelect(picture.index)}
-            >
-              <StyledImage
-                src={picture.src}
-                alt={`${user?.full_name}'s photo`}
-              />
-            </GridItem>
-          ))}
-        </GridContainer>
-        {pageInfo?.has_next_page && (
-          <button onClick={handleLoadMore}>Load More</button>
-        )}
-        {show && <PictureModal src={displayList[selected].src} />}
-      </Center>
+      {!loading && (
+        <Center>
+          <Profile>
+            <img
+              src={user?.profile_pic_url}
+              alt={`${user?.full_name}'s profile picture`}
+            />
+            <a href={`https://www.instagram.com/${username}`} target="blank">
+              @{username}
+            </a>
+          </Profile>
+          <GridContainer>
+            {displayList.map((picture) => (
+              <GridItem
+                key={picture.id}
+                onClick={() => handleSelect(picture.index)}
+              >
+                <StyledImage
+                  src={picture.src}
+                  alt={`${user?.full_name}'s photo`}
+                />
+              </GridItem>
+            ))}
+          </GridContainer>
+          {pageInfo?.has_next_page && (
+            <button onClick={handleLoadMore}>Load More</button>
+          )}
+          {show && <PictureModal src={displayList[selected].src} />}
+        </Center>
+      )}
     </Layout>
   );
 };

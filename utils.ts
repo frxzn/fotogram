@@ -34,3 +34,9 @@ export const bakeDisplayList = (arr: Media[], mediaCount = 0) => {
     }));
   return display;
 };
+
+export const mediaUrl = (pk: string, endcursor = '') => {
+  return `https://www.instagram.com/graphql/query?query_hash=6305d415e36c0a5f0abb6daba312f2dd&variables={"id":${JSON.stringify(
+    pk
+  )},"first":50,"after":${JSON.stringify(endcursor)}}`;
+};
