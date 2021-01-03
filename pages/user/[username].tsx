@@ -101,6 +101,7 @@ const UserProfile: React.FC = () => {
   const [displayList, setDisplayList] = useState<Display[]>([]);
   const [pageInfo, setPageInfo] = useState<PageInfo>();
   const [user, setUser] = useState<User>();
+  const [reset, setReset] = useState(false);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyboard);
@@ -166,9 +167,11 @@ const UserProfile: React.FC = () => {
           setSelected((prev) =>
             prev + 1 < displayList.length ? prev + 1 : prev
           );
+          setReset(false);
           break;
         case 'ArrowLeft':
           setSelected((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
+          setReset(false);
           break;
         default:
           break;
@@ -228,7 +231,16 @@ const UserProfile: React.FC = () => {
           {pageInfo?.has_next_page && (
             <button onClick={handleLoadMore}>Load More</button>
           )}
-          {show && <PictureModal src={displayList[selected].src} />}
+          {show && (
+            <PictureModal
+              src={displayList[selected].src}
+              mediaCount={displayList.length}
+              reset={reset}
+              setReset={setReset}
+              setSelected={setSelected}
+              setShow={setShow}
+            />
+          )}
         </Center>
       )}
     </Layout>

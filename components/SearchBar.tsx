@@ -239,7 +239,7 @@ const SearchBar: React.FC = () => {
         <form onSubmit={handleSubmit}>
           <SearchContainer>
             <Icon
-              src="/icons/magnifying-glass1.svg"
+              src="/icons/magnifying-glass.svg"
               alt="magnifying glass icon"
             />
             <StyledInput
@@ -250,14 +250,7 @@ const SearchBar: React.FC = () => {
             />
             {renderSpinner}
             {renderClose}
-            <SearchButton
-              type="submit"
-              tabIndex={0}
-              role="button"
-              // onClick={handleSubmit}
-            >
-              Search
-            </SearchButton>
+            <SearchButton type="submit">Search</SearchButton>
           </SearchContainer>
         </form>
         {show && <UserList>{renderList}</UserList>}

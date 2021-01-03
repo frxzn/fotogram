@@ -1,9 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import axios from 'axios';
 
 interface Props {
   src: string;
+  mediaCount: number;
+  reset: boolean;
+  setReset: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelected: React.Dispatch<React.SetStateAction<number>>;
+  setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Container = styled.div`
@@ -24,6 +30,11 @@ const ImageContainer = styled.div`
   div.react-transform-component,
   div.react-transform-element {
     height: 100%;
+    cursor: grab;
+
+    :active {
+      cursor: grabbing;
+    }
   }
 `;
 
@@ -36,15 +47,16 @@ const StyledImage = styled.img`
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
-  height: 10rem;
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  height: 20rem;
+  width: 2rem;
   margin: auto 0;
+  z-index: 100;
 
   :hover {
     cursor: pointer;
-  }
-
-  @media (max-width: 735px) {
-    display: none;
   }
 `;
 
@@ -53,7 +65,41 @@ const Icon = styled.img`
   width: 2rem;
 `;
 
-const PictureModal: React.FC<Props> = ({ src }) => {
+const CloseIcon = styled.div`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+
+  img {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+`;
+
+const PictureModal: React.FC<Props> = ({
+  src,
+  mediaCount,
+  reset,
+  setReset,
+  setShow,
+  setSelected,
+}) => {
+  const [zoom, setZoom] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // useEffect(() => {
+  //   const init = async () => {
+  //     const res = await axios.post('https://insta-stories.ru/api/stories', {
+  //       xtrip: 'afsdfi3k4fdsd5gg',
+  //       id: '2017771114',
+  //       username: 'vismaramartina',
+  //     });
+  //     console.log(res);
+  //   };
+  //   init();
+  // }, []);
+
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
@@ -61,19 +107,79 @@ const PictureModal: React.FC<Props> = ({ src }) => {
     };
   }, []);
 
+  useEffect(() => {
+    setReset(true);
+  }, [src]);
+
+  useEffect(() => {
+    console.log('width', ref.current ? ref.current.offsetWidth : 0);
+  }, [ref.current]);
+
+  const handleArrowChange = (side: string) => {
+    switch (side) {
+      case 'right':
+        setSelected((prev) => (prev + 1 < mediaCount ? prev + 1 : prev));
+        setReset(false);
+        break;
+      case 'left':
+        setSelected((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
+        setReset(false);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleDragClose = (e: any) => {
+    if (ref.current && e.scale === 1) {
+      if (
+        Math.abs(e.positionX / ref.current.offsetWidth) >= 0.3 ||
+        Math.abs(e.positionY / ref.current.offsetHeight) >= 0.3
+      ) {
+        setShow(false);
+      }
+    }
+  };
+
+  const handleZoom = (e: any) => {
+    if (e.scale > 1 && !zoom) {
+      setTimeout(() => {
+        setZoom(true);
+      }, 200);
+    } else if (e.scale === 1 && zoom) {
+      setZoom(false);
+    }
+  };
+
   return (
     <Container>
-      <IconContainer>
+      <CloseIcon onClick={() => setShow(false)}>
+        <Icon src="/icons/cancel.svg" alt="close icon" />
+      </CloseIcon>
+      <IconContainer
+        onClick={() => handleArrowChange('left')}
+        style={{ left: 0 }}
+      >
         <Icon src="/icons/prev.svg" alt="prev icon" />
       </IconContainer>
-      <ImageContainer>
-        <TransformWrapper scale={1} positionX={0} positionY={0}>
+      <ImageContainer ref={ref}>
+        <TransformWrapper
+          scale={reset ? undefined : 1}
+          positionX={reset ? undefined : 0}
+          positionY={reset ? undefined : 0}
+          onPanningStop={handleDragClose}
+          onZoomChange={handleZoom}
+          doubleClick={{ mode: zoom ? 'reset' : 'zoomIn', step: 50 }}
+        >
           <TransformComponent>
             <StyledImage src={src} />
           </TransformComponent>
         </TransformWrapper>
       </ImageContainer>
-      <IconContainer>
+      <IconContainer
+        onClick={() => handleArrowChange('right')}
+        style={{ right: 0 }}
+      >
         <Icon src="/icons/next.svg" alt="next icon" />
       </IconContainer>
     </Container>
