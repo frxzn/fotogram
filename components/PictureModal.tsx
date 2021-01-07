@@ -21,6 +21,7 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   background-color: rgba(0, 0, 0, 0.9);
+  outline: none;
 `;
 
 const ImageContainer = styled.div`
@@ -180,7 +181,6 @@ const PictureModal: React.FC<Props> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    console.log(e.key);
     if (e.key === 'ArrowRight') {
       if (selected + 1 < mediaCount) {
         setSelected((prev) => prev + 1);
