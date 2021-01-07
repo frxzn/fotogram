@@ -7,6 +7,7 @@ interface Props {
   src: string;
   mediaCount: number;
   reset: boolean;
+  selected: number;
   setReset: React.Dispatch<React.SetStateAction<boolean>>;
   setSelected: React.Dispatch<React.SetStateAction<number>>;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -77,18 +78,20 @@ const CloseIcon = styled.div`
   }
 `;
 
-const amplitude = 0.5;
+const amplitude = 2;
 const intercept = 0.9;
 
 const PictureModal: React.FC<Props> = ({
   src,
   mediaCount,
   reset,
+  selected,
+  setSelected,
   setReset,
   setShow,
-  setSelected,
 }) => {
   const [zoom, setZoom] = useState(false);
+  const [timer, setTimer] = useState(0);
   const [transparency, setTransparency] = useState(intercept);
   const [resetingPan, setResetingPan] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -123,17 +126,16 @@ const PictureModal: React.FC<Props> = ({
   }, [ref.current]);
 
   const handleArrowChange = (side: string) => {
-    switch (side) {
-      case 'right':
-        setSelected((prev) => (prev + 1 < mediaCount ? prev + 1 : prev));
+    if (side === 'right') {
+      if (selected + 1 < mediaCount) {
+        setSelected((prev) => prev + 1);
         setReset(false);
-        break;
-      case 'left':
+      }
+    } else if (side === 'left') {
+      if (selected - 1 >= 0) {
         setSelected((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
         setReset(false);
-        break;
-      default:
-        break;
+      }
     }
   };
 
@@ -144,9 +146,11 @@ const PictureModal: React.FC<Props> = ({
       } else {
         setResetingPan(true);
         setTransparency(intercept);
-        setTimeout(() => {
+        clearTimeout(timer);
+        const timeout = setTimeout(() => {
           setResetingPan(false);
         }, 400);
+        setTimer(timeout);
       }
     }
   };

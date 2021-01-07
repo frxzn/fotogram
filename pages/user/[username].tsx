@@ -235,6 +235,7 @@ const UserProfile: React.FC = () => {
             <PictureModal
               src={displayList[selected].src}
               mediaCount={displayList.length}
+              selected={selected}
               reset={reset}
               setReset={setReset}
               setSelected={setSelected}
