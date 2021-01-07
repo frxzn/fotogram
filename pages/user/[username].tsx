@@ -104,11 +104,6 @@ const UserProfile: React.FC = () => {
   const [reset, setReset] = useState(false);
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyboard);
-    return () => window.removeEventListener('keydown', handleKeyboard);
-  }, [show, displayList]);
-
-  useEffect(() => {
     const userSource = axios.CancelToken.source();
     const mediaSource = axios.CancelToken.source();
 
@@ -156,28 +151,6 @@ const UserProfile: React.FC = () => {
       mediaSource.cancel();
     };
   }, [username]);
-
-  const handleKeyboard = (e: KeyboardEvent) => {
-    if (show) {
-      switch (e.key) {
-        case 'Escape':
-          setShow(false);
-          break;
-        case 'ArrowRight':
-          setSelected((prev) =>
-            prev + 1 < displayList.length ? prev + 1 : prev
-          );
-          setReset(false);
-          break;
-        case 'ArrowLeft':
-          setSelected((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
-          setReset(false);
-          break;
-        default:
-          break;
-      }
-    }
-  };
 
   const handleSelect = (index: number) => {
     setSelected(index);

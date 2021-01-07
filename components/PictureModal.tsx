@@ -94,7 +94,9 @@ const PictureModal: React.FC<Props> = ({
   const [timer, setTimer] = useState(0);
   const [transparency, setTransparency] = useState(intercept);
   const [resetingPan, setResetingPan] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+
+  const container = useRef<HTMLDivElement>(null);
+  const imageContainer = useRef<HTMLDivElement>(null);
 
   // useEffect(() => {
   //   const init = async () => {
@@ -116,14 +118,16 @@ const PictureModal: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
+    if (container.current) {
+      container.current.focus();
+    }
+  }, []);
+
+  useEffect(() => {
     if (!reset) {
       setReset(true);
     }
   }, [src]);
-
-  useEffect(() => {
-    console.log('width', ref.current ? ref.current.offsetWidth : 0);
-  }, [ref.current]);
 
   const handleArrowChange = (side: string) => {
     if (side === 'right') {
@@ -140,8 +144,8 @@ const PictureModal: React.FC<Props> = ({
   };
 
   const handleDragClose = (e: any) => {
-    if (ref.current && e.scale === 1) {
-      if (Math.abs(e.positionY / ref.current.offsetHeight) >= 0.3) {
+    if (imageContainer.current && e.scale === 1) {
+      if (Math.abs(e.positionY / imageContainer.current.offsetHeight) >= 0.3) {
         setShow(false);
       } else {
         setResetingPan(true);
@@ -166,11 +170,29 @@ const PictureModal: React.FC<Props> = ({
   };
 
   const handleTransparency = (e: any) => {
-    if (ref.current && e.scale === 1) {
+    if (imageContainer.current && e.scale === 1) {
       const val =
-        Math.abs(e.positionY / ref.current.offsetHeight) * -amplitude +
+        Math.abs(e.positionY / imageContainer.current.offsetHeight) *
+          -amplitude +
         intercept;
       setTransparency(val);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    console.log(e.key);
+    if (e.key === 'ArrowRight') {
+      if (selected + 1 < mediaCount) {
+        setSelected((prev) => prev + 1);
+        setReset(false);
+      }
+    } else if (e.key === 'ArrowLeft') {
+      if (selected - 1 >= 0) {
+        setSelected((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
+        setReset(false);
+      }
+    } else if (e.key === 'Escape') {
+      setShow(false);
     }
   };
 
@@ -180,6 +202,9 @@ const PictureModal: React.FC<Props> = ({
         backgroundColor: `rgba(0,0,0,${transparency})`,
         transition: resetingPan ? '400ms ease-out' : '',
       }}
+      onKeyDown={handleKeyDown}
+      tabIndex={1}
+      ref={container}
     >
       <CloseIcon onClick={() => setShow(false)}>
         <Icon src="/icons/cancel.svg" alt="close icon" />
@@ -190,7 +215,7 @@ const PictureModal: React.FC<Props> = ({
       >
         <Icon src="/icons/prev.svg" alt="prev icon" />
       </IconContainer>
-      <ImageContainer ref={ref}>
+      <ImageContainer ref={imageContainer}>
         <TransformWrapper
           scale={reset ? undefined : 1}
           positionX={reset ? undefined : 0}
