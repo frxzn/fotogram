@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import axios from 'axios';
+// import axios from 'axios';
 
 interface Props {
   src: string;
@@ -77,6 +77,9 @@ const CloseIcon = styled.div`
   }
 `;
 
+const amplitude = 0.5;
+const intercept = 0.9;
+
 const PictureModal: React.FC<Props> = ({
   src,
   mediaCount,
@@ -86,6 +89,8 @@ const PictureModal: React.FC<Props> = ({
   setSelected,
 }) => {
   const [zoom, setZoom] = useState(false);
+  const [transparency, setTransparency] = useState(intercept);
+  const [resetingPan, setResetingPan] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   // useEffect(() => {
@@ -108,7 +113,9 @@ const PictureModal: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    setReset(true);
+    if (!reset) {
+      setReset(true);
+    }
   }, [src]);
 
   useEffect(() => {
@@ -132,11 +139,14 @@ const PictureModal: React.FC<Props> = ({
 
   const handleDragClose = (e: any) => {
     if (ref.current && e.scale === 1) {
-      if (
-        Math.abs(e.positionX / ref.current.offsetWidth) >= 0.3 ||
-        Math.abs(e.positionY / ref.current.offsetHeight) >= 0.3
-      ) {
+      if (Math.abs(e.positionY / ref.current.offsetHeight) >= 0.3) {
         setShow(false);
+      } else {
+        setResetingPan(true);
+        setTransparency(intercept);
+        setTimeout(() => {
+          setResetingPan(false);
+        }, 400);
       }
     }
   };
@@ -151,8 +161,22 @@ const PictureModal: React.FC<Props> = ({
     }
   };
 
+  const handleTransparency = (e: any) => {
+    if (ref.current && e.scale === 1) {
+      const val =
+        Math.abs(e.positionY / ref.current.offsetHeight) * -amplitude +
+        intercept;
+      setTransparency(val);
+    }
+  };
+
   return (
-    <Container>
+    <Container
+      style={{
+        backgroundColor: `rgba(0,0,0,${transparency})`,
+        transition: resetingPan ? '400ms ease-out' : '',
+      }}
+    >
       <CloseIcon onClick={() => setShow(false)}>
         <Icon src="/icons/cancel.svg" alt="close icon" />
       </CloseIcon>
@@ -167,9 +191,11 @@ const PictureModal: React.FC<Props> = ({
           scale={reset ? undefined : 1}
           positionX={reset ? undefined : 0}
           positionY={reset ? undefined : 0}
-          onPanningStop={handleDragClose}
-          onZoomChange={handleZoom}
           doubleClick={{ mode: zoom ? 'reset' : 'zoomIn', step: 50 }}
+          pan={{ lockAxisX: !zoom }}
+          onPanningStop={handleDragClose}
+          onPanning={handleTransparency}
+          onZoomChange={handleZoom}
         >
           <TransformComponent>
             <StyledImage src={src} />
