@@ -7,19 +7,13 @@ import { Users } from '../interfaces/index';
 import UserListItem from './UserListItem';
 
 const Center = styled.div`
-  width: 100%;
-  max-width: 935px;
-  margin: 0 auto;
-  padding: 0 20px;
-  position: relative;
-
-  @media (max-width: 735px) {
-    /* padding: 0; */
-  }
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 `;
 
 const SearchContainer = styled.div`
-  background-color: ${(props) => props.theme.colors.backgroundColor};
+  background-color: #fff;
   border: 1px solid ${(props) => props.theme.colors.borderColor};
   border-radius: 3px;
   display: flex;
@@ -47,7 +41,7 @@ const StyledInput = styled.input`
   height: 2rem;
   font-size: 1.2rem;
   border: none;
-  background-color: ${(props) => props.theme.colors.backgroundColor};
+  background-color: transparent;
   color: ${(props) => props.theme.colors.primaryText};
 
   :focus {
@@ -71,59 +65,42 @@ const SearchButton = styled.button`
   :focus {
     background-color: #c8005e;
   }
-
-  @media (max-width: 735px) {
-    display: none;
-  }
 `;
 
 const UserList = styled.div`
   border: 1px solid ${(props) => props.theme.colors.borderColor};
   border-radius: 3px;
   background-color: #fff;
+  width: 100%;
+  max-width: ${(props) => props.theme.dimensions.maxWidth}px;
+  margin-top: 1rem;
   max-height: 260px;
-  overflow: auto;
+  overflow-y: auto;
   padding: 0;
-  position: absolute;
-  top: 48px;
-  left: 0;
-  right: 0;
-  width: calc(100% - 40px);
-  margin: auto;
+`;
 
-  @media (max-width: 735px) {
-    top: 46px;
-    max-height: calc(100vh - 55px);
-    width: 100%;
-    border: none;
-    border-radius: 0;
+const Checkbox = styled.div`
+  input {
+    margin-right: 0.5rem;
+    cursor: pointer;
+  }
+
+  label {
+    color: ${(props) => props.theme.colors.secondaryText};
+    font-weight: 300;
+    cursor: pointer;
   }
 `;
 
 const SearchBar: React.FC = () => {
-  const router = useRouter();
-  const { username } = router.query;
-
   const [input, setInput] = useState('');
   const [show, setShow] = useState(false);
   const [closed, setClosed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [checked, setChecked] = useState(false);
   const [searchList, setSearchList] = useState<Users[]>([]);
   const node = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setInput('');
-    setShow(false);
-  }, [username]);
-
-  useEffect(() => {
-    if (show) {
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = 'unset';
-      };
-    }
-  }, [show]);
+  const router = useRouter();
 
   // Effect to close modal on outsides click
   useEffect(() => {
@@ -195,6 +172,10 @@ const SearchBar: React.FC = () => {
     }
   };
 
+  const handleCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(e.target.checked);
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (input.length && searchList.length && !loading) {
@@ -202,16 +183,24 @@ const SearchBar: React.FC = () => {
     }
   };
 
-  const renderList = searchList?.map(({ user }) => {
-    return (
-      <UserListItem
-        key={user.pk}
-        name={user.full_name}
-        username={user.username}
-        profilePicUrl={user.profile_pic_url}
-      />
-    );
-  });
+  const renderList = searchList
+    ?.filter(({ user }) => {
+      if (checked) {
+        return !user.is_private;
+      } else {
+        return user;
+      }
+    })
+    .map(({ user }) => {
+      return (
+        <UserListItem
+          key={user.pk}
+          name={user.full_name}
+          username={user.username}
+          profilePicUrl={user.profile_pic_url}
+        />
+      );
+    });
 
   let renderSpinner;
   if (loading && input.length !== 0) {
@@ -235,22 +224,37 @@ const SearchBar: React.FC = () => {
   }
 
   return (
-    <Center ref={node}>
-      <form onSubmit={handleSubmit}>
-        <SearchContainer>
-          <Icon src="/icons/magnifying-glass.svg" alt="magnifying glass icon" />
-          <StyledInput
-            value={input}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            placeholder="Search"
+    <Center>
+      <div ref={node} style={{ width: '100%', maxWidth: '935px' }}>
+        <Checkbox>
+          <input
+            type="checkbox"
+            id="scales"
+            name="scales"
+            checked={checked}
+            onChange={handleCheck}
           />
-          {renderSpinner}
-          {renderClose}
-          <SearchButton type="submit">Search</SearchButton>
-        </SearchContainer>
-      </form>
-      {show && <UserList>{renderList}</UserList>}
+          <label htmlFor="scales">Hide private accounts</label>
+        </Checkbox>
+        <form onSubmit={handleSubmit}>
+          <SearchContainer>
+            <Icon
+              src="/icons/magnifying-glass.svg"
+              alt="magnifying glass icon"
+            />
+            <StyledInput
+              value={input}
+              onChange={handleChange}
+              onFocus={handleFocus}
+              placeholder="Search"
+            />
+            {renderSpinner}
+            {renderClose}
+            <SearchButton type="submit">Search</SearchButton>
+          </SearchContainer>
+        </form>
+        {show && <UserList>{renderList}</UserList>}
+      </div>
     </Center>
   );
 };

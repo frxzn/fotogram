@@ -12,6 +12,7 @@ import {
 } from '../../interfaces/index';
 import { bakeDisplayList, mediaUrl } from '../../utils';
 import Layout from '../../components/Layout';
+import Navbar from '../../components/Navbar';
 import PictureModal from '../../components/PictureModal';
 
 const Profile = styled.div`
@@ -46,17 +47,22 @@ const Profile = styled.div`
 const Center = styled.div`
   max-width: ${(props) => props.theme.dimensions.maxWidth}px;
   margin: 0 auto;
+  padding: 0 20px;
+  margin-top: 54px;
+
+  @media (max-width: 735px) {
+    padding: 0;
+  }
 `;
 
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 28px;
-  margin: 28px;
+  margin: 28px 0;
 
   @media (max-width: 735px) {
     grid-gap: 3px;
-    margin: 3px;
   }
 `;
 
@@ -177,6 +183,7 @@ const UserProfile: React.FC = () => {
 
   return (
     <Layout title={`${user?.full_name} | Fotogram`}>
+      <Navbar />
       {!loading && (
         <Center>
           <Profile>

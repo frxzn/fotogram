@@ -1,48 +1,23 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
+import React from 'react';
 import styled from 'styled-components';
-import Dropdown from './Dropdown';
-
-interface Props {}
+import SearchBar from './SearchBar';
 
 const StyledHeader = styled.header`
+  position: fixed;
+  top: 0;
+  height: 54px;
+  width: 100%;
+  z-index: 200;
   background-color: #fff;
   border-bottom: 1px solid #dbdbdb;
-  height: 54px;
-
-  .center {
-    margin: 0 auto;
-    height: 100%;
-    max-width: ${(props) => props.theme.dimensions.maxWidth}px;
-    min-width: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .logo {
-    color: ${(props) => props.theme.colors.primary};
-    font-size: 1.4rem;
-  }
+  display: flex;
+  align-items: center;
 `;
 
-const Navbar: React.FC<Props> = () => {
-  const [selected, setSelected] = useState('English');
-
+const Navbar: React.FC = () => {
   return (
     <StyledHeader>
-      <div className="center">
-        <Link href="/">
-          <a>
-            <div className="logo">fotogram</div>
-          </a>
-        </Link>
-        <Dropdown
-          dropdownButton={selected}
-          menuItems={['English', 'Español', 'Portuguese', 'Italiano']}
-          setSelected={setSelected}
-        />
-      </div>
+      <SearchBar />
     </StyledHeader>
   );
 };

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Layout from '../components/Layout';
-import SearchBar from '../components/SearchBar';
+import LandingSearchBar from '../components/LandingSearchBar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Title = styled.h1`
@@ -14,7 +14,7 @@ const Title = styled.h1`
 const IndexPage = () => (
   <Layout title="Fotogram.app">
     <Title>View, zoom & download HD Instagram pictures</Title>
-    <SearchBar />
+    <LandingSearchBar />
   </Layout>
 );
 

@@ -22,6 +22,7 @@ const Container = styled.div`
   display: flex;
   background-color: rgba(0, 0, 0, 0.9);
   outline: none;
+  z-index: 300;
 `;
 
 const ImageContainer = styled.div`
