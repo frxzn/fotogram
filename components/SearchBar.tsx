@@ -5,6 +5,7 @@ import axios from 'axios';
 import Spinner from 'react-bootstrap/Spinner';
 import { Users } from '../interfaces/index';
 import UserListItem from './UserListItem';
+import { useMediaQuery } from 'react-responsive';
 
 const Center = styled.div`
   width: 100%;
@@ -101,9 +102,9 @@ const UserList = styled.div`
 `;
 
 const SearchBar: React.FC = () => {
+  const isMobile = useMediaQuery({ query: `(max-width: 735px)` });
   const router = useRouter();
   const { username } = router.query;
-
   const [input, setInput] = useState('');
   const [show, setShow] = useState(false);
   const [closed, setClosed] = useState(false);
@@ -117,13 +118,13 @@ const SearchBar: React.FC = () => {
   }, [username]);
 
   useEffect(() => {
-    if (show) {
+    if (show && isMobile) {
       document.body.style.overflow = 'hidden';
       return () => {
         document.body.style.overflow = 'unset';
       };
     }
-  }, [show]);
+  }, [show, isMobile]);
 
   // Effect to close modal on outsides click
   useEffect(() => {
