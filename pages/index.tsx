@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
 import SearchBar from '../components/SearchBar';
@@ -16,11 +15,6 @@ const IndexPage = () => (
   <Layout title="Fotogram.app">
     <Title>View, zoom & download HD Instagram pictures</Title>
     <SearchBar />
-    <p>
-      <Link href="/about">
-        <a>About</a>
-      </Link>
-    </p>
   </Layout>
 );
 

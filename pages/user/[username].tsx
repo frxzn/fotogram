@@ -176,7 +176,7 @@ const UserProfile: React.FC = () => {
   };
 
   return (
-    <Layout title={`${user?.full_name} | Fotogram.app`}>
+    <Layout title={`${user?.full_name} | Fotogram`}>
       {!loading && (
         <Center>
           <Profile>
