@@ -25,6 +25,14 @@ const SearchContainer = styled.div`
   border-radius: 3px;
   display: flex;
   align-items: center;
+  position: relative;
+
+  .spinner-border {
+    color: #ff0078;
+    border-color: #ff0078;
+    border-right-color: #fafafa;
+    margin: 0 1rem;
+  }
 `;
 
 const Icon = styled.img`
@@ -46,6 +54,7 @@ const Close = styled.img`
 const StyledInput = styled.input`
   flex: 1;
   height: 2rem;
+  min-width: 50px;
   font-size: 1.2rem;
   border: none;
   background-color: ${(props) => props.theme.colors.backgroundColor};
@@ -161,8 +170,13 @@ const SearchBar: React.FC = () => {
         if (axios.isCancel(error)) return;
       }
     };
-    search();
-    return () => source.cancel();
+    const timer = setTimeout(() => {
+      search();
+    }, 500);
+    return () => {
+      source.cancel();
+      clearTimeout(timer);
+    };
   }, [input]);
 
   // Effect to open/close search modal
@@ -216,18 +230,7 @@ const SearchBar: React.FC = () => {
 
   let renderSpinner;
   if (loading && input.length !== 0) {
-    renderSpinner = (
-      <Spinner
-        animation="border"
-        size="sm"
-        style={{
-          color: '#ff0078',
-          borderColor: '#ff0078',
-          borderRightColor: '#fff',
-          margin: '0 1rem',
-        }}
-      />
-    );
+    renderSpinner = <Spinner animation="border" size="sm" />;
   }
 
   let renderClose;
