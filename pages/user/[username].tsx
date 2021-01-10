@@ -14,12 +14,13 @@ import { bakeDisplayList, mediaUrl } from '../../utils';
 import Layout from '../../components/Layout';
 import Navbar from '../../components/Navbar';
 import PictureModal from '../../components/PictureModal';
+import Share from '../../components/Share';
 
 const Profile = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 0;
+  padding: 3rem 0;
 
   .profile-pic-container {
     border-radius: 50%;
@@ -52,28 +53,31 @@ const Profile = styled.div`
     justify-content: center;
   }
 
-  img {
+  .profile-pic {
     border-radius: 50%;
     border: 3px solid #fafafa;
     width: 66px;
     height: 66px;
   }
 
-  a {
-    color: ${(props) => props.theme.colors.primaryText};
+  .profile-right-side {
+    display: flex;
+    align-items: center;
 
-    :hover {
-      color: #000;
+    @media (max-width: 735px) {
+      flex-direction: column;
+      align-items: flex-start;
+      font-size: 1rem;
+    }
+
+    a {
+      color: ${(props) => props.theme.colors.primaryText};
+
+      :hover {
+        color: #000;
+      }
     }
   }
-  /* 
-  @media (max-width: 735px) {
-    font-size: 1.2em;
-
-    img {
-      width: 80px;
-    }
-  } */
 `;
 
 const Center = styled.div`
@@ -91,7 +95,7 @@ const GridContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 28px;
-  margin: 28px 0;
+  /* margin: 28px 0; */
 
   @media (max-width: 735px) {
     grid-gap: 3px;
@@ -221,6 +225,7 @@ const UserProfile: React.FC = () => {
           <Profile>
             <div className="profile-pic-container">
               <img
+                className="profile-pic"
                 src={user?.profile_pic_url}
                 alt={`${user?.full_name}'s profile picture`}
               />
@@ -230,7 +235,7 @@ const UserProfile: React.FC = () => {
               <a href={`https://www.instagram.com/${username}`} target="blank">
                 @{username}
               </a>
-              <div>Share</div>
+              <Share />
             </div>
           </Profile>
           <GridContainer>
