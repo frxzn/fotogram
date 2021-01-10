@@ -97,10 +97,12 @@ const UserList = styled.div`
   margin: auto;
 
   @media (max-width: 735px) {
-    top: 46px;
-    max-height: calc(100vh - 55px);
+    top: 43px;
+    max-height: calc(100vh - 52px);
     width: 100%;
     border: none;
+    border-top: 1px solid ${(props) => props.theme.colors.borderColor};
+    /* border-bottom: 1px solid ${(props) => props.theme.colors.borderColor}; */
     border-radius: 0;
   }
 `;

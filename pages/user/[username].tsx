@@ -17,14 +17,46 @@ import PictureModal from '../../components/PictureModal';
 
 const Profile = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin: 1rem 0;
-  font-size: 1.75em;
+  justify-content: center;
+  padding: 1rem 0;
+
+  .profile-pic-container {
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 30% 70%, #ffa546 15%, #c42286 100%);
+    padding: 3px;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    position: relative;
+  }
+
+  span {
+    position: absolute;
+    top: 1px;
+    right: -8px;
+    color: #fafafa;
+    border: 2px solid #fafafa;
+    background-color: #e66666;
+    width: 22px;
+    height: 22px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   img {
     border-radius: 50%;
-    margin: 1rem 0;
+    border: 3px solid #fafafa;
+    width: 66px;
+    height: 66px;
   }
 
   a {
@@ -34,14 +66,14 @@ const Profile = styled.div`
       color: #000;
     }
   }
-
+  /* 
   @media (max-width: 735px) {
     font-size: 1.2em;
 
     img {
       width: 80px;
     }
-  }
+  } */
 `;
 
 const Center = styled.div`
@@ -187,13 +219,19 @@ const UserProfile: React.FC = () => {
       {!loading && (
         <Center>
           <Profile>
-            <img
-              src={user?.profile_pic_url}
-              alt={`${user?.full_name}'s profile picture`}
-            />
-            <a href={`https://www.instagram.com/${username}`} target="blank">
-              @{username}
-            </a>
+            <div className="profile-pic-container">
+              <img
+                src={user?.profile_pic_url}
+                alt={`${user?.full_name}'s profile picture`}
+              />
+              <span>5</span>
+            </div>
+            <div className="profile-right-side">
+              <a href={`https://www.instagram.com/${username}`} target="blank">
+                @{username}
+              </a>
+              <div>Share</div>
+            </div>
           </Profile>
           <GridContainer>
             {displayList.map((picture) => (
