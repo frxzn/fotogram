@@ -13,10 +13,6 @@ const Center = styled.div`
   margin: 0 auto;
   padding: 0 20px;
   position: relative;
-
-  @media (max-width: 735px) {
-    /* padding: 0; */
-  }
 `;
 
 const SearchContainer = styled.div`
@@ -25,7 +21,6 @@ const SearchContainer = styled.div`
   border-radius: 3px;
   display: flex;
   align-items: center;
-  position: relative;
 
   .spinner-border {
     color: #ff0078;
@@ -126,6 +121,7 @@ const SearchBar: React.FC = () => {
     setShow(false);
   }, [username]);
 
+  // Effect to prevent scroll on mobile screen when search modal is open
   useEffect(() => {
     if (show && isMobile) {
       document.body.style.overflow = 'hidden';
@@ -147,6 +143,7 @@ const SearchBar: React.FC = () => {
   // Effect to fetch IG's search API
   useEffect(() => {
     const source = axios.CancelToken.source();
+
     const search = async () => {
       try {
         if (input.length) {
@@ -170,9 +167,12 @@ const SearchBar: React.FC = () => {
         if (axios.isCancel(error)) return;
       }
     };
+
+    // 500ms sweetspot for not triggering another request on key holding
     const timer = setTimeout(() => {
       search();
     }, 500);
+
     return () => {
       source.cancel();
       clearTimeout(timer);
