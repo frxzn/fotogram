@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
-import Spinner from 'react-bootstrap/Spinner';
+import Spinner from 'react-spinner-material';
 import { Users } from '../interfaces/index';
 import UserListItem from './UserListItem';
 
@@ -205,16 +205,9 @@ const SearchBar: React.FC = () => {
   let renderSpinner;
   if (loading && input.length !== 0) {
     renderSpinner = (
-      <Spinner
-        animation="border"
-        size="sm"
-        style={{
-          color: '#ff0078',
-          borderColor: '#ff0078',
-          borderRightColor: '#fff',
-          margin: '0 1rem',
-        }}
-      />
+      <div style={{ margin: '0 1rem' }}>
+        <Spinner radius={16} color={'#ff0078'} stroke={2} visible={true} />
+      </div>
     );
   }
 

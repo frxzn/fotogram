@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
+import Spinner from 'react-spinner-material';
 import {
   User,
   Users,
@@ -14,71 +15,8 @@ import { bakeDisplayList, mediaUrl } from '../../utils';
 import Layout from '../../components/Layout';
 import Navbar from '../../components/Navbar';
 import PictureModal from '../../components/PictureModal';
-import Share from '../../components/Share';
-
-const Profile = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 0;
-
-  .profile-pic-container {
-    border-radius: 50%;
-    background: radial-gradient(ellipse at 30% 70%, #ffa546 15%, #c42286 100%);
-    padding: 3px;
-    width: 70px;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1rem;
-    position: relative;
-  }
-
-  span {
-    position: absolute;
-    top: 1px;
-    right: -8px;
-    color: #fafafa;
-    border: 2px solid #fafafa;
-    background-color: #e66666;
-    width: 22px;
-    height: 22px;
-    font-weight: 700;
-    font-size: 0.8rem;
-    white-space: nowrap;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .profile-pic {
-    border-radius: 50%;
-    border: 3px solid #fafafa;
-    width: 66px;
-    height: 66px;
-  }
-
-  .profile-right-side {
-    display: flex;
-    align-items: center;
-
-    @media (max-width: 735px) {
-      flex-direction: column;
-      align-items: flex-start;
-      font-size: 1rem;
-    }
-
-    a {
-      color: ${(props) => props.theme.colors.primaryText};
-
-      :hover {
-        color: #000;
-      }
-    }
-  }
-`;
+import Profile from '../../components/Profile';
+import Grid from '../../components/Grid';
 
 const Center = styled.div`
   max-width: ${(props) => props.theme.dimensions.maxWidth}px;
@@ -91,44 +29,30 @@ const Center = styled.div`
   }
 `;
 
-const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 28px;
-  /* margin: 28px 0; */
-
-  @media (max-width: 735px) {
-    grid-gap: 3px;
-  }
+const Error = styled.div`
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 300;
+  padding: 3rem 0;
 `;
 
-const GridItem = styled.div`
+const ButtonContainer = styled.div`
   display: flex;
-  position: relative;
   justify-content: center;
-  align-items: center;
-  overflow: hidden;
-
-  ::after {
-    content: '';
-    padding-bottom: 100%;
-    display: block;
-  }
-
-  :hover {
-    cursor: pointer;
-    filter: brightness(calc(2 / 3));
-  }
+  margin: 2rem 0;
 `;
 
-const StyledImage = styled.img`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  object-fit: cover;
-
+const Button = styled.button`
+  font-size: 1.2rem;
+  border: 1px solid ${(props) => props.theme.colors.borderColor};
+  border-radius: 4px;
+  padding: 1rem 2rem;
+  text-align: center;
+  background-color: transparent;
+  color: ${(props) => props.theme.colors.primaryText};
   :hover {
     cursor: pointer;
+    color: #000;
   }
 `;
 
@@ -136,10 +60,11 @@ const UserProfile: React.FC = () => {
   const router = useRouter();
   const { username } = router.query;
 
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [show, setShow] = useState(false);
   const [selected, setSelected] = useState(0);
-  const [error, setError] = useState(false);
   const [displayList, setDisplayList] = useState<Display[]>([]);
   const [pageInfo, setPageInfo] = useState<PageInfo>();
   const [user, setUser] = useState<User>();
@@ -158,9 +83,11 @@ const UserProfile: React.FC = () => {
             cancelToken: userSource.token,
           }
         );
+        console.log(userRes.data);
         const currentUser = userRes.data.users.find(
           (users: Users) => users.user.username === username
         );
+        console.log(currentUser);
         if (currentUser) {
           setUser(currentUser.user);
           if (!currentUser.user.is_private) {
@@ -177,17 +104,39 @@ const UserProfile: React.FC = () => {
               mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
             );
             setDisplayList(display);
+          } else {
+            if (pageInfo) {
+              setPageInfo(undefined);
+            }
+            if (displayList) {
+              setDisplayList([]);
+            }
           }
+        } else {
+          throw '404';
         }
         if (error) {
-          setError(false);
+          setError('');
         }
       } catch (e) {
-        setError(true);
+        console.log(e);
+        if (pageInfo) {
+          setPageInfo(undefined);
+        }
+        if (displayList) {
+          setDisplayList([]);
+        }
+        if (e === '404') {
+          setError('User not found.');
+        } else {
+          setError('Something went wrong, try again later.');
+        }
       }
       setLoading(false);
     };
-    init();
+    if (username) {
+      init();
+    }
     return () => {
       userSource.cancel();
       mediaSource.cancel();
@@ -202,71 +151,92 @@ const UserProfile: React.FC = () => {
   const handleLoadMore = async () => {
     if (user && pageInfo) {
       if (pageInfo.has_next_page) {
-        const mediaRes = await axios.get<MediaResponse>(
-          mediaUrl(user.pk, pageInfo.end_cursor)
-        );
-        const display = bakeDisplayList(
-          mediaRes.data.data.user.edge_owner_to_timeline_media.edges,
-          displayList.length
-        );
-        setPageInfo(
-          mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
-        );
-        setDisplayList((prev) => [...prev, ...display]);
+        setLoadingMore(true);
+        try {
+          const mediaRes = await axios.get<MediaResponse>(
+            mediaUrl(user.pk, pageInfo.end_cursor)
+          );
+          const display = bakeDisplayList(
+            mediaRes.data.data.user.edge_owner_to_timeline_media.edges,
+            displayList.length
+          );
+          setPageInfo(
+            mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
+          );
+          setDisplayList((prev) => [...prev, ...display]);
+        } catch (err) {
+          console.log(err);
+        }
+        setLoadingMore(false);
       }
     }
   };
 
+  let main;
+  if (error) {
+    main = <Error>{error}</Error>;
+  } else if (user?.is_private) {
+    main = <Error>This account is private.</Error>;
+  } else {
+    main = (
+      <Grid user={user} displayList={displayList} handleSelect={handleSelect} />
+    );
+  }
+
+  let renderButton;
+  if (loadingMore) {
+    renderButton = (
+      <Spinner radius={64} color={'#ff0078'} stroke={6} visible={true} />
+    );
+  } else {
+    renderButton = <Button onClick={handleLoadMore}>Load more</Button>;
+  }
+
+  let render;
+  if (loading) {
+    render = (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          padding: '3rem 0',
+          marginTop: 54,
+        }}
+      >
+        <Spinner radius={64} color={'#ff0078'} stroke={6} visible={true} />
+      </div>
+    );
+  } else {
+    render = (
+      <Center>
+        {!error && <Profile user={user} />}
+        {main}
+        {pageInfo?.has_next_page && (
+          <ButtonContainer>{renderButton}</ButtonContainer>
+        )}
+        {show && (
+          <PictureModal
+            src={displayList[selected].src}
+            mediaCount={displayList.length}
+            selected={selected}
+            reset={reset}
+            setReset={setReset}
+            setSelected={setSelected}
+            setShow={setShow}
+          />
+        )}
+      </Center>
+    );
+  }
+
   return (
-    <Layout title={`${user?.full_name} | Fotogram`}>
+    <Layout
+      title={`${
+        user?.full_name ? user?.full_name + ' | Fotogram' : '' + 'Fotogram'
+      } `}
+    >
       <Navbar />
-      {!loading && (
-        <Center>
-          <Profile>
-            <div className="profile-pic-container">
-              <img
-                className="profile-pic"
-                src={user?.profile_pic_url}
-                alt={`${user?.full_name}'s profile picture`}
-              />
-              <span>5</span>
-            </div>
-            <div className="profile-right-side">
-              <a href={`https://www.instagram.com/${username}`} target="blank">
-                @{username}
-              </a>
-              <Share />
-            </div>
-          </Profile>
-          <GridContainer>
-            {displayList.map((picture) => (
-              <GridItem
-                key={picture.id}
-                onClick={() => handleSelect(picture.index)}
-              >
-                <StyledImage
-                  src={picture.src}
-                  alt={`${user?.full_name}'s photo`}
-                />
-              </GridItem>
-            ))}
-          </GridContainer>
-          {pageInfo?.has_next_page && (
-            <button onClick={handleLoadMore}>Load More</button>
-          )}
-          {show && (
-            <PictureModal
-              src={displayList[selected].src}
-              mediaCount={displayList.length}
-              selected={selected}
-              reset={reset}
-              setReset={setReset}
-              setSelected={setSelected}
-              setShow={setShow}
-            />
-          )}
-        </Center>
-      )}
+      {render}
     </Layout>
   );
 };

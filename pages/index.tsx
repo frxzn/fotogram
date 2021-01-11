@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import Layout from '../components/Layout';
 import LandingSearchBar from '../components/LandingSearchBar';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Title = styled.h1`
   font-size: 2em;

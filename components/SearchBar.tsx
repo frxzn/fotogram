@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
-import Spinner from 'react-bootstrap/Spinner';
+import Spinner from 'react-spinner-material';
 import { Users } from '../interfaces/index';
 import UserListItem from './UserListItem';
 import { useMediaQuery } from 'react-responsive';
@@ -21,13 +21,6 @@ const SearchContainer = styled.div`
   border-radius: 3px;
   display: flex;
   align-items: center;
-
-  .spinner-border {
-    color: #ff0078;
-    border-color: #ff0078;
-    border-right-color: #fafafa;
-    margin: 0 1rem;
-  }
 `;
 
 const Icon = styled.img`
@@ -121,6 +114,7 @@ const SearchBar: React.FC = () => {
   useEffect(() => {
     setInput('');
     setShow(false);
+    setClosed(false);
   }, [username]);
 
   // Effect to prevent scroll on mobile screen when search modal is open
@@ -232,7 +226,11 @@ const SearchBar: React.FC = () => {
 
   let renderSpinner;
   if (loading && input.length !== 0) {
-    renderSpinner = <Spinner animation="border" size="sm" />;
+    renderSpinner = (
+      <div style={{ margin: '0 1rem' }}>
+        <Spinner radius={16} color={'#ff0078'} stroke={2} visible={true} />
+      </div>
+    );
   }
 
   let renderClose;
