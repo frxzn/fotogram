@@ -67,4 +67,10 @@ export interface Story {
   image: string;
   is_video: boolean;
   timestamp: number;
+  video: string;
+}
+
+export interface FormattedStory {
+  url: string;
+  type: string;
 }

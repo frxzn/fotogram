@@ -11,6 +11,7 @@ import {
   PageInfo,
   Display,
   Story,
+  FormattedStory,
 } from '../../interfaces/index';
 import { bakeDisplayList, mediaUrl } from '../../utils';
 import Layout from '../../components/Layout';
@@ -69,7 +70,7 @@ const UserProfile: React.FC = () => {
   const [user, setUser] = useState<User>();
   const [pageInfo, setPageInfo] = useState<PageInfo>();
   const [displayList, setDisplayList] = useState<Display[]>([]);
-  const [stories, setStories] = useState<Story[]>([]);
+  const [stories, setStories] = useState<FormattedStory[]>([]);
 
   useEffect(() => {
     const userSource = axios.CancelToken.source();
@@ -156,7 +157,11 @@ const UserProfile: React.FC = () => {
               username: user.username,
             }
           );
-          setStories(res.data);
+          const formattedStories = res.data.map((story) => ({
+            url: story.is_video ? story.video : story.image,
+            type: story.is_video ? 'video' : 'image',
+          }));
+          setStories(formattedStories);
         };
         loadStories();
       }

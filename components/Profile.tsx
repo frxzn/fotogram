@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
-import { User, Story } from '../interfaces';
+// import Stories from 'react-insta-stories';
+import { User, FormattedStory } from '../interfaces';
 import Share from './Share';
 
 interface Props {
   user: User | undefined;
-  stories: Story[];
+  stories: FormattedStory[];
 }
 
 interface ContainerProps {
@@ -79,10 +81,37 @@ const Container = styled.div<ContainerProps>`
   }
 `;
 
+const StoryContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 300;
+  background-color: rgba(0, 0, 0, 0.9);
+  padding-bottom: 4rem;
+`;
+
+const Stories = dynamic(() => import('react-insta-stories'), { ssr: false });
+
 const Profile: React.FC<Props> = ({ user, stories }) => {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [show]);
+
   return (
     <Container hasStories={stories.length > 0}>
-      <div className="profile-pic-container">
+      <div className="profile-pic-container" onClick={() => setShow(true)}>
         <img
           className="profile-pic"
           src={user?.profile_pic_url}
@@ -96,6 +125,11 @@ const Profile: React.FC<Props> = ({ user, stories }) => {
         </a>
         <Share />
       </div>
+      {show && (
+        <StoryContainer onClick={() => setShow(false)}>
+          <Stories stories={stories} onAllStoriesEnd={() => setShow(false)} />
+        </StoryContainer>
+      )}
     </Container>
   );
 };
