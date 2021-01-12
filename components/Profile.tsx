@@ -34,6 +34,10 @@ const Container = styled.div<ContainerProps>`
     justify-content: center;
     margin-right: 1rem;
     position: relative;
+
+    :hover {
+      cursor: pointer;
+    }
   }
 
   span {
@@ -81,7 +85,7 @@ const Container = styled.div<ContainerProps>`
   }
 `;
 
-const StoryContainer = styled.div`
+const Modal = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -93,6 +97,31 @@ const StoryContainer = styled.div`
   z-index: 300;
   background-color: rgba(0, 0, 0, 0.9);
   padding-bottom: 4rem;
+`;
+
+const StoriesContainer = styled.div`
+  position: relative;
+`;
+
+const Close = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 1.2rem;
+  right: 0.4rem;
+  z-index: 1000;
+  height: 2rem;
+  width: 2rem;
+
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const Icon = styled.img`
+  height: 1.2rem;
+  width: 1.2rem;
 `;
 
 const Stories = dynamic(() => import('react-insta-stories'), { ssr: false });
@@ -109,9 +138,15 @@ const Profile: React.FC<Props> = ({ user, stories }) => {
     };
   }, [show]);
 
+  const handleClick = () => {
+    if (stories.length) {
+      setShow(true);
+    }
+  };
+
   return (
     <Container hasStories={stories.length > 0}>
-      <div className="profile-pic-container" onClick={() => setShow(true)}>
+      <div className="profile-pic-container" onClick={handleClick}>
         <img
           className="profile-pic"
           src={user?.profile_pic_url}
@@ -126,9 +161,18 @@ const Profile: React.FC<Props> = ({ user, stories }) => {
         <Share />
       </div>
       {show && (
-        <StoryContainer onClick={() => setShow(false)}>
-          <Stories stories={stories} onAllStoriesEnd={() => setShow(false)} />
-        </StoryContainer>
+        <Modal>
+          <StoriesContainer>
+            <Stories
+              stories={stories}
+              onAllStoriesEnd={() => setShow(false)}
+              keyboardNavigation={true}
+            />
+            <Close onClick={() => setShow(false)}>
+              <Icon src="/icons/cancel.svg" alt="close icon" />
+            </Close>
+          </StoriesContainer>
+        </Modal>
       )}
     </Container>
   );
