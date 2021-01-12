@@ -1,13 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
-import { User } from '../interfaces';
+import { User, Story } from '../interfaces';
 import Share from './Share';
 
 interface Props {
   user: User | undefined;
+  stories: Story[];
 }
 
-const Container = styled.div`
+interface ContainerProps {
+  hasStories: boolean;
+}
+
+const Container = styled.div<ContainerProps>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,7 +20,10 @@ const Container = styled.div`
 
   .profile-pic-container {
     border-radius: 50%;
-    background: radial-gradient(ellipse at 30% 70%, #ffa546 15%, #c42286 100%);
+    background: ${(props) =>
+      props.hasStories
+        ? 'radial-gradient(ellipse at 30% 70%, #ffa546 15%, #c42286 100%)'
+        : ''};
     padding: 3px;
     width: 70px;
     height: 70px;
@@ -71,16 +79,16 @@ const Container = styled.div`
   }
 `;
 
-const Profile: React.FC<Props> = ({ user }) => {
+const Profile: React.FC<Props> = ({ user, stories }) => {
   return (
-    <Container>
+    <Container hasStories={stories.length > 0}>
       <div className="profile-pic-container">
         <img
           className="profile-pic"
           src={user?.profile_pic_url}
           alt="instagram profile picture"
         />
-        <span>5</span>
+        {stories.length > 0 && <span>{stories.length}</span>}
       </div>
       <div className="profile-right-side">
         <a href={`https://www.instagram.com/${user?.username}`} target="blank">

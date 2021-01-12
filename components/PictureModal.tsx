@@ -6,9 +6,7 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 interface Props {
   src: string;
   mediaCount: number;
-  reset: boolean;
   selected: number;
-  setReset: React.Dispatch<React.SetStateAction<boolean>>;
   setSelected: React.Dispatch<React.SetStateAction<number>>;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -86,31 +84,18 @@ const intercept = 0.9;
 const PictureModal: React.FC<Props> = ({
   src,
   mediaCount,
-  reset,
   selected,
   setSelected,
-  setReset,
   setShow,
 }) => {
   const [zoom, setZoom] = useState(false);
   const [timer, setTimer] = useState(0);
   const [transparency, setTransparency] = useState(intercept);
+  const [reset, setReset] = useState(false);
   const [resetingPan, setResetingPan] = useState(false);
 
   const container = useRef<HTMLDivElement>(null);
   const imageContainer = useRef<HTMLDivElement>(null);
-
-  // useEffect(() => {
-  //   const init = async () => {
-  //     const res = await axios.post('https://insta-stories.ru/api/stories', {
-  //       xtrip: 'afsdfi3k4fdsd5gg',
-  //       id: '2017771114',
-  //       username: 'vismaramartina',
-  //     });
-  //     console.log(res);
-  //   };
-  //   init();
-  // }, []);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -210,12 +195,14 @@ const PictureModal: React.FC<Props> = ({
       <CloseIcon onClick={() => setShow(false)}>
         <Icon src="/icons/cancel.svg" alt="close icon" />
       </CloseIcon>
-      <IconContainer
-        onClick={() => handleArrowChange('left')}
-        style={{ left: 0 }}
-      >
-        <Icon src="/icons/prev.svg" alt="prev icon" />
-      </IconContainer>
+      {selected > 0 && (
+        <IconContainer
+          onClick={() => handleArrowChange('left')}
+          style={{ left: 0 }}
+        >
+          <Icon src="/icons/prev.svg" alt="prev icon" />
+        </IconContainer>
+      )}
       <ImageContainer ref={imageContainer}>
         <TransformWrapper
           scale={reset ? undefined : 1}
@@ -232,12 +219,14 @@ const PictureModal: React.FC<Props> = ({
           </TransformComponent>
         </TransformWrapper>
       </ImageContainer>
-      <IconContainer
-        onClick={() => handleArrowChange('right')}
-        style={{ right: 0 }}
-      >
-        <Icon src="/icons/next.svg" alt="next icon" />
-      </IconContainer>
+      {selected + 1 < mediaCount && (
+        <IconContainer
+          onClick={() => handleArrowChange('right')}
+          style={{ right: 0 }}
+        >
+          <Icon src="/icons/next.svg" alt="next icon" />
+        </IconContainer>
+      )}
     </Container>
   );
 };

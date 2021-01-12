@@ -10,6 +10,7 @@ import {
   MediaResponse,
   PageInfo,
   Display,
+  Story,
 } from '../../interfaces/index';
 import { bakeDisplayList, mediaUrl } from '../../utils';
 import Layout from '../../components/Layout';
@@ -63,12 +64,12 @@ const UserProfile: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [show, setShow] = useState(false);
   const [selected, setSelected] = useState(0);
-  const [displayList, setDisplayList] = useState<Display[]>([]);
-  const [pageInfo, setPageInfo] = useState<PageInfo>();
+  const [show, setShow] = useState(false);
   const [user, setUser] = useState<User>();
-  const [reset, setReset] = useState(false);
+  const [pageInfo, setPageInfo] = useState<PageInfo>();
+  const [displayList, setDisplayList] = useState<Display[]>([]);
+  const [stories, setStories] = useState<Story[]>([]);
 
   useEffect(() => {
     const userSource = axios.CancelToken.source();
@@ -83,11 +84,9 @@ const UserProfile: React.FC = () => {
             cancelToken: userSource.token,
           }
         );
-        console.log(userRes.data);
         const currentUser = userRes.data.users.find(
           (users: Users) => users.user.username === username
         );
-        console.log(currentUser);
         if (currentUser) {
           setUser(currentUser.user);
           if (!currentUser.user.is_private) {
@@ -142,6 +141,27 @@ const UserProfile: React.FC = () => {
       mediaSource.cancel();
     };
   }, [username]);
+
+  // Load stories from russian api
+  useEffect(() => {
+    setStories([]);
+    if (user) {
+      if (!user.is_private) {
+        const loadStories = async () => {
+          const res = await axios.post<Story[]>(
+            'https://insta-stories.ru/api/stories',
+            {
+              xtrip: 'afsdfi3k4fdsd5gg',
+              id: user.pk,
+              username: user.username,
+            }
+          );
+          setStories(res.data);
+        };
+        loadStories();
+      }
+    }
+  }, [user]);
 
   const handleSelect = (index: number) => {
     setSelected(index);
@@ -209,7 +229,7 @@ const UserProfile: React.FC = () => {
   } else {
     render = (
       <Center>
-        {!error && <Profile user={user} />}
+        {!error && <Profile user={user} stories={stories} />}
         {main}
         {pageInfo?.has_next_page && (
           <ButtonContainer>{renderButton}</ButtonContainer>
@@ -219,8 +239,6 @@ const UserProfile: React.FC = () => {
             src={displayList[selected].src}
             mediaCount={displayList.length}
             selected={selected}
-            reset={reset}
-            setReset={setReset}
             setSelected={setSelected}
             setShow={setShow}
           />

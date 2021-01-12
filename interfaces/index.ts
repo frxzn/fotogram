@@ -61,3 +61,10 @@ export interface MediaResponse {
     };
   };
 }
+
+export interface Story {
+  id: string;
+  image: string;
+  is_video: boolean;
+  timestamp: number;
+}
