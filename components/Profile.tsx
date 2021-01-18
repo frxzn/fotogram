@@ -57,13 +57,19 @@ const Container = styled.div<ContainerProps>`
   .profile-pic {
     border-radius: 50%;
     border: 3px solid #fafafa;
-    width: 66px;
-    height: 66px;
+    width: 80px;
+    height: 80px;
+
+    @media (max-width: 735px) {
+      width: 66px;
+      height: 66px;
+    }
   }
 
   .profile-right-side {
     display: flex;
     align-items: center;
+    font-size: 1.2rem;
 
     @media (max-width: 735px) {
       flex-direction: column;
@@ -152,7 +158,7 @@ const Profile: React.FC<Props> = ({ user, stories }) => {
       </div>
       <div className="profile-right-side">
         <a href={`https://www.instagram.com/${user?.username}`} target="blank">
-          @{user?.username}
+          {user?.username}
         </a>
         <Share />
       </div>
