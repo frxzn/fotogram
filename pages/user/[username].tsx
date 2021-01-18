@@ -10,8 +10,8 @@ import {
   MediaResponse,
   PageInfo,
   Display,
-  Story,
-  FormattedStory,
+  // Story,
+  // FormattedStory,
 } from '../../interfaces/index';
 import { bakeDisplayList, mediaUrl } from '../../utils';
 import Layout from '../../components/Layout';
@@ -70,7 +70,7 @@ const UserProfile: React.FC = () => {
   const [user, setUser] = useState<User>();
   const [pageInfo, setPageInfo] = useState<PageInfo>();
   const [displayList, setDisplayList] = useState<Display[]>([]);
-  const [stories, setStories] = useState<FormattedStory[]>([]);
+  // const [stories, setStories] = useState<FormattedStory[]>([]);
 
   useEffect(() => {
     const userSource = axios.CancelToken.source();
@@ -85,9 +85,11 @@ const UserProfile: React.FC = () => {
             cancelToken: userSource.token,
           }
         );
+
         const currentUser = userRes.data.users.find(
           (users: Users) => users.user.username === username
         );
+
         if (currentUser) {
           setUser(currentUser.user);
           if (!currentUser.user.is_private) {
@@ -115,18 +117,19 @@ const UserProfile: React.FC = () => {
         } else {
           throw '404';
         }
+
         if (error) {
           setError('');
         }
-      } catch (e) {
-        console.log(e);
+      } catch (err) {
+        if (axios.isCancel(err)) return;
         if (pageInfo) {
           setPageInfo(undefined);
         }
         if (displayList) {
           setDisplayList([]);
         }
-        if (e === '404') {
+        if (err === '404') {
           setError('User not found.');
         } else {
           setError('Something went wrong, try again later.');
@@ -134,9 +137,11 @@ const UserProfile: React.FC = () => {
       }
       setLoading(false);
     };
+
     if (username) {
       init();
     }
+
     return () => {
       userSource.cancel();
       mediaSource.cancel();
@@ -144,29 +149,40 @@ const UserProfile: React.FC = () => {
   }, [username]);
 
   // Load stories from russian api
-  useEffect(() => {
-    setStories([]);
-    if (user) {
-      if (!user.is_private) {
-        const loadStories = async () => {
-          const res = await axios.post<Story[]>(
-            'https://insta-stories.ru/api/stories',
-            {
-              xtrip: 'afsdfi3k4fdsd5gg',
-              id: user.pk,
-              username: user.username,
-            }
-          );
-          const formattedStories = res.data.map((story) => ({
-            url: story.is_video ? story.video : story.image,
-            type: story.is_video ? 'video' : 'image',
-          }));
-          setStories(formattedStories);
-        };
-        loadStories();
-      }
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   setStories([]);
+  //   const source = axios.CancelToken.source();
+
+  //   if (user) {
+  //     if (!user.is_private) {
+  //       const loadStories = async () => {
+  //         try {
+  //           const res = await axios.post<Story[]>(
+  //             'https://insta-stories.ru/api/stories',
+  //             {
+  //               xtrip: 'afsdfi3k4fdsd5gg',
+  //               id: user.pk,
+  //               username: user.username,
+  //             },
+  //             {
+  //               cancelToken: source.token,
+  //             }
+  //           );
+
+  //           const formattedStories = res.data.map((story) => ({
+  //             url: story.is_video ? story.video : story.image,
+  //             type: story.is_video ? 'video' : 'image',
+  //           }));
+  //           setStories(formattedStories);
+  //         } catch (err) {
+  //           if (axios.isCancel(err)) return;
+  //         }
+  //       };
+  //       loadStories();
+  //     }
+  //   }
+  //   return () => source.cancel();
+  // }, [user]);
 
   const handleSelect = (index: number) => {
     setSelected(index);
@@ -234,7 +250,7 @@ const UserProfile: React.FC = () => {
   } else {
     render = (
       <Center>
-        {!error && <Profile user={user} stories={stories} />}
+        {!error && <Profile user={user} stories={[]} />}
         {main}
         {pageInfo?.has_next_page && (
           <ButtonContainer>{renderButton}</ButtonContainer>

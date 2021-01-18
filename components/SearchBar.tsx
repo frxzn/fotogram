@@ -159,8 +159,8 @@ const SearchBar: React.FC = () => {
         } else {
           setSearchList([]);
         }
-      } catch (error) {
-        if (axios.isCancel(error)) return;
+      } catch (err) {
+        if (axios.isCancel(err)) return;
       }
     };
 

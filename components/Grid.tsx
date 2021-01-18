@@ -51,26 +51,15 @@ const StyledImage = styled.img`
 `;
 
 const Grid: React.FC<Props> = ({ user, displayList, handleSelect }) => {
-  let render;
-
-  if (displayList) {
-    render = (
-      <GridContainer>
-        {displayList.map((picture) => (
-          <GridItem
-            key={picture.id}
-            onClick={() => handleSelect(picture.index)}
-          >
-            <StyledImage src={picture.src} alt={`${user?.full_name}'s photo`} />
-          </GridItem>
-        ))}
-      </GridContainer>
-    );
-  } else {
-    render = <div>Skeleton</div>;
-  }
-
-  return render;
+  return (
+    <GridContainer>
+      {displayList.map((picture) => (
+        <GridItem key={picture.id} onClick={() => handleSelect(picture.index)}>
+          <StyledImage src={picture.src} alt={`${user?.full_name}'s photo`} />
+        </GridItem>
+      ))}
+    </GridContainer>
+  );
 };
 
 export default Grid;

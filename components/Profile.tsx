@@ -34,10 +34,6 @@ const Container = styled.div<ContainerProps>`
     justify-content: center;
     margin-right: 1rem;
     position: relative;
-
-    :hover {
-      cursor: pointer;
-    }
   }
 
   span {
