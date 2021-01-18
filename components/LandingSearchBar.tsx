@@ -114,6 +114,7 @@ const SearchBar: React.FC = () => {
   // Effect to fetch IG's search API
   useEffect(() => {
     const source = axios.CancelToken.source();
+
     const search = async () => {
       try {
         if (input.length) {
@@ -133,12 +134,20 @@ const SearchBar: React.FC = () => {
         } else {
           setSearchList([]);
         }
-      } catch (error) {
-        if (axios.isCancel(error)) return;
+      } catch (err) {
+        if (axios.isCancel(err)) return;
       }
     };
-    search();
-    return () => source.cancel();
+
+    // 500ms sweetspot for not triggering another request on key holding
+    const timer = setTimeout(() => {
+      search();
+    }, 500);
+
+    return () => {
+      source.cancel();
+      clearTimeout(timer);
+    };
   }, [input]);
 
   // Effect to open/close search modal
