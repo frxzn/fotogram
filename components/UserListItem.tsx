@@ -33,7 +33,7 @@ const UserInfo = styled.div`
 
 const UserListItem: React.FC<Props> = ({ name, username, profilePicUrl }) => {
   return (
-    <Link href={`/user/${username}`}>
+    <Link href={`/${username}`}>
       <a className={classes.anchor}>
         <ProfilePic src={profilePicUrl} />
         <UserInfo>

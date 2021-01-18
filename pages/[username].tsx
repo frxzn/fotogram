@@ -12,13 +12,13 @@ import {
   Display,
   // Story,
   // FormattedStory,
-} from '../../interfaces/index';
-import { bakeDisplayList, mediaUrl } from '../../utils';
-import Layout from '../../components/Layout';
-import Navbar from '../../components/Navbar';
-import PictureModal from '../../components/PictureModal';
-import Profile from '../../components/Profile';
-import Grid from '../../components/Grid';
+} from '../interfaces/index';
+import { bakeDisplayList, mediaUrl } from '../utils';
+import Layout from '../components/Layout';
+import Navbar from '../components/Navbar';
+import PictureModal from '../components/PictureModal';
+import Profile from '../components/Profile';
+import Grid from '../components/Grid';
 
 const Center = styled.div`
   max-width: ${(props) => props.theme.dimensions.maxWidth}px;

@@ -209,7 +209,7 @@ const SearchBar: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (input.length && searchList.length && !loading) {
-      router.push(`/user/${searchList[0].user.username}`);
+      router.push(`/${searchList[0].user.username}`);
     }
   };
 
