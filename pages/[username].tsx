@@ -18,7 +18,7 @@ import Layout from '../components/Layout';
 import Navbar from '../components/Navbar';
 import PictureModal from '../components/PictureModal';
 import Profile from '../components/Profile';
-import Grid from '../components/Grid';
+import DisplayGrid from '../components/DisplayGrid';
 
 const Center = styled.div`
   max-width: ${(props) => props.theme.dimensions.maxWidth}px;
@@ -220,7 +220,11 @@ const UserProfile: React.FC = () => {
     main = <Error>This account is private.</Error>;
   } else {
     main = (
-      <Grid user={user} displayList={displayList} handleSelect={handleSelect} />
+      <DisplayGrid
+        user={user}
+        displayList={displayList}
+        handleSelect={handleSelect}
+      />
     );
   }
 
