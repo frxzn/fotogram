@@ -68,9 +68,14 @@ const Icon = styled.img`
 
 const CloseIcon = styled.div`
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  z-index: 100;
+  top: 0;
+  right: 0;
+  z-index: 150;
+  padding: 1.5rem;
+
+  :hover {
+    cursor: pointer;
+  }
 
   img {
     height: 1.5rem;
