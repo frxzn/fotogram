@@ -23,7 +23,7 @@ const Container = styled.div`
   z-index: 300;
 `;
 
-const ImageContainer = styled.div`
+const ImageContainer = styled.div<{ zoom: boolean }>`
   display: flex;
   align-items: center;
   margin: 0 auto;
@@ -31,10 +31,10 @@ const ImageContainer = styled.div`
   div.react-transform-component,
   div.react-transform-element {
     height: 100%;
-    cursor: grab;
+    cursor: ${(props) => (props.zoom ? 'grab' : '')};
 
     :active {
-      cursor: grabbing;
+      cursor: ${(props) => (props.zoom ? 'grabbing' : '')};
     }
   }
 `;
@@ -208,7 +208,7 @@ const PictureModal: React.FC<Props> = ({
           <Icon src="/icons/prev.svg" alt="prev icon" />
         </IconContainer>
       )}
-      <ImageContainer ref={imageContainer}>
+      <ImageContainer ref={imageContainer} zoom={zoom}>
         <TransformWrapper
           scale={reset ? undefined : 1}
           positionX={reset ? undefined : 0}
