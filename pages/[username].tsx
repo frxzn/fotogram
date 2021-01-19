@@ -9,16 +9,17 @@ import {
   UserResponse,
   MediaResponse,
   PageInfo,
-  Display,
+  Image,
+  Video,
   // Story,
   // FormattedStory,
 } from '../interfaces/index';
-import { bakeDisplayList, mediaUrl } from '../utils';
+import { bakeImageList, bakeVideoList, mediaUrl } from '../utils';
 import Layout from '../components/Layout';
 import Navbar from '../components/Navbar';
-import PictureModal from '../components/PictureModal';
 import Profile from '../components/Profile';
-import DisplayGrid from '../components/DisplayGrid';
+import DisplayGrid from '../components/Grid/DisplayGrid';
+import DisplayModal from '../components/Modal/DisplayModal';
 
 const Center = styled.div`
   max-width: ${(props) => props.theme.dimensions.maxWidth}px;
@@ -65,11 +66,13 @@ const UserProfile: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [selected, setSelected] = useState(0);
+  const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
+  const [selectedTab, setSelectedTab] = useState('images');
   const [show, setShow] = useState(false);
   const [user, setUser] = useState<User>();
   const [pageInfo, setPageInfo] = useState<PageInfo>();
-  const [displayList, setDisplayList] = useState<Display[]>([]);
+  const [imageList, setImageList] = useState<Image[]>([]);
+  const [videoList, setVideoList] = useState<Video[]>([]);
   // const [stories, setStories] = useState<FormattedStory[]>([]);
 
   useEffect(() => {
@@ -78,6 +81,7 @@ const UserProfile: React.FC = () => {
 
     const init = async () => {
       setLoading(true);
+      setSelectedTab('images');
       try {
         const userRes = await axios.get<UserResponse>(
           `https://www.instagram.com/web/search/topsearch/?query=${username}`,
@@ -99,19 +103,27 @@ const UserProfile: React.FC = () => {
                 cancelToken: mediaSource.token,
               }
             );
-            const display = bakeDisplayList(
+
+            const images = bakeImageList(
+              mediaRes.data.data.user.edge_owner_to_timeline_media.edges
+            );
+            const videos = bakeVideoList(
               mediaRes.data.data.user.edge_owner_to_timeline_media.edges
             );
             setPageInfo(
               mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
             );
-            setDisplayList(display);
+            setImageList(images);
+            setVideoList(videos);
           } else {
             if (pageInfo) {
               setPageInfo(undefined);
             }
-            if (displayList) {
-              setDisplayList([]);
+            if (imageList) {
+              setImageList([]);
+            }
+            if (videoList) {
+              setVideoList([]);
             }
           }
         } else {
@@ -126,8 +138,11 @@ const UserProfile: React.FC = () => {
         if (pageInfo) {
           setPageInfo(undefined);
         }
-        if (displayList) {
-          setDisplayList([]);
+        if (imageList) {
+          setImageList([]);
+        }
+        if (videoList) {
+          setVideoList([]);
         }
         if (err === '404') {
           setError('User not found.');
@@ -185,7 +200,7 @@ const UserProfile: React.FC = () => {
   // }, [user]);
 
   const handleSelect = (index: number) => {
-    setSelected(index);
+    setSelectedMediaIndex(index);
     setShow(true);
   };
 
@@ -197,14 +212,19 @@ const UserProfile: React.FC = () => {
           const mediaRes = await axios.get<MediaResponse>(
             mediaUrl(user.pk, pageInfo.end_cursor)
           );
-          const display = bakeDisplayList(
+          const images = bakeImageList(
             mediaRes.data.data.user.edge_owner_to_timeline_media.edges,
-            displayList.length
+            imageList.length
+          );
+          const videos = bakeVideoList(
+            mediaRes.data.data.user.edge_owner_to_timeline_media.edges,
+            videoList.length
           );
           setPageInfo(
             mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
           );
-          setDisplayList((prev) => [...prev, ...display]);
+          setImageList((prev) => [...prev, ...images]);
+          setVideoList((prev) => [...prev, ...videos]);
         } catch (err) {
           console.log(err);
         }
@@ -222,7 +242,10 @@ const UserProfile: React.FC = () => {
     main = (
       <DisplayGrid
         user={user}
-        displayList={displayList}
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
+        imageList={imageList}
+        videoList={videoList}
         handleSelect={handleSelect}
       />
     );
@@ -260,11 +283,12 @@ const UserProfile: React.FC = () => {
           <ButtonContainer>{renderButton}</ButtonContainer>
         )}
         {show && (
-          <PictureModal
-            src={displayList[selected].src}
-            mediaCount={displayList.length}
-            selected={selected}
-            setSelected={setSelected}
+          <DisplayModal
+            imageList={imageList}
+            videoList={videoList}
+            selectedTab={selectedTab}
+            selectedMediaIndex={selectedMediaIndex}
+            setSelectedMediaIndex={setSelectedMediaIndex}
             setShow={setShow}
           />
         )}

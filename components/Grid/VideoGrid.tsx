@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { User, Display } from '../interfaces';
+import { User, Video } from '../../interfaces';
 
 interface Props {
   user: User | undefined;
-  displayList: Display[];
+  videoList: Video[];
   handleSelect: (index: number) => void;
 }
 
@@ -50,16 +50,16 @@ const StyledImage = styled.img`
   }
 `;
 
-const Grid: React.FC<Props> = ({ user, displayList, handleSelect }) => {
+const VideoGrid: React.FC<Props> = ({ user, videoList, handleSelect }) => {
   return (
     <GridContainer>
-      {displayList.map((picture) => (
-        <GridItem key={picture.id} onClick={() => handleSelect(picture.index)}>
-          <StyledImage src={picture.src} alt={`${user?.full_name}'s photo`} />
+      {videoList.map((video) => (
+        <GridItem key={video.id} onClick={() => handleSelect(video.index)}>
+          <StyledImage src={video.preview} alt={`${user?.full_name}'s video`} />
         </GridItem>
       ))}
     </GridContainer>
   );
 };
 
-export default Grid;
+export default VideoGrid;

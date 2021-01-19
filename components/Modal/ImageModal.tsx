@@ -86,7 +86,7 @@ const CloseIcon = styled.div`
 const amplitude = 2;
 const intercept = 0.9;
 
-const PictureModal: React.FC<Props> = ({
+const ImageModal: React.FC<Props> = ({
   src,
   mediaCount,
   selected,
@@ -236,4 +236,4 @@ const PictureModal: React.FC<Props> = ({
   );
 };
 
-export default PictureModal;
+export default ImageModal;

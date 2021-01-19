@@ -95,19 +95,25 @@ const Checkbox = styled.div`
 `;
 
 const SearchBar: React.FC = () => {
+  const router = useRouter();
+
   const [input, setInput] = useState('');
   const [show, setShow] = useState(false);
   const [closed, setClosed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState(false);
   const [searchList, setSearchList] = useState<Users[]>([]);
+
   const node = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Effect to close modal on outsides click
   useEffect(() => {
-    document.addEventListener('mousedown', handleClick);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
 
+    document.addEventListener('mousedown', handleClick);
     return () => {
       document.removeEventListener('mousedown', handleClick);
     };
@@ -251,6 +257,7 @@ const SearchBar: React.FC = () => {
               onChange={handleChange}
               onFocus={handleFocus}
               placeholder="Search"
+              ref={inputRef}
             />
             {renderSpinner}
             {renderClose}

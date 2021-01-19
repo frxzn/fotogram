@@ -1,7 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface Props {}
+interface Props {
+  selectedTab: string;
+  setSelectedTab: React.Dispatch<React.SetStateAction<string>>;
+}
 
 const TabContainer = styled.div`
   display: flex;
@@ -34,13 +37,20 @@ const Tab = styled.div`
   }
 `;
 
-const TabNavigation: React.FC<Props> = () => {
-  return (
-    <TabContainer>
-      <Tab className="active">Images</Tab>
-      <Tab>Videos</Tab>
-    </TabContainer>
-  );
+const TabNavigation: React.FC<Props> = (props) => {
+  const render = ['Images', 'Videos'].map((item) => {
+    return (
+      <Tab
+        className={props.selectedTab === item.toLowerCase() ? 'active' : ''}
+        key={item}
+        onClick={() => props.setSelectedTab(item.toLowerCase())}
+      >
+        {item}
+      </Tab>
+    );
+  });
+
+  return <TabContainer>{render}</TabContainer>;
 };
 
 export default TabNavigation;

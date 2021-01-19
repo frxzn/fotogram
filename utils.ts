@@ -1,7 +1,7 @@
 import { Media } from './interfaces/index';
 
 // Filter out videos, map item, flatten nested array, map to add index
-export const bakeDisplayList = (arr: Media[], mediaCount = 0) => {
+export const bakeImageList = (arr: Media[], mediaCount = 0) => {
   const display = arr
     .filter((item) => !item.node.is_video)
     .map((item) => {
@@ -32,6 +32,23 @@ export const bakeDisplayList = (arr: Media[], mediaCount = 0) => {
       ...item,
       index: index + mediaCount,
     }));
+  return display;
+};
+
+export const bakeVideoList = (arr: Media[], mediaCount = 0) => {
+  const display = arr
+    .filter((item) => item.node.is_video)
+    .map((item, index) => {
+      return {
+        id: item.node.id,
+        videoUrl: item.node.video_url,
+        preview:
+          item.node.display_resources[item.node.display_resources.length - 1]
+            .src,
+        selected: false,
+        index: index + mediaCount,
+      };
+    });
   return display;
 };
 

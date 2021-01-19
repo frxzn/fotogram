@@ -20,16 +20,24 @@ export interface UserResponse {
   users: Users[];
 }
 
-export interface Display {
+export interface Image {
   id: string;
   src: string;
   selected: boolean;
   index: number;
 }
 
+export interface Video {
+  id: string;
+  videoUrl: string;
+  preview: string;
+  selected: boolean;
+  index: number;
+}
+
 interface SidecarItem {
   node: {
-    display_resources: Display[];
+    display_resources: Image[];
     is_video: boolean;
     id: string;
   };
@@ -37,9 +45,10 @@ interface SidecarItem {
 
 export interface Media {
   node: {
-    display_resources: Display[];
+    display_resources: Image[];
     is_video: boolean;
     id: string;
+    video_url: string;
     edge_sidecar_to_children: {
       edges: SidecarItem[];
     };
