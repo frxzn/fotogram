@@ -8,14 +8,16 @@ const Title = styled.h1`
   text-align: center;
   color: ${(props) => props.theme.colors.primaryText};
   margin: 4rem 0;
+
+  @media (max-width: 735px) {
+    font-size: 1.6rem;
+    margin: 2rem 0;
+  }
 `;
 
 const Container = styled.div`
   height: 200vh;
-
-  @media (max-width: 735px) {
-    margin: 1rem;
-  }
+  margin: 1rem;
 `;
 
 const IndexPage = () => (
