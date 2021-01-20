@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
+import { useMediaQuery } from 'react-responsive';
 import Spinner from 'react-spinner-material';
 import { Users } from '../interfaces/index';
 import UserListItem from './UserListItem';
@@ -18,6 +19,7 @@ const SearchContainer = styled.div`
   border-radius: 3px;
   display: flex;
   align-items: center;
+  margin: 1rem 0;
 `;
 
 const Icon = styled.img`
@@ -67,18 +69,26 @@ const SearchButton = styled.button`
   :focus {
     background-color: #c8005e;
   }
+
+  @media (max-width: 735px) {
+    display: none;
+  }
 `;
 
 const UserList = styled.div`
   border: 1px solid ${(props) => props.theme.colors.borderColor};
   border-radius: 3px;
   background-color: #fff;
-  width: 100%;
-  max-width: ${(props) => props.theme.dimensions.maxWidth}px;
-  margin-top: 1rem;
   max-height: 260px;
   overflow-y: auto;
   padding: 0;
+  width: calc(100% - 40px);
+  margin: auto;
+
+  @media (max-width: 735px) {
+    max-height: 60vh;
+    width: 100%;
+  }
 `;
 
 const Checkbox = styled.div`
@@ -96,6 +106,7 @@ const Checkbox = styled.div`
 
 const SearchBar: React.FC = () => {
   const router = useRouter();
+  const isMobile = useMediaQuery({ query: `(max-width: 735px)` });
 
   const [input, setInput] = useState('');
   const [show, setShow] = useState(false);
@@ -109,7 +120,7 @@ const SearchBar: React.FC = () => {
 
   // Effect to close modal on outsides click
   useEffect(() => {
-    if (inputRef.current) {
+    if (inputRef.current && !isMobile) {
       inputRef.current.focus();
     }
 
@@ -118,6 +129,15 @@ const SearchBar: React.FC = () => {
       document.removeEventListener('mousedown', handleClick);
     };
   }, []);
+
+  useEffect(() => {
+    if (show && isMobile) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }
+  }, [show, isMobile]);
 
   // Effect to fetch IG's search API
   useEffect(() => {
@@ -170,10 +190,16 @@ const SearchBar: React.FC = () => {
   }, [input, show, searchList, closed]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isMobile) {
+      node.current?.scrollIntoView();
+    }
     setInput(e.target.value);
   };
 
   const handleFocus = () => {
+    if (isMobile) {
+      node.current?.scrollIntoView();
+    }
     setClosed(false);
   };
 
@@ -235,7 +261,10 @@ const SearchBar: React.FC = () => {
 
   return (
     <Center>
-      <div ref={node} style={{ width: '100%', maxWidth: '935px' }}>
+      <div
+        ref={node}
+        style={{ width: '100%', maxWidth: '935px', paddingTop: '1rem' }}
+      >
         <Checkbox>
           <input
             type="checkbox"

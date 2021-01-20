@@ -10,10 +10,20 @@ const Title = styled.h1`
   margin: 4rem 0;
 `;
 
+const Container = styled.div`
+  height: 200vh;
+
+  @media (max-width: 735px) {
+    margin: 1rem;
+  }
+`;
+
 const IndexPage = () => (
   <Layout title="Fotogram.app">
-    <Title>View, zoom & download HD Instagram pictures</Title>
-    <LandingSearchBar />
+    <Container>
+      <Title>View, zoom & download HD Instagram pictures</Title>
+      <LandingSearchBar />
+    </Container>
   </Layout>
 );
 
