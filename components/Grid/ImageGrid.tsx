@@ -72,7 +72,7 @@ const ImageGrid: React.FC<Props & LazyComponentProps> = ({
       {imageList.map((image) => (
         <GridItem key={image.id} onClick={() => handleSelect(image.index)}>
           <StyledImage
-            src={image.src}
+            src={image.src.low}
             placeholder={<Placeholder />}
             alt={`${user?.full_name}'s photo`}
             scrollPosition={scrollPosition}

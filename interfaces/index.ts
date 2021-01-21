@@ -20,9 +20,14 @@ export interface UserResponse {
   users: Users[];
 }
 
+interface Src {
+  low: string;
+  high: string;
+}
+
 export interface Image {
   id: string;
-  src: string;
+  src: Src;
   selected: boolean;
   index: number;
 }

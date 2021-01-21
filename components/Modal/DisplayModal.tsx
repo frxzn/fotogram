@@ -17,7 +17,7 @@ const DisplayModal: React.FC<Props> = (props) => {
   if (props.selectedTab === 'images') {
     render = (
       <ImageModal
-        src={props.imageList[props.selectedMediaIndex].src}
+        src={props.imageList[props.selectedMediaIndex].src.high}
         mediaCount={props.imageList.length}
         selected={props.selectedMediaIndex}
         setSelected={props.setSelectedMediaIndex}
