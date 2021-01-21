@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import classes from '../styles/anchor.module.css';
 
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
   profilePicUrl: string;
 }
 
-const ProfilePic = styled.img`
+const ProfilePic = styled(LazyLoadImage)`
   height: 32px;
   width: 32px;
   border-radius: 50%;
@@ -35,7 +36,7 @@ const UserListItem: React.FC<Props> = ({ name, username, profilePicUrl }) => {
   return (
     <Link href={`/${username}`}>
       <a className={classes.anchor}>
-        <ProfilePic src={profilePicUrl} />
+        <ProfilePic src={profilePicUrl} alt={`${name}'s profile picture`} />
         <UserInfo>
           <div className="name">{name}</div>
           <div className="username">{username}</div>

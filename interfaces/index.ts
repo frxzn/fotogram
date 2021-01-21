@@ -32,6 +32,13 @@ export interface Image {
   index: number;
 }
 
+export interface ResponseImage {
+  id: string;
+  src: string;
+  selected: boolean;
+  index: number;
+}
+
 export interface Video {
   id: string;
   videoUrl: string;
@@ -42,7 +49,7 @@ export interface Video {
 
 interface SidecarItem {
   node: {
-    display_resources: Image[];
+    display_resources: ResponseImage[];
     is_video: boolean;
     id: string;
   };
@@ -50,7 +57,7 @@ interface SidecarItem {
 
 export interface Media {
   node: {
-    display_resources: Image[];
+    display_resources: ResponseImage[];
     is_video: boolean;
     id: string;
     video_url: string;
