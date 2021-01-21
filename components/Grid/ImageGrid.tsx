@@ -1,5 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import {
+  LazyLoadImage,
+  trackWindowScroll,
+  LazyComponentProps,
+} from 'react-lazy-load-image-component';
 import { User, Image } from '../../interfaces';
 
 interface Props {
@@ -39,7 +44,7 @@ const GridItem = styled.div`
   }
 `;
 
-const StyledImage = styled.img`
+const StyledImage = styled(LazyLoadImage)`
   width: 100%;
   height: 100%;
   position: absolute;
@@ -50,16 +55,32 @@ const StyledImage = styled.img`
   }
 `;
 
-const ImageGrid: React.FC<Props> = ({ user, imageList, handleSelect }) => {
+const Placeholder = styled.div`
+  background-color: #e4e4e4;
+  width: 100%;
+  height: 100%;
+`;
+
+const ImageGrid: React.FC<Props & LazyComponentProps> = ({
+  user,
+  imageList,
+  handleSelect,
+  scrollPosition,
+}) => {
   return (
     <GridContainer>
       {imageList.map((image) => (
         <GridItem key={image.id} onClick={() => handleSelect(image.index)}>
-          <StyledImage src={image.src} alt={`${user?.full_name}'s photo`} />
+          <StyledImage
+            src={image.src}
+            placeholder={<Placeholder />}
+            alt={`${user?.full_name}'s photo`}
+            scrollPosition={scrollPosition}
+          />
         </GridItem>
       ))}
     </GridContainer>
   );
 };
 
-export default ImageGrid;
+export default trackWindowScroll(ImageGrid);

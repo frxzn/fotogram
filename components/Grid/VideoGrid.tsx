@@ -1,5 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import {
+  LazyLoadImage,
+  trackWindowScroll,
+  LazyComponentProps,
+} from 'react-lazy-load-image-component';
 import { User, Video } from '../../interfaces';
 
 interface Props {
@@ -39,7 +44,7 @@ const GridItem = styled.div`
   }
 `;
 
-const StyledImage = styled.img`
+const StyledImage = styled(LazyLoadImage)`
   width: 100%;
   height: 100%;
   position: absolute;
@@ -50,16 +55,32 @@ const StyledImage = styled.img`
   }
 `;
 
-const VideoGrid: React.FC<Props> = ({ user, videoList, handleSelect }) => {
+const Placeholder = styled.div`
+  background-color: #e4e4e4;
+  width: 100%;
+  height: 100%;
+`;
+
+const VideoGrid: React.FC<Props & LazyComponentProps> = ({
+  user,
+  videoList,
+  handleSelect,
+  scrollPosition,
+}) => {
   return (
     <GridContainer>
       {videoList.map((video) => (
         <GridItem key={video.id} onClick={() => handleSelect(video.index)}>
-          <StyledImage src={video.preview} alt={`${user?.full_name}'s video`} />
+          <StyledImage
+            src={video.preview}
+            placeholder={<Placeholder />}
+            alt={`${user?.full_name}'s video`}
+            scrollPosition={scrollPosition}
+          />
         </GridItem>
       ))}
     </GridContainer>
   );
 };
 
-export default VideoGrid;
+export default trackWindowScroll(VideoGrid);
