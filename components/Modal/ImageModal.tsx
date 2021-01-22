@@ -110,6 +110,14 @@ const ImageModal: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
+    document.addEventListener('mousedown', handleClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+    };
+  }, []);
+
+  useEffect(() => {
     if (container.current) {
       container.current.focus();
     }
@@ -183,6 +191,20 @@ const ImageModal: React.FC<Props> = ({
         setReset(false);
       }
     } else if (e.key === 'Escape') {
+      setShow(false);
+    }
+  };
+
+  const handleClick = (e: any) => {
+    if (imageContainer && imageContainer.current) {
+      if (
+        imageContainer.current.contains(e.target) ||
+        e.target.className.includes('Icon')
+      ) {
+        // inside click
+        return;
+      }
+      // outside click
       setShow(false);
     }
   };

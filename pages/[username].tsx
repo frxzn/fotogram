@@ -23,12 +23,12 @@ import DisplayModal from '../components/Modal/DisplayModal';
 
 const Center = styled.div`
   max-width: ${(props) => props.theme.dimensions.maxWidth}px;
-  margin: 0 auto;
+  margin: 54px auto 108px auto;
   padding: 0 20px;
-  margin-top: 54px;
 
   @media (max-width: 735px) {
     padding: 0;
+    margin: 55px auto;
   }
 `;
 
@@ -39,33 +39,12 @@ const Error = styled.div`
   padding: 3rem 0;
 `;
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  margin: 2rem 0;
-`;
-
-const Button = styled.button`
-  font-size: 1.2rem;
-  border: 1px solid ${(props) => props.theme.colors.borderColor};
-  border-radius: 4px;
-  padding: 1rem 2rem;
-  text-align: center;
-  background-color: transparent;
-  color: ${(props) => props.theme.colors.primaryText};
-  :hover {
-    cursor: pointer;
-    color: #000;
-  }
-`;
-
 const UserProfile: React.FC = () => {
   const router = useRouter();
   const { username } = router.query;
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
   const [selectedTab, setSelectedTab] = useState('images');
   const [show, setShow] = useState(false);
@@ -204,35 +183,6 @@ const UserProfile: React.FC = () => {
     setShow(true);
   };
 
-  const handleLoadMore = async () => {
-    if (user && pageInfo) {
-      if (pageInfo.has_next_page) {
-        setLoadingMore(true);
-        try {
-          const mediaRes = await axios.get<MediaResponse>(
-            mediaUrl(user.pk, pageInfo.end_cursor)
-          );
-          const images = bakeImageList(
-            mediaRes.data.data.user.edge_owner_to_timeline_media.edges,
-            imageList.length
-          );
-          const videos = bakeVideoList(
-            mediaRes.data.data.user.edge_owner_to_timeline_media.edges,
-            videoList.length
-          );
-          setPageInfo(
-            mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
-          );
-          setImageList((prev) => [...prev, ...images]);
-          setVideoList((prev) => [...prev, ...videos]);
-        } catch (err) {
-          console.log(err);
-        }
-        setLoadingMore(false);
-      }
-    }
-  };
-
   let main;
   if (error) {
     main = <Error>{error}</Error>;
@@ -247,17 +197,12 @@ const UserProfile: React.FC = () => {
         imageList={imageList}
         videoList={videoList}
         handleSelect={handleSelect}
+        pageInfo={pageInfo}
+        setPageInfo={setPageInfo}
+        setImageList={setImageList}
+        setVideoList={setVideoList}
       />
     );
-  }
-
-  let renderButton;
-  if (loadingMore) {
-    renderButton = (
-      <Spinner radius={64} color={'#ff0078'} stroke={6} visible={true} />
-    );
-  } else {
-    renderButton = <Button onClick={handleLoadMore}>Load more</Button>;
   }
 
   let render;
@@ -279,9 +224,6 @@ const UserProfile: React.FC = () => {
       <Center>
         {!error && <Profile user={user} stories={[]} />}
         {main}
-        {pageInfo?.has_next_page && (
-          <ButtonContainer>{renderButton}</ButtonContainer>
-        )}
         {show && (
           <DisplayModal
             imageList={imageList}

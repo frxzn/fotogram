@@ -17,11 +17,9 @@ const GridContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 28px;
-  margin-bottom: 3rem;
 
   @media (max-width: 735px) {
     grid-gap: 3px;
-    margin-bottom: 3px;
   }
 `;
 
