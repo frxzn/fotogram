@@ -48,6 +48,7 @@ const UserProfile: React.FC = () => {
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
   const [selectedTab, setSelectedTab] = useState('images');
   const [show, setShow] = useState(false);
+  const [downloadMode, setDownloadMode] = useState(false);
   const [user, setUser] = useState<User>();
   const [pageInfo, setPageInfo] = useState<PageInfo>();
   const [imageList, setImageList] = useState<Image[]>([]);
@@ -201,6 +202,8 @@ const UserProfile: React.FC = () => {
         setPageInfo={setPageInfo}
         setImageList={setImageList}
         setVideoList={setVideoList}
+        downloadMode={downloadMode}
+        setDownloadMode={setDownloadMode}
       />
     );
   }

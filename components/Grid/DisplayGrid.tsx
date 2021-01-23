@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import fileDownload from 'js-file-download';
 import Spinner from 'react-spinner-material';
 import { User, Image, Video, PageInfo, MediaResponse } from '../../interfaces';
 import { bakeImageList, bakeVideoList, mediaUrl } from '../../utils';
@@ -15,6 +16,8 @@ interface Props {
   videoList: Video[];
   pageInfo: PageInfo | undefined;
   selectedTab: string;
+  downloadMode: boolean;
+  setDownloadMode: React.Dispatch<React.SetStateAction<boolean>>;
   handleSelect: (index: number) => void;
   setImageList: React.Dispatch<React.SetStateAction<Image[]>>;
   setVideoList: React.Dispatch<React.SetStateAction<Video[]>>;
@@ -78,13 +81,73 @@ const DisplayGrid: React.FC<Props> = (props) => {
     }
   };
 
+  const handleSelectAll = () => {
+    const selectedCount = props.imageList.filter((image) => image.selected)
+      .length;
+    let selected: boolean;
+    if (selectedCount < props.imageList.length) {
+      selected = true;
+    } else {
+      selected = false;
+    }
+    props.setImageList((prevImageList) => {
+      const newImageList = prevImageList.map((prevImage) => {
+        return { ...prevImage, selected };
+      });
+      return newImageList;
+    });
+  };
+
+  const handleCloseDownload = () => {
+    props.setImageList((prevImageList) => {
+      const newImageList = prevImageList.map((prevImage) => {
+        return { ...prevImage, selected: false };
+      });
+      return newImageList;
+    });
+    props.setDownloadMode(false);
+  };
+
+  const handleDownload = async () => {
+    const downloadArray = props.imageList
+      .filter((image) => image.selected)
+      .map((image) => {
+        return {
+          url: image.src.high,
+          file: image.id + '.png',
+        };
+      });
+    console.log(downloadArray);
+    try {
+      const res = await axios.post(
+        'http://localhost:3001/download',
+        downloadArray,
+        {
+          onDownloadProgress: (progressEvent) => {
+            console.log(progressEvent);
+            // let percentCompleted = Math.floor(
+            //   (progressEvent.loaded * 100) / progressEvent.total
+            // );
+            // console.log(percentCompleted);
+          },
+          responseType: 'blob',
+        }
+      );
+      fileDownload(res.data, 'fotogram.zip');
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   let render;
   if (props.selectedTab === 'images') {
     render = (
       <ImageGrid
         user={props.user}
         imageList={props.imageList}
+        setImageList={props.setImageList}
         handleSelect={props.handleSelect}
+        downloadMode={props.downloadMode}
       />
     );
   } else if (props.selectedTab === 'videos') {
@@ -116,7 +179,14 @@ const DisplayGrid: React.FC<Props> = (props) => {
       {props.pageInfo?.has_next_page && (
         <ButtonContainer>{renderButton}</ButtonContainer>
       )}
-      <DownloadControls downloadMode={false} />
+      <DownloadControls
+        downloadMode={props.downloadMode}
+        setDownloadMode={props.setDownloadMode}
+        handleSelectAll={handleSelectAll}
+        handleCloseDownload={handleCloseDownload}
+        selectedCount={props.imageList.filter((img) => img.selected).length}
+        handleDownload={handleDownload}
+      />
     </>
   );
 };
