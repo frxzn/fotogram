@@ -109,34 +109,34 @@ const DisplayGrid: React.FC<Props> = (props) => {
   };
 
   const handleDownload = async () => {
-    const downloadArray = props.imageList
-      .filter((image) => image.selected)
-      .map((image) => {
-        return {
-          url: image.src.high,
-          file: image.id + '.png',
-        };
-      });
-    console.log(downloadArray);
-    try {
-      const res = await axios.post(
-        'http://localhost:3001/download',
-        downloadArray,
-        {
-          onDownloadProgress: (progressEvent) => {
-            console.log(progressEvent);
-            // let percentCompleted = Math.floor(
-            //   (progressEvent.loaded * 100) / progressEvent.total
-            // );
-            // console.log(percentCompleted);
-          },
-          responseType: 'blob',
-        }
-      );
-      fileDownload(res.data, 'fotogram.zip');
-    } catch (err) {
-      console.log(err);
-    }
+    // const downloadArray = props.imageList
+    //   .filter((image) => image.selected)
+    //   .map((image) => {
+    //     return {
+    //       url: image.src.high,
+    //       file: image.id + '.png',
+    //     };
+    //   });
+    // console.log(downloadArray);
+    // try {
+    //   const res = await axios.post(
+    //     'http://localhost:3001/download',
+    //     downloadArray,
+    //     {
+    //       onDownloadProgress: (progressEvent) => {
+    //         console.log(progressEvent);
+    //         // let percentCompleted = Math.floor(
+    //         //   (progressEvent.loaded * 100) / progressEvent.total
+    //         // );
+    //         // console.log(percentCompleted);
+    //       },
+    //       responseType: 'blob',
+    //     }
+    //   );
+    //   fileDownload(res.data, 'fotogram.zip');
+    // } catch (err) {
+    //   console.log(err);
+    // }
   };
 
   let render;

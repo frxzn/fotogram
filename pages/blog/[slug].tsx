@@ -1,4 +1,5 @@
 import { GetStaticProps, GetStaticPaths } from 'next';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import DefaultErrorPage from 'next/error';
@@ -49,6 +50,9 @@ const Article: React.FC<Props> = ({ article }) => {
 
   return (
     <div>
+      <Head>
+        <title>{article.fields.title} | Fotogram</title>
+      </Head>
       <h1>{article.fields.title}</h1>
       <div>
         {documentToReactComponents(article.fields.content, {
