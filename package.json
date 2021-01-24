@@ -9,8 +9,10 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@contentful/rich-text-react-renderer": "^14.1.2",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
+    "contentful": "^8.1.7",
     "js-file-download": "^0.4.12",
     "next": "latest",
     "react": "^16.12.0",

@@ -95,3 +95,21 @@ export interface FormattedStory {
   url: string;
   type: string;
 }
+
+//Blog
+import { Document } from '@contentful/rich-text-types';
+
+export interface ArticleFields {
+  title: string;
+  slug: string;
+  date: string;
+  content: Document;
+}
+
+export interface FullArticle {
+  fields: ArticleFields;
+  sys: {
+    id: string;
+    locale: string;
+  };
+}
