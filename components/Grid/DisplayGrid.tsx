@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import fileDownload from 'js-file-download';
+// import fileDownload from 'js-file-download';
 import Spinner from 'react-spinner-material';
 import { User, Image, Video, PageInfo, MediaResponse } from '../../interfaces';
 import { bakeImageList, bakeVideoList, mediaUrl } from '../../utils';
