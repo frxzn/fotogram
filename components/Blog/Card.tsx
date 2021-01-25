@@ -13,6 +13,16 @@ const Container = styled.li`
   list-style: none;
 `;
 
+const Title = styled.h2`
+  display: inline-block;
+  margin: 0;
+
+  :hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+`;
+
 const Date = styled.p`
   color: #777777;
 `;
@@ -24,19 +34,23 @@ const Button = styled.div`
   font-size: 1.2rem;
   font-weight: bold;
   padding: 4px 12px;
+
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const Card: React.FC<Props> = () => {
   return (
     <Container>
-      <h2 style={{ marginTop: 0 }}>The Great Gatsby Bootcamp</h2>
+      <Title>The Great Gatsby Bootcamp</Title>
       <Date>April 15th, 2019</Date>
       <p>
         Learn how to create fast websites and web applications with Gatsby.
         You’ll use Gatsby, React, and GraphQL to build an entire CMS-powered
         website from scratch.
       </p>
-      <Button>Read more</Button>
+      <Button>Leer</Button>
     </Container>
   );
 };
