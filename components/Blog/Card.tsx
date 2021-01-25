@@ -9,7 +9,6 @@ const Container = styled.li`
   border-right: 5px solid #fff;
   margin: 0 auto 4rem;
   padding: 2rem;
-  color: #444444;
   list-style: none;
 `;
 
@@ -50,7 +49,7 @@ const Card: React.FC<Props> = () => {
         You’ll use Gatsby, React, and GraphQL to build an entire CMS-powered
         website from scratch.
       </p>
-      <Button>Leer</Button>
+      <Button>Explorar</Button>
     </Container>
   );
 };

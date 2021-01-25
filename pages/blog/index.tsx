@@ -10,6 +10,14 @@ interface Props {
   articles: FullArticle[];
 }
 
+const Main = styled.main`
+  color: #444444;
+`;
+
+const Header = styled.h1`
+  text-align: center;
+`;
+
 const List = styled.ul`
   padding: 0;
   margin: 0 auto;
@@ -36,7 +44,8 @@ const Home: React.FC<Props> = ({ articles }) => {
         <title>Blog | Fotogram</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <Main>
+        <Header>Tips and tricks for instagram</Header>
         <List>
           <Card />
           <Card />
@@ -49,7 +58,7 @@ const Home: React.FC<Props> = ({ articles }) => {
             </li>
           ))} */}
         </List>
-      </main>
+      </Main>
     </>
   );
 };
