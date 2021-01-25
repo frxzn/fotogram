@@ -24,7 +24,7 @@ const BottomNav = styled.div`
 const Center = styled.div`
   width: 100%;
   height: 100%;
-  max-width: 935px;
+  max-width: ${(props) => props.theme.dimensions.maxWidth};
   margin: 0 auto;
   display: flex;
   align-items: center;

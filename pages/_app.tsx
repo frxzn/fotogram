@@ -3,6 +3,7 @@ import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import SnackbarProvider from 'react-simple-snackbar';
 
 const GlobalStyle = createGlobalStyle`
+  html,
   body {
     margin: 0;
     padding: 0;
@@ -12,6 +13,10 @@ const GlobalStyle = createGlobalStyle`
 
   a, a:hover {
     text-decoration: none;
+  }
+
+  * {
+    box-sizing: border-box;
   }
 `;
 
@@ -24,7 +29,7 @@ export const theme = {
     borderColor: '#dbdbdb',
   },
   dimensions: {
-    maxWidth: 935,
+    maxWidth: '935px',
   },
 };
 

@@ -9,7 +9,7 @@ import { useMediaQuery } from 'react-responsive';
 
 const Center = styled.div`
   width: 100%;
-  max-width: 935px;
+  max-width: ${(props) => props.theme.dimensions.maxWidth};
   margin: 0 auto;
   padding: 0 20px;
   position: relative;
