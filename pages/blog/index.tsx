@@ -47,12 +47,17 @@ export const getStaticProps: GetStaticProps = async () => {
 
 const Home: React.FC<Props> = ({ articles }) => {
   return (
-    <Layout title={'Blog | Fotogram'}>
+    <Layout
+      title={'Blog | Fotogram'}
+      content={
+        'Blog de Fotogram, donde encontrarás los mejores artículos relacionados con Instagram.'
+      }
+    >
       <Main>
         <Header>
-          <span style={{ fontWeight: 600 }}>Fotogram blog</span>
+          <span style={{ fontWeight: 600 }}>Blog de Fotogram</span>
           <br />
-          Tips and tricks for Instagram
+          Los mejores tips para Instagram
         </Header>
         <List>
           {articles.map((article) => (

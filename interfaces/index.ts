@@ -102,6 +102,7 @@ import { Document } from '@contentful/rich-text-types';
 export interface ArticleFields {
   title: string;
   slug: string;
+  metaDescription: string;
   date: string;
   preview: string;
   content: Document;

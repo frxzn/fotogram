@@ -28,7 +28,7 @@ const IndexPage = () => (
   <Layout title="Descargar fotos Instagram | Fotogram">
     <Container>
       <Title>
-        Mira, haz zoom y descarga fotos en alta definición de Instagram
+        Mira, haz zoom y descarga fotos de Instagram en alta definición
       </Title>
       <LandingSearchBar />
     </Container>

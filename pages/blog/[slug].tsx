@@ -49,7 +49,10 @@ const Article: React.FC<Props> = ({ article }) => {
   }
 
   return (
-    <Layout title={`${article.fields.title} | Fotogram`}>
+    <Layout
+      title={`${article.fields.title} | Fotogram`}
+      content={article.fields.metaDescription}
+    >
       <div style={{ flex: 1 }}>
         <h1>{article.fields.title}</h1>
         <div>

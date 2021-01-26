@@ -66,7 +66,7 @@ const Navbar: React.FC<Props> = () => {
         <List>
           <Link href={'/'}>
             <Item>
-              <a>Home</a>
+              <a>Inicio</a>
             </Item>
           </Link>
           <Link href={'/blog'}>
