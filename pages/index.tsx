@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Layout from '../components/Layout';
+import Layout from '../components/Blog/Layout';
 import LandingSearchBar from '../components/LandingSearchBar';
 
 const Title = styled.h1`
@@ -16,14 +16,20 @@ const Title = styled.h1`
 `;
 
 const Container = styled.div`
-  height: 200vh;
+  flex: 1;
   margin: 1rem;
+
+  @media (max-width: 735px) {
+    min-height: 120vh;
+  }
 `;
 
 const IndexPage = () => (
-  <Layout title="Fotogram.app">
+  <Layout title="Descargar fotos Instagram | Fotogram">
     <Container>
-      <Title>View, zoom & download HD Instagram pictures</Title>
+      <Title>
+        Mira, haz zoom y descarga fotos en alta definición de Instagram
+      </Title>
       <LandingSearchBar />
     </Container>
   </Layout>

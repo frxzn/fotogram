@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import styled from 'styled-components';
 
 interface Props {}
@@ -10,18 +11,18 @@ const Header = styled.header`
 
 const Container = styled.div`
   display: flex;
-  /* align-items: center; */
   justify-content: space-between;
   margin: 0 auto;
   height: ${(props) => props.theme.dimensions.barHeight};
   max-width: ${(props) => props.theme.dimensions.maxWidth};
+  padding-left: 1rem;
 `;
 
-const Logo = styled.div`
+const Logo = styled.a`
   display: flex;
   align-items: center;
   color: ${(props) => props.theme.colors.primary};
-  font-size: 1.6rem;
+  font-size: 1.2rem;
 
   :hover {
     cursor: pointer;
@@ -39,6 +40,14 @@ const Item = styled.li`
   align-items: center;
   list-style: none;
   padding: 0 1rem;
+  color: #4a4a4a;
+
+  a,
+  a:visited,
+  a:hover,
+  a:active {
+    color: inherit;
+  }
 
   :hover {
     cursor: pointer;
@@ -51,12 +60,20 @@ const Navbar: React.FC<Props> = () => {
   return (
     <Header>
       <Container>
-        <Logo>Fotogram</Logo>
+        <Link href={'/'}>
+          <Logo>fotogram</Logo>
+        </Link>
         <List>
-          <Item>Home</Item>
-          <Item>Blog</Item>
-          <Item>Login</Item>
-          <Item>Signup</Item>
+          <Link href={'/'}>
+            <Item>
+              <a>Home</a>
+            </Item>
+          </Link>
+          <Link href={'/blog'}>
+            <Item>
+              <a>Blog</a>
+            </Item>
+          </Link>
         </List>
       </Container>
     </Header>

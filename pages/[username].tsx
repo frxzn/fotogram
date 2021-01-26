@@ -22,7 +22,7 @@ import DisplayGrid from '../components/Grid/DisplayGrid';
 import DisplayModal from '../components/Modal/DisplayModal';
 
 const Center = styled.div`
-  max-width: ${(props) => props.theme.dimensions.maxWidth}px;
+  max-width: ${(props) => props.theme.dimensions.maxWidth};
   margin: 54px auto 108px auto;
   padding: 0 20px;
 

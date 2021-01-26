@@ -21,10 +21,6 @@ const Container = styled.li`
   a:active {
     color: inherit;
   }
-
-  @media (max-width: 735px) {
-    margin: 0 1rem 4rem 1rem;
-  }
 `;
 
 const Title = styled.h2`

@@ -1,5 +1,4 @@
 import { GetStaticProps, GetStaticPaths } from 'next';
-import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import DefaultErrorPage from 'next/error';
@@ -7,6 +6,7 @@ import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import { BLOCKS } from '@contentful/rich-text-types';
 import { ArticleFields, FullArticle } from '../../interfaces';
 import { client } from '../../client';
+import Layout from '../../components/Blog/Layout';
 
 interface Props {
   article: FullArticle;
@@ -41,7 +41,7 @@ const Article: React.FC<Props> = ({ article }) => {
   const router = useRouter();
 
   if (router.isFallback) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   if (!article) {
@@ -49,25 +49,24 @@ const Article: React.FC<Props> = ({ article }) => {
   }
 
   return (
-    <div>
-      <Head>
-        <title>{article.fields.title} | Fotogram</title>
-      </Head>
-      <h1>{article.fields.title}</h1>
-      <div>
-        {documentToReactComponents(article.fields.content, {
-          renderNode: {
-            [BLOCKS.EMBEDDED_ASSET]: (node) => (
-              <Image
-                src={'https:' + node.data.target.fields.file.url}
-                width={node.data.target.fields.file.details.image.width}
-                height={node.data.target.fields.file.details.image.height}
-              />
-            ),
-          },
-        })}
+    <Layout title={`${article.fields.title} | Fotogram`}>
+      <div style={{ flex: 1 }}>
+        <h1>{article.fields.title}</h1>
+        <div>
+          {documentToReactComponents(article.fields.content, {
+            renderNode: {
+              [BLOCKS.EMBEDDED_ASSET]: (node) => (
+                <Image
+                  src={'https:' + node.data.target.fields.file.url}
+                  width={node.data.target.fields.file.details.image.width}
+                  height={node.data.target.fields.file.details.image.height}
+                />
+              ),
+            },
+          })}
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 

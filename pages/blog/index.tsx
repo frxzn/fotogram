@@ -1,5 +1,4 @@
 import { GetStaticProps } from 'next';
-import Head from 'next/head';
 import styled from 'styled-components';
 import { ArticleFields, FullArticle } from '../../interfaces';
 import { client } from '../../client';
@@ -11,11 +10,20 @@ interface Props {
 }
 
 const Main = styled.main`
+  margin: 0 1rem;
   color: #444444;
+  flex: 1;
 `;
 
 const Header = styled.h1`
   text-align: center;
+  margin: 4rem 0;
+  font-weight: 300;
+
+  @media (max-width: 735px) {
+    font-size: 1.4rem;
+    margin: 2rem 0;
+  }
 `;
 
 const List = styled.ul`
@@ -39,9 +47,13 @@ export const getStaticProps: GetStaticProps = async () => {
 
 const Home: React.FC<Props> = ({ articles }) => {
   return (
-    <Layout>
+    <Layout title={'Blog | Fotogram'}>
       <Main>
-        <Header>Tips and tricks for instagram</Header>
+        <Header>
+          <span style={{ fontWeight: 600 }}>Fotogram blog</span>
+          <br />
+          Tips and tricks for Instagram
+        </Header>
         <List>
           {articles.map((article) => (
             <Card key={article.sys.id} article={article.fields} />
