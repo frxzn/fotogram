@@ -5,7 +5,7 @@ import SearchBar from './SearchBar';
 const StyledHeader = styled.header`
   position: fixed;
   top: 0;
-  height: 54px;
+  height: ${(props) => props.theme.dimensions.barHeight};
   width: 100%;
   z-index: 200;
   background-color: #fff;

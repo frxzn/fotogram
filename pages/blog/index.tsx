@@ -3,6 +3,7 @@ import Head from 'next/head';
 import styled from 'styled-components';
 import { ArticleFields, FullArticle } from '../../interfaces';
 import { client } from '../../client';
+import Layout from '../../components/Blog/Layout';
 import Card from '../../components/Blog/Card';
 
 interface Props {
@@ -38,11 +39,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
 const Home: React.FC<Props> = ({ articles }) => {
   return (
-    <>
-      <Head>
-        <title>Blog | Fotogram</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <Layout>
       <Main>
         <Header>Tips and tricks for instagram</Header>
         <List>
@@ -51,7 +48,7 @@ const Home: React.FC<Props> = ({ articles }) => {
           ))}
         </List>
       </Main>
-    </>
+    </Layout>
   );
 };
 

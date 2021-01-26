@@ -15,7 +15,7 @@ const BottomNav = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  height: 54px;
+  height: ${(props) => props.theme.dimensions.barHeight};
   z-index: 200;
   background-color: #fff;
   border-top: 1px solid #dbdbdb;

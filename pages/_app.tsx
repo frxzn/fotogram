@@ -30,6 +30,7 @@ export const theme = {
   },
   dimensions: {
     maxWidth: '935px',
+    barHeight: '54px',
   },
 };
 
