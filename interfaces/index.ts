@@ -103,6 +103,7 @@ export interface ArticleFields {
   title: string;
   slug: string;
   date: string;
+  preview: string;
   content: Document;
 }
 

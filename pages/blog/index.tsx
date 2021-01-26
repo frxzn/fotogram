@@ -1,6 +1,5 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
 import styled from 'styled-components';
 import { ArticleFields, FullArticle } from '../../interfaces';
 import { client } from '../../client';
@@ -47,16 +46,9 @@ const Home: React.FC<Props> = ({ articles }) => {
       <Main>
         <Header>Tips and tricks for instagram</Header>
         <List>
-          <Card />
-          <Card />
-          <Card />
-          {/* {articles.map((article) => (
-            <li key={article.sys.id}>
-              <Link href={'blog/' + article.fields.slug}>
-                <a>{article.fields.title}</a>
-              </Link>
-            </li>
-          ))} */}
+          {articles.map((article) => (
+            <Card key={article.sys.id} article={article.fields} />
+          ))}
         </List>
       </Main>
     </>
