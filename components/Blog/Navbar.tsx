@@ -36,18 +36,19 @@ const List = styled.ul`
 `;
 
 const Item = styled.li`
-  display: flex;
-  align-items: center;
   list-style: none;
-  padding: 0 1rem;
   color: #4a4a4a;
-  height: 100%;
 
   a,
   a:visited,
   a:hover,
   a:active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: inherit;
+    height: 100%;
+    padding: 0 1rem;
   }
 
   :hover {
@@ -71,11 +72,11 @@ const Navbar: React.FC<Props> = () => {
         </Link>
         <List>
           {routes.map((route) => (
-            <Link key={route.slug} href={route.slug}>
-              <a>
-                <Item>{route.name}</Item>
-              </a>
-            </Link>
+            <Item>
+              <Link key={route.slug} href={route.slug}>
+                <a>{route.name}</a>
+              </Link>
+            </Item>
           ))}
         </List>
       </Container>
