@@ -104,6 +104,17 @@ const Checkbox = styled.div`
   }
 `;
 
+const StyledLabel = styled.label`
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+`;
+
 const SearchBar: React.FC = () => {
   const router = useRouter();
   const isMobile = useMediaQuery({ query: `(max-width: 735px)` });
@@ -281,12 +292,16 @@ const SearchBar: React.FC = () => {
               src="/icons/magnifying-glass.svg"
               alt="magnifying glass icon"
             />
+            <StyledLabel htmlFor="search-input">
+              Search Instagram User
+            </StyledLabel>
             <StyledInput
               value={input}
               onChange={handleChange}
               onFocus={handleFocus}
               placeholder="Search"
               ref={inputRef}
+              id="search-input"
             />
             {renderSpinner}
             {renderClose}
