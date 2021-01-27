@@ -41,6 +41,7 @@ const Item = styled.li`
   list-style: none;
   padding: 0 1rem;
   color: #4a4a4a;
+  height: 100%;
 
   a,
   a:visited,
@@ -57,23 +58,25 @@ const Item = styled.li`
 `;
 
 const Navbar: React.FC<Props> = () => {
+  const routes = [
+    { name: 'Inicio', slug: '/' },
+    { name: 'Blog', slug: '/blog' },
+  ];
+
   return (
     <Header>
       <Container>
-        <Link href={'/'}>
+        <Link href={'/'} passHref>
           <Logo>fotogram</Logo>
         </Link>
         <List>
-          <Link href={'/'}>
-            <Item>
-              <a>Inicio</a>
-            </Item>
-          </Link>
-          <Link href={'/blog'}>
-            <Item>
-              <a>Blog</a>
-            </Item>
-          </Link>
+          {routes.map((route) => (
+            <Link key={route.slug} href={route.slug}>
+              <a>
+                <Item>{route.name}</Item>
+              </a>
+            </Link>
+          ))}
         </List>
       </Container>
     </Header>
