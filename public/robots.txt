@@ -1,0 +1,4 @@
+Sitemap: https://fotogram.app/api/sitemap
+User-agent: *
+Allow: /*
+Disallow: /api/*
