@@ -29,6 +29,7 @@ const Center = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 1rem;
 `;
 
 const Fab = styled.div`
@@ -58,10 +59,6 @@ const Icon = styled.img`
 const NavIcon = styled.img`
   height: 100%;
   width: 2rem;
-
-  @media (max-width: 735px) {
-    padding: 0 2rem;
-  }
 
   :hover {
     cursor: pointer;
@@ -95,13 +92,13 @@ const DownloadControls: React.FC<Props> = ({
         <Center>
           <NavIcon
             src="/icons/check.svg"
-            alt="download icon"
+            alt="check all icon"
             onClick={handleSelectAll}
           />
           <Button onClick={handleDownload}>Download {selectedCount}</Button>
           <NavIcon
             src="/icons/close1.svg"
-            alt="download icon"
+            alt="close icon"
             onClick={handleCloseDownload}
           />
         </Center>
