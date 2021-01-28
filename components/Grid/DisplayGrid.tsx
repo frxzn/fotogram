@@ -28,7 +28,7 @@ interface Props {
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
-  padding-top: 4rem;
+  padding-bottom: 2rem;
 
   @media (max-width: 735px) {
     padding: 2rem 0;

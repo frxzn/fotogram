@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
 import Spinner from 'react-spinner-material';
+import { useMediaQuery } from 'react-responsive';
 import {
   User,
   Users,
@@ -23,12 +24,11 @@ import DisplayModal from '../components/Modal/DisplayModal';
 
 const Center = styled.div`
   max-width: ${(props) => props.theme.dimensions.maxWidth};
-  margin: 54px auto 108px auto;
+  margin: 54px auto 0 auto;
   padding: 0 20px;
 
   @media (max-width: 735px) {
     padding: 0;
-    margin: 55px auto;
   }
 `;
 
@@ -37,11 +37,13 @@ const Error = styled.div`
   font-size: 1.2rem;
   font-weight: 300;
   padding: 3rem 0;
+  margin: 0 1rem;
 `;
 
 const UserProfile: React.FC = () => {
   const router = useRouter();
   const { username } = router.query;
+  const isMobile = useMediaQuery({ query: `(max-width: 735px)` });
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -54,6 +56,25 @@ const UserProfile: React.FC = () => {
   const [imageList, setImageList] = useState<Image[]>([]);
   const [videoList, setVideoList] = useState<Video[]>([]);
   // const [stories, setStories] = useState<FormattedStory[]>([]);
+
+  useEffect(() => {
+    const HtmlCenter = document.getElementById('username-center');
+    if (HtmlCenter) {
+      if (isMobile) {
+        if (downloadMode) {
+          HtmlCenter.style.marginBottom = '57px';
+        } else {
+          HtmlCenter.style.marginBottom = '3px';
+        }
+      } else {
+        if (downloadMode) {
+          HtmlCenter.style.marginBottom = '54px';
+        } else {
+          HtmlCenter.style.marginBottom = '0';
+        }
+      }
+    }
+  }, [downloadMode]);
 
   useEffect(() => {
     const userSource = axios.CancelToken.source();
@@ -224,7 +245,7 @@ const UserProfile: React.FC = () => {
     );
   } else {
     render = (
-      <Center>
+      <Center id="username-center">
         {!error && <Profile user={user} stories={[]} />}
         {main}
         {show && (
