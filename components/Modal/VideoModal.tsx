@@ -24,6 +24,10 @@ const Container = styled.div`
 
 const VideoContainer = styled.div`
   margin: auto;
+
+  video {
+    max-height: 100vh;
+  }
 `;
 
 const IconContainer = styled.div`
@@ -164,9 +168,9 @@ const VideoModal: React.FC<Props> = ({
         <ReactPlayer
           url={src}
           controls={true}
-          width={'100%'}
-          height={'100%'}
           loop
+          width="100%"
+          height="100%"
         />
       </VideoContainer>
       {selected + 1 < mediaCount && (
