@@ -192,7 +192,7 @@ const DisplayGrid: React.FC<Props> = (props) => {
       <Spinner radius={64} color={'#ff0078'} stroke={6} visible={true} />
     );
   } else {
-    renderButton = <Button onClick={handleLoadMore}>Load more</Button>;
+    renderButton = <Button onClick={handleLoadMore}>Cargar más</Button>;
   }
 
   return (
