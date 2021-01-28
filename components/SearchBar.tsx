@@ -265,6 +265,7 @@ const SearchBar: React.FC = () => {
             onFocus={handleFocus}
             placeholder="Buscar"
             id="search-input"
+            autoComplete="off"
           />
           {renderSpinner}
           {renderClose}

@@ -323,6 +323,7 @@ const SearchBar: React.FC = () => {
               placeholder="Buscar"
               ref={inputRef}
               id="search-input"
+              autoComplete="off"
             />
             {renderSpinner}
             {renderClose}
