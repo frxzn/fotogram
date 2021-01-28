@@ -115,11 +115,19 @@ const StyledLabel = styled.label`
   width: 1px;
 `;
 
+const DisplayError = styled.div`
+  color: ${(props) => props.theme.colors.primaryText};
+  font-size: 1.2rem;
+  text-align: center;
+  margin: 3rem 0;
+`;
+
 const SearchBar: React.FC = () => {
   const router = useRouter();
   const isMobile = useMediaQuery({ query: `(max-width: 735px)` });
 
   const [input, setInput] = useState('');
+  const [error, setError] = useState('');
   const [show, setShow] = useState(false);
   const [closed, setClosed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -166,8 +174,17 @@ const SearchBar: React.FC = () => {
               cancelToken: source.token,
             }
           );
+          if (
+            res.request.responseURL ===
+            'https://www.instagram.com/accounts/login/'
+          ) {
+            throw 'redirect';
+          }
           if (res.data.users) {
             setSearchList(res.data.users);
+          }
+          if (error) {
+            setError('');
           }
           setLoading(false);
         } else {
@@ -175,6 +192,10 @@ const SearchBar: React.FC = () => {
         }
       } catch (err) {
         if (axios.isCancel(err)) return;
+        if (err === 'redirect') {
+          setError('Algo salió mal. Intente nuevamente más tarde.');
+        }
+        setLoading(false);
       }
     };
 
@@ -308,7 +329,8 @@ const SearchBar: React.FC = () => {
             <SearchButton type="submit">Buscar</SearchButton>
           </SearchContainer>
         </form>
-        {show && <UserList>{renderList}</UserList>}
+        {error.length ? <DisplayError>{error}</DisplayError> : null}
+        {!error.length && show && <UserList>{renderList}</UserList>}
       </div>
     </Center>
   );
