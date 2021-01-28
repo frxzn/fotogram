@@ -49,6 +49,14 @@ const Button = styled.button`
   }
 `;
 
+const Error = styled.div`
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 300;
+  padding: 3rem 0;
+  margin: 0 1rem;
+`;
+
 const DisplayGrid: React.FC<Props> = (props) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
@@ -141,23 +149,41 @@ const DisplayGrid: React.FC<Props> = (props) => {
 
   let render;
   if (props.selectedTab === 'images') {
-    render = (
-      <ImageGrid
-        user={props.user}
-        imageList={props.imageList}
-        setImageList={props.setImageList}
-        handleSelect={props.handleSelect}
-        downloadMode={props.downloadMode}
-      />
-    );
+    if (props.imageList.length) {
+      render = (
+        <ImageGrid
+          user={props.user}
+          imageList={props.imageList}
+          setImageList={props.setImageList}
+          handleSelect={props.handleSelect}
+          downloadMode={props.downloadMode}
+        />
+      );
+    } else {
+      if (props.pageInfo?.has_next_page) {
+        render = <Error>No hay fotos para mostrar, intenta cargando más</Error>;
+      } else {
+        render = <Error>Este usuario aún no ha publicado fotos</Error>;
+      }
+    }
   } else if (props.selectedTab === 'videos') {
-    render = (
-      <VideoGrid
-        user={props.user}
-        videoList={props.videoList}
-        handleSelect={props.handleSelect}
-      />
-    );
+    if (props.videoList.length) {
+      render = (
+        <VideoGrid
+          user={props.user}
+          videoList={props.videoList}
+          handleSelect={props.handleSelect}
+        />
+      );
+    } else {
+      if (props.pageInfo?.has_next_page) {
+        render = (
+          <Error>No hay videos para mostrar, intenta cargando más</Error>
+        );
+      } else {
+        render = <Error>Este usuario aún no ha publicado videos</Error>;
+      }
+    }
   }
 
   let renderButton;
