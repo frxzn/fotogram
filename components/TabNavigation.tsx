@@ -38,14 +38,17 @@ const Tab = styled.div`
 `;
 
 const TabNavigation: React.FC<Props> = (props) => {
-  const render = ['Images', 'Videos'].map((item) => {
+  const render = [
+    { key: 'images', name: 'Fotos' },
+    { key: 'videos', name: 'Videos' },
+  ].map((item) => {
     return (
       <Tab
-        className={props.selectedTab === item.toLowerCase() ? 'active' : ''}
-        key={item}
-        onClick={() => props.setSelectedTab(item.toLowerCase())}
+        className={props.selectedTab === item.key ? 'active' : ''}
+        key={item.key}
+        onClick={() => props.setSelectedTab(item.key)}
       >
-        {item}
+        {item.name}
       </Tab>
     );
   });

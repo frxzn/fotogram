@@ -284,7 +284,7 @@ const SearchBar: React.FC = () => {
             checked={checked}
             onChange={handleCheck}
           />
-          <label htmlFor="scales">Hide private accounts</label>
+          <label htmlFor="scales">No mostrar cuentas privadas</label>
         </Checkbox>
         <form onSubmit={handleSubmit}>
           <SearchContainer>
@@ -299,13 +299,13 @@ const SearchBar: React.FC = () => {
               value={input}
               onChange={handleChange}
               onFocus={handleFocus}
-              placeholder="Search"
+              placeholder="Buscar"
               ref={inputRef}
               id="search-input"
             />
             {renderSpinner}
             {renderClose}
-            <SearchButton type="submit">Search</SearchButton>
+            <SearchButton type="submit">Buscar</SearchButton>
           </SearchContainer>
         </form>
         {show && <UserList>{renderList}</UserList>}

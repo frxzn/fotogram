@@ -102,6 +102,17 @@ const UserList = styled.div`
   }
 `;
 
+const StyledLabel = styled.label`
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+`;
+
 const SearchBar: React.FC = () => {
   const isMobile = useMediaQuery({ query: `(max-width: 735px)` });
   const router = useRouter();
@@ -245,15 +256,19 @@ const SearchBar: React.FC = () => {
       <form onSubmit={handleSubmit}>
         <SearchContainer>
           <Icon src="/icons/magnifying-glass.svg" alt="magnifying glass icon" />
+          <StyledLabel htmlFor="search-input">
+            Search Instagram User
+          </StyledLabel>
           <StyledInput
             value={input}
             onChange={handleChange}
             onFocus={handleFocus}
-            placeholder="Search"
+            placeholder="Buscar"
+            id="search-input"
           />
           {renderSpinner}
           {renderClose}
-          <SearchButton type="submit">Search</SearchButton>
+          <SearchButton type="submit">Buscar</SearchButton>
         </SearchContainer>
       </form>
       {show && <UserList>{renderList}</UserList>}

@@ -137,7 +137,7 @@ const ImageGrid: React.FC<Props & LazyComponentProps> = ({
           <StyledImage
             src={image.src.low}
             placeholder={<Placeholder />}
-            alt={`${user?.full_name}'s photo`}
+            alt={`Foto de ${user?.full_name}`}
             scrollPosition={scrollPosition}
             selected={image.selected}
             downloadmode={downloadMode ? 1 : 0}

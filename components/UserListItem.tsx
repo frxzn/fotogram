@@ -36,7 +36,7 @@ const UserListItem: React.FC<Props> = ({ name, username, profilePicUrl }) => {
   return (
     <Link href={`/${username}`}>
       <a className={classes.anchor}>
-        <ProfilePic src={profilePicUrl} alt={`${name}'s profile picture`} />
+        <ProfilePic src={profilePicUrl} alt={`Foto de perfil de ${name}`} />
         <UserInfo>
           <div className="name">{name}</div>
           <div className="username">{username}</div>

@@ -152,7 +152,7 @@ const Profile: React.FC<Props> = ({ user, stories }) => {
         <img
           className="profile-pic"
           src={user?.profile_pic_url}
-          alt="instagram profile picture"
+          alt={`Foto de perfil de ${user?.full_name}`}
         />
         {stories.length > 0 && <span>{stories.length}</span>}
       </div>

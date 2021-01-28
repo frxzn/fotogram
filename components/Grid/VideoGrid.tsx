@@ -74,7 +74,7 @@ const VideoGrid: React.FC<Props & LazyComponentProps> = ({
           <StyledImage
             src={video.preview}
             placeholder={<Placeholder />}
-            alt={`${user?.full_name}'s video`}
+            alt={`Video de ${user?.full_name}`}
             scrollPosition={scrollPosition}
           />
         </GridItem>

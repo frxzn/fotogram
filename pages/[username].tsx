@@ -125,9 +125,9 @@ const UserProfile: React.FC = () => {
           setVideoList([]);
         }
         if (err === '404') {
-          setError('User not found.');
+          setError('Usuario no encontrado.');
         } else {
-          setError('Something went wrong, try again later.');
+          setError('Algo salió mal, intenta nuevamente más tarde.');
         }
       }
       setLoading(false);
@@ -188,7 +188,7 @@ const UserProfile: React.FC = () => {
   if (error) {
     main = <Error>{error}</Error>;
   } else if (user?.is_private) {
-    main = <Error>This account is private.</Error>;
+    main = <Error>Esta cuenta es privada.</Error>;
   } else {
     main = (
       <DisplayGrid

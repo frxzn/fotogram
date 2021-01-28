@@ -39,11 +39,11 @@ const Share: React.FC = () => {
         navigator.clipboard
           .writeText(window.location.href)
           .then(() => {
-            openSnackbar('Link copied to clipboard!');
+            openSnackbar('Enlace copiado al portapapeles!');
           })
           .catch((err) => {
             console.log(err);
-            openSnackbar('Failed to copy link to clipboard.');
+            openSnackbar('Error al copiar enlace.');
           });
       }
     }
@@ -52,7 +52,7 @@ const Share: React.FC = () => {
   return (
     <Container onClick={handleClick}>
       <Icon src="/icons/share.svg" />
-      Share
+      Compartir
     </Container>
   );
 };

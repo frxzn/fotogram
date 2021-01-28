@@ -72,8 +72,8 @@ const Navbar: React.FC<Props> = () => {
         </Link>
         <List>
           {routes.map((route) => (
-            <Item>
-              <Link key={route.slug} href={route.slug}>
+            <Item key={route.slug}>
+              <Link href={route.slug}>
                 <a>{route.name}</a>
               </Link>
             </Item>

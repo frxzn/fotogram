@@ -95,7 +95,7 @@ const DownloadControls: React.FC<Props> = ({
             alt="check all icon"
             onClick={handleSelectAll}
           />
-          <Button onClick={handleDownload}>Download {selectedCount}</Button>
+          <Button onClick={handleDownload}>Descargar {selectedCount}</Button>
           <NavIcon
             src="/icons/close1.svg"
             alt="close icon"
