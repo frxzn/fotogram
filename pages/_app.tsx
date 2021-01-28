@@ -1,6 +1,9 @@
+import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import SnackbarProvider from 'react-simple-snackbar';
+import * as gtag from '../lib/gtag';
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -35,6 +38,18 @@ export const theme = {
 };
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      gtag.pageview(url);
+    };
+    router.events.on('routeChangeComplete', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [router.events]);
+
   return (
     <>
       <GlobalStyle />
