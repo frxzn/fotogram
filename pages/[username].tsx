@@ -84,6 +84,7 @@ const UserProfile: React.FC = () => {
     const init = async () => {
       setLoading(true);
       setSelectedTab('images');
+      setDownloadMode(false);
       try {
         const userRes = await axios.get<UserResponse>(
           `https://www.instagram.com/web/search/topsearch/?query=${username}`,
