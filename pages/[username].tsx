@@ -12,9 +12,7 @@ import {
   PageInfo,
   Image,
   Video,
-  // Story,
-  // FormattedStory,
-} from '../interfaces/index';
+} from '../interfaces';
 import { bakeImageList, bakeVideoList, mediaUrl } from '../utils';
 import Layout from '../components/Layout';
 import Navbar from '../components/Navbar';
@@ -56,7 +54,6 @@ const UserProfile: React.FC = () => {
   const [pageInfo, setPageInfo] = useState<PageInfo>();
   const [imageList, setImageList] = useState<Image[]>([]);
   const [videoList, setVideoList] = useState<Video[]>([]);
-  // const [stories, setStories] = useState<FormattedStory[]>([]);
 
   useEffect(() => {
     const HtmlCenter = document.getElementById('username-center');
@@ -166,42 +163,6 @@ const UserProfile: React.FC = () => {
     };
   }, [username]);
 
-  // Load stories from russian api
-  // useEffect(() => {
-  //   setStories([]);
-  //   const source = axios.CancelToken.source();
-
-  //   if (user) {
-  //     if (!user.is_private) {
-  //       const loadStories = async () => {
-  //         try {
-  //           const res = await axios.post<Story[]>(
-  //             'https://insta-stories.ru/api/stories',
-  //             {
-  //               xtrip: 'afsdfi3k4fdsd5gg',
-  //               id: user.pk,
-  //               username: user.username,
-  //             },
-  //             {
-  //               cancelToken: source.token,
-  //             }
-  //           );
-
-  //           const formattedStories = res.data.map((story) => ({
-  //             url: story.is_video ? story.video : story.image,
-  //             type: story.is_video ? 'video' : 'image',
-  //           }));
-  //           setStories(formattedStories);
-  //         } catch (err) {
-  //           if (axios.isCancel(err)) return;
-  //         }
-  //       };
-  //       loadStories();
-  //     }
-  //   }
-  //   return () => source.cancel();
-  // }, [user]);
-
   const handleSelect = (index: number) => {
     setSelectedMediaIndex(index);
     setShow(true);
@@ -248,7 +209,7 @@ const UserProfile: React.FC = () => {
   } else {
     render = (
       <Center id="username-center">
-        {!error && <Profile user={user} stories={[]} />}
+        {!error && <Profile user={user} />}
         {main}
         {show && (
           <DisplayModal

@@ -83,19 +83,6 @@ export interface MediaResponse {
   };
 }
 
-export interface Story {
-  id: string;
-  image: string;
-  is_video: boolean;
-  timestamp: number;
-  video: string;
-}
-
-export interface FormattedStory {
-  url: string;
-  type: string;
-}
-
 //Blog
 import { Document } from '@contentful/rich-text-types';
 
