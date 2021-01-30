@@ -270,6 +270,11 @@ const DisplayGrid: React.FC<Props> = (props) => {
         <ButtonContainer>{renderButton}</ButtonContainer>
       )}
       <DownloadControls
+        listCount={
+          selectedTab === 'images'
+            ? props.imageList.length
+            : props.videoList.length
+        }
         downloadMode={props.downloadMode}
         handleSelectAll={handleSelectAll}
         handleCloseDownload={handleCloseDownload}

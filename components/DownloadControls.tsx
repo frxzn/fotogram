@@ -9,6 +9,7 @@ interface Props {
   handleCloseDownload: () => void;
   handleDownload: () => void;
   selectedCount: number;
+  listCount: number;
 }
 
 const BottomNav = styled.div`
@@ -84,10 +85,11 @@ const DownloadControls: React.FC<Props> = ({
   handleCloseDownload,
   selectedCount,
   handleDownload,
+  listCount,
 }) => {
   const dispatch = useDispatch();
 
-  let render;
+  let render = <></>;
   if (downloadMode) {
     render = (
       <BottomNav>
@@ -107,11 +109,13 @@ const DownloadControls: React.FC<Props> = ({
       </BottomNav>
     );
   } else {
-    render = (
-      <Fab onClick={() => dispatch(setDownloadMode(true))}>
-        <Icon src="/icons/download1.svg" alt="download icon" />
-      </Fab>
-    );
+    if (listCount) {
+      render = (
+        <Fab onClick={() => dispatch(setDownloadMode(true))}>
+          <Icon src="/icons/download1.svg" alt="download icon" />
+        </Fab>
+      );
+    }
   }
   return render;
 };
