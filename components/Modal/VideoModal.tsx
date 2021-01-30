@@ -54,8 +54,8 @@ const Icon = styled.img`
   width: 1.6rem;
 
   @media (max-width: 735px) {
-    height: 1.2rem;
-    width: 1.2rem;
+    height: 1.4rem;
+    width: 1.4rem;
   }
 `;
 
@@ -64,11 +64,18 @@ const Icons = styled.div`
   position: absolute;
   top: 0;
   right: 0;
+
+  @media (max-width: 735px) {
+    div {
+      padding: 0.8rem;
+    }
+  }
 `;
 
 const DownloadIcon = styled.div`
   z-index: 150;
   padding: 1.5rem;
+  transform: scale(1.1);
 
   :hover {
     cursor: pointer;
@@ -76,19 +83,11 @@ const DownloadIcon = styled.div`
 `;
 
 const CloseIcon = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
   z-index: 150;
   padding: 1.5rem;
 
   :hover {
     cursor: pointer;
-  }
-
-  img {
-    height: 1.5rem;
-    width: 1.5rem;
   }
 `;
 
