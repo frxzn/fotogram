@@ -50,6 +50,7 @@ const StyledImage = styled.img`
 const IconContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   position: absolute;
   top: 50%;
   bottom: 50%;
@@ -64,24 +65,44 @@ const IconContainer = styled.div`
 `;
 
 const Icon = styled.img`
-  height: 2rem;
-  width: 2rem;
+  height: 1.6rem;
+  width: 1.6rem;
+
+  @media (max-width: 735px) {
+    height: 1.4rem;
+    width: 1.4rem;
+  }
 `;
 
-const CloseIcon = styled.div`
+const Icons = styled.div`
+  display: flex;
   position: absolute;
   top: 0;
   right: 0;
+
+  @media (max-width: 735px) {
+    div {
+      padding: 0.8rem;
+    }
+  }
+`;
+
+const DownloadIcon = styled.div`
+  z-index: 150;
+  padding: 1.5rem;
+  transform: scale(1.1);
+
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const CloseIcon = styled.div`
   z-index: 150;
   padding: 1.5rem;
 
   :hover {
     cursor: pointer;
-  }
-
-  img {
-    height: 1.5rem;
-    width: 1.5rem;
   }
 `;
 
@@ -207,6 +228,11 @@ const ImageModal: React.FC<Props> = ({ src, mediaCount, selectedIndex }) => {
     }
   };
 
+  const handleDownload = () => {
+    console.log(src);
+    // call api, return file
+  };
+
   return (
     <Container
       style={{
@@ -217,9 +243,14 @@ const ImageModal: React.FC<Props> = ({ src, mediaCount, selectedIndex }) => {
       tabIndex={1}
       ref={container}
     >
-      <CloseIcon onClick={() => dispatch(setShowMedia(false))}>
-        <Icon src="/icons/cancel.svg" alt="close icon" />
-      </CloseIcon>
+      <Icons>
+        <DownloadIcon onClick={handleDownload}>
+          <Icon src="/icons/download.svg" alt="close icon" />
+        </DownloadIcon>
+        <CloseIcon onClick={() => dispatch(setShowMedia(false))}>
+          <Icon src="/icons/cancel.svg" alt="close icon" />
+        </CloseIcon>
+      </Icons>
       {selectedIndex > 0 && (
         <IconContainer
           onClick={() => handleArrowChange('left')}
