@@ -194,6 +194,7 @@ const VideoModal: React.FC<Props> = ({ src, mediaCount, selectedIndex }) => {
       )}
       <VideoContainer ref={node}>
         <ReactPlayer
+          key={src}
           url={src}
           controls={true}
           loop

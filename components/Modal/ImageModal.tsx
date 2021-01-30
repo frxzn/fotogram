@@ -271,7 +271,7 @@ const ImageModal: React.FC<Props> = ({ src, mediaCount, selectedIndex }) => {
           onZoomChange={handleZoom}
         >
           <TransformComponent>
-            <StyledImage src={src} />
+            <StyledImage src={src} key={src} />
           </TransformComponent>
         </TransformWrapper>
       </ImageContainer>
