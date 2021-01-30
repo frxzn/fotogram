@@ -9,8 +9,15 @@ import { User, Video } from '../../interfaces';
 
 interface Props {
   user: User | undefined;
+  downloadMode: boolean;
   videoList: Video[];
-  handleSelect: (index: number) => void;
+  setVideoList: React.Dispatch<React.SetStateAction<Video[]>>;
+  handleShowMedia: (index: number) => void;
+}
+
+interface ImageProps {
+  selected: boolean;
+  downloadmode: number;
 }
 
 const GridContainer = styled.div`
@@ -25,7 +32,7 @@ const GridContainer = styled.div`
   }
 `;
 
-const GridItem = styled.div`
+const GridItem = styled.div<ImageProps>`
   display: flex;
   position: relative;
   justify-content: center;
@@ -40,7 +47,16 @@ const GridItem = styled.div`
 
   :hover {
     cursor: pointer;
-    filter: brightness(calc(2 / 3));
+    filter: ${(props) =>
+      !props.downloadmode ? 'brightness(calc(2 / 3))' : ''};
+  }
+
+  .circle {
+    background-color: ${(props) =>
+      props.downloadmode && !props.selected
+        ? 'transparent'
+        : props.theme.colors.primary} !important;
+    opacity: 1 !important;
   }
 `;
 
@@ -55,6 +71,18 @@ const StyledImage = styled(LazyLoadImage)`
   }
 `;
 
+const Circle = styled.div<ImageProps>`
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: ${(props) =>
+    props.selected ? props.theme.colors.primary : ''};
+`;
+
 const Placeholder = styled.div`
   background-color: #e4e4e4;
   width: 100%;
@@ -63,20 +91,53 @@ const Placeholder = styled.div`
 
 const VideoGrid: React.FC<Props & LazyComponentProps> = ({
   user,
+  downloadMode,
   videoList,
-  handleSelect,
+  setVideoList,
+  handleShowMedia,
   scrollPosition,
 }) => {
+  const handleClick = (video: Video) => {
+    if (!downloadMode) {
+      handleShowMedia(video.index);
+    } else {
+      setVideoList((prevVideoList) => {
+        const videoIndex = prevVideoList.findIndex(
+          (currVideo) => currVideo.id === video.id
+        );
+        let newVideoList = [...prevVideoList];
+        newVideoList[videoIndex] = {
+          ...newVideoList[videoIndex],
+          selected: !newVideoList[videoIndex].selected,
+        };
+        return newVideoList;
+      });
+    }
+  };
+
   return (
     <GridContainer>
       {videoList.map((video) => (
-        <GridItem key={video.id} onClick={() => handleSelect(video.index)}>
+        <GridItem
+          key={video.id}
+          onClick={() => handleClick(video)}
+          downloadmode={downloadMode ? 1 : 0}
+          selected={video.selected}
+        >
           <StyledImage
             src={video.preview}
             placeholder={<Placeholder />}
             alt={`Video de ${user?.full_name}`}
             scrollPosition={scrollPosition}
           />
+          {downloadMode && (
+            <Circle
+              key={video.index}
+              className="circle"
+              selected={video.selected}
+              downloadmode={downloadMode ? 1 : 0}
+            />
+          )}
         </GridItem>
       ))}
     </GridContainer>

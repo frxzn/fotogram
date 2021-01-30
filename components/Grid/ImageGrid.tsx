@@ -12,7 +12,7 @@ interface Props {
   user: User | undefined;
   imageList: Image[];
   setImageList: React.Dispatch<React.SetStateAction<Image[]>>;
-  handleSelect: (index: number) => void;
+  handleShowMedia: (index: number) => void;
 }
 
 interface ImageProps {
@@ -58,22 +58,6 @@ const GridItem = styled.div<ImageProps>`
         : props.theme.colors.primary} !important;
     opacity: 1 !important;
   }
-
-  /* :hover .circle {
-    background-color: ${(props) =>
-    props.downloadmode && !props.selected ? props.theme.colors.primary : ''};
-    opacity: 0.5;
-  }
-
-  @media (max-width: 735px) {
-    .circle {
-      background-color: ${(props) =>
-    props.downloadmode && !props.selected
-      ? 'transparent'
-      : props.theme.colors.primary} !important;
-      opacity: 1 !important;
-    }
-  } */
 `;
 
 const StyledImage = styled(LazyLoadImage)<ImageProps>`
@@ -105,13 +89,13 @@ const ImageGrid: React.FC<Props & LazyComponentProps> = ({
   user,
   imageList,
   setImageList,
-  handleSelect,
   scrollPosition,
   downloadMode,
+  handleShowMedia,
 }) => {
   const handleClick = (image: Image) => {
     if (!downloadMode) {
-      handleSelect(image.index);
+      handleShowMedia(image.index);
     } else {
       setImageList((prevImageList) => {
         const imageIndex = prevImageList.findIndex(

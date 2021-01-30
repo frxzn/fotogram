@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
+import { Provider } from 'react-redux';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import SnackbarProvider from 'react-simple-snackbar';
 import * as gtag from '../lib/gtag';
+import store from '../store';
 
 const GlobalStyle = createGlobalStyle`
   html,
@@ -53,11 +55,13 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        <SnackbarProvider>
-          <Component {...pageProps} />
-        </SnackbarProvider>
-      </ThemeProvider>
+      <SnackbarProvider>
+        <ThemeProvider theme={theme}>
+          <Provider store={store}>
+            <Component {...pageProps} />
+          </Provider>
+        </ThemeProvider>
+      </SnackbarProvider>
     </>
   );
 }

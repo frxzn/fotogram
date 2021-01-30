@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-// import axios from 'axios';
+import {
+  setShowMedia,
+  setSelectedMediaIndex,
+} from '../../slices/UserInterfaceSlice';
 
 interface Props {
   src: string;
   mediaCount: number;
-  selected: number;
-  setSelected: React.Dispatch<React.SetStateAction<number>>;
-  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedIndex: number;
 }
 
 const Container = styled.div`
@@ -86,13 +88,9 @@ const CloseIcon = styled.div`
 const amplitude = 2;
 const intercept = 0.9;
 
-const ImageModal: React.FC<Props> = ({
-  src,
-  mediaCount,
-  selected,
-  setSelected,
-  setShow,
-}) => {
+const ImageModal: React.FC<Props> = ({ src, mediaCount, selectedIndex }) => {
+  const dispatch = useDispatch();
+
   const [zoom, setZoom] = useState(false);
   const [timer, setTimer] = useState(0);
   const [transparency, setTransparency] = useState(intercept);
@@ -131,13 +129,13 @@ const ImageModal: React.FC<Props> = ({
 
   const handleArrowChange = (side: string) => {
     if (side === 'right') {
-      if (selected + 1 < mediaCount) {
-        setSelected((prev) => prev + 1);
+      if (selectedIndex + 1 < mediaCount) {
+        dispatch(setSelectedMediaIndex(selectedIndex + 1));
         setReset(false);
       }
     } else if (side === 'left') {
-      if (selected - 1 >= 0) {
-        setSelected((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
+      if (selectedIndex - 1 >= 0) {
+        dispatch(setSelectedMediaIndex(selectedIndex - 1));
         setReset(false);
       }
     }
@@ -146,7 +144,7 @@ const ImageModal: React.FC<Props> = ({
   const handleDragClose = (e: any) => {
     if (imageContainer.current && e.scale === 1) {
       if (Math.abs(e.positionY / imageContainer.current.offsetHeight) >= 0.3) {
-        setShow(false);
+        dispatch(setShowMedia(false));
       } else {
         setResetingPan(true);
         setTransparency(intercept);
@@ -181,17 +179,17 @@ const ImageModal: React.FC<Props> = ({
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'ArrowRight') {
-      if (selected + 1 < mediaCount) {
-        setSelected((prev) => prev + 1);
+      if (selectedIndex + 1 < mediaCount) {
+        dispatch(setSelectedMediaIndex(selectedIndex + 1));
         setReset(false);
       }
     } else if (e.key === 'ArrowLeft') {
-      if (selected - 1 >= 0) {
-        setSelected((prev) => (prev - 1 >= 0 ? prev - 1 : prev));
+      if (selectedIndex - 1 >= 0) {
+        dispatch(setSelectedMediaIndex(selectedIndex - 1));
         setReset(false);
       }
     } else if (e.key === 'Escape') {
-      setShow(false);
+      dispatch(setShowMedia(false));
     }
   };
 
@@ -205,7 +203,7 @@ const ImageModal: React.FC<Props> = ({
         return;
       }
       // outside click
-      setShow(false);
+      dispatch(setShowMedia(false));
     }
   };
 
@@ -219,10 +217,10 @@ const ImageModal: React.FC<Props> = ({
       tabIndex={1}
       ref={container}
     >
-      <CloseIcon onClick={() => setShow(false)}>
+      <CloseIcon onClick={() => dispatch(setShowMedia(false))}>
         <Icon src="/icons/cancel.svg" alt="close icon" />
       </CloseIcon>
-      {selected > 0 && (
+      {selectedIndex > 0 && (
         <IconContainer
           onClick={() => handleArrowChange('left')}
           style={{ left: 0 }}
@@ -246,7 +244,7 @@ const ImageModal: React.FC<Props> = ({
           </TransformComponent>
         </TransformWrapper>
       </ImageContainer>
-      {selected + 1 < mediaCount && (
+      {selectedIndex + 1 < mediaCount && (
         <IconContainer
           onClick={() => handleArrowChange('right')}
           style={{ right: 0 }}

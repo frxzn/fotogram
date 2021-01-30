@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSelectedTab, setDownloadMode } from '../slices/UserInterfaceSlice';
+import { RootState } from '../store';
 import styled from 'styled-components';
 import axios from 'axios';
 import Spinner from 'react-spinner-material';
@@ -40,16 +43,20 @@ const Error = styled.div`
 `;
 
 const UserProfile: React.FC = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const { username } = router.query;
   const isMobile = useMediaQuery({ query: `(max-width: 735px)` });
 
+  const showMedia = useSelector(
+    (state: RootState) => state.userInterface.showMedia
+  );
+  const downloadMode = useSelector(
+    (state: RootState) => state.userInterface.downloadMode
+  );
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
-  const [selectedTab, setSelectedTab] = useState('images');
-  const [show, setShow] = useState(false);
-  const [downloadMode, setDownloadMode] = useState(false);
   const [user, setUser] = useState<User>();
   const [pageInfo, setPageInfo] = useState<PageInfo>();
   const [imageList, setImageList] = useState<Image[]>([]);
@@ -80,8 +87,8 @@ const UserProfile: React.FC = () => {
 
     const init = async () => {
       setLoading(true);
-      setSelectedTab('images');
-      setDownloadMode(false);
+      dispatch(setSelectedTab('images'));
+      dispatch(setDownloadMode(false));
       try {
         const userRes = await axios.get<UserResponse>(
           `https://www.instagram.com/web/search/topsearch/?query=${username}`,
@@ -163,11 +170,6 @@ const UserProfile: React.FC = () => {
     };
   }, [username]);
 
-  const handleSelect = (index: number) => {
-    setSelectedMediaIndex(index);
-    setShow(true);
-  };
-
   let main;
   if (error) {
     main = <Error>{error}</Error>;
@@ -177,17 +179,13 @@ const UserProfile: React.FC = () => {
     main = (
       <DisplayGrid
         user={user}
-        selectedTab={selectedTab}
-        setSelectedTab={setSelectedTab}
         imageList={imageList}
         videoList={videoList}
-        handleSelect={handleSelect}
         pageInfo={pageInfo}
         setPageInfo={setPageInfo}
         setImageList={setImageList}
         setVideoList={setVideoList}
         downloadMode={downloadMode}
-        setDownloadMode={setDownloadMode}
       />
     );
   }
@@ -211,15 +209,8 @@ const UserProfile: React.FC = () => {
       <Center id="username-center">
         {!error && <Profile user={user} />}
         {main}
-        {show && (
-          <DisplayModal
-            imageList={imageList}
-            videoList={videoList}
-            selectedTab={selectedTab}
-            selectedMediaIndex={selectedMediaIndex}
-            setSelectedMediaIndex={setSelectedMediaIndex}
-            setShow={setShow}
-          />
+        {showMedia && (
+          <DisplayModal imageList={imageList} videoList={videoList} />
         )}
       </Center>
     );

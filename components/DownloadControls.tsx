@@ -1,9 +1,10 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { setDownloadMode } from '../slices/UserInterfaceSlice';
 import styled from 'styled-components';
 
 interface Props {
   downloadMode: boolean;
-  setDownloadMode: React.Dispatch<React.SetStateAction<boolean>>;
   handleSelectAll: () => void;
   handleCloseDownload: () => void;
   handleDownload: () => void;
@@ -79,12 +80,13 @@ const Button = styled.div`
 
 const DownloadControls: React.FC<Props> = ({
   downloadMode,
-  setDownloadMode,
   handleSelectAll,
   handleCloseDownload,
   selectedCount,
   handleDownload,
 }) => {
+  const dispatch = useDispatch();
+
   let render;
   if (downloadMode) {
     render = (
@@ -106,7 +108,7 @@ const DownloadControls: React.FC<Props> = ({
     );
   } else {
     render = (
-      <Fab onClick={() => setDownloadMode(true)}>
+      <Fab onClick={() => dispatch(setDownloadMode(true))}>
         <Icon src="/icons/download1.svg" alt="download icon" />
       </Fab>
     );

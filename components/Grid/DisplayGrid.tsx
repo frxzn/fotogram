@@ -3,6 +3,13 @@ import styled from 'styled-components';
 import axios from 'axios';
 // import fileDownload from 'js-file-download';
 import Spinner from 'react-spinner-material';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../../store';
+import {
+  setSelectedMediaIndex,
+  setShowMedia,
+  setDownloadMode,
+} from '../../slices/UserInterfaceSlice';
 import { User, Image, Video, PageInfo, MediaResponse } from '../../interfaces';
 import { bakeImageList, bakeVideoList, mediaUrl } from '../../utils';
 import ImageGrid from './ImageGrid';
@@ -15,14 +22,10 @@ interface Props {
   imageList: Image[];
   videoList: Video[];
   pageInfo: PageInfo | undefined;
-  selectedTab: string;
   downloadMode: boolean;
-  setDownloadMode: React.Dispatch<React.SetStateAction<boolean>>;
-  handleSelect: (index: number) => void;
   setImageList: React.Dispatch<React.SetStateAction<Image[]>>;
   setVideoList: React.Dispatch<React.SetStateAction<Video[]>>;
   setPageInfo: React.Dispatch<React.SetStateAction<PageInfo | undefined>>;
-  setSelectedTab: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const ButtonContainer = styled.div`
@@ -58,6 +61,11 @@ const Error = styled.div`
 `;
 
 const DisplayGrid: React.FC<Props> = (props) => {
+  const dispatch = useDispatch();
+  const selectedTab = useSelector(
+    (state: RootState) => state.userInterface.selectedTab
+  );
+
   const [loadingMore, setLoadingMore] = useState(false);
 
   const handleLoadMore = async () => {
@@ -90,42 +98,91 @@ const DisplayGrid: React.FC<Props> = (props) => {
   };
 
   const handleSelectAll = () => {
-    const selectedCount = props.imageList.filter((image) => image.selected)
-      .length;
-    let selected: boolean;
-    if (selectedCount < props.imageList.length) {
-      selected = true;
-    } else {
-      selected = false;
-    }
-    props.setImageList((prevImageList) => {
-      const newImageList = prevImageList.map((prevImage) => {
-        return { ...prevImage, selected };
+    // let list = imageList | videoList
+    if (selectedTab === 'images') {
+      const selectedCount = props.imageList.filter((image) => image.selected)
+        .length;
+      let selected: boolean;
+      if (selectedCount < props.imageList.length) {
+        selected = true;
+      } else {
+        selected = false;
+      }
+      props.setImageList((prevImageList) => {
+        const newImageList = prevImageList.map((prevImage) => {
+          return { ...prevImage, selected };
+        });
+        return newImageList;
       });
-      return newImageList;
-    });
+    } else if (selectedTab === 'videos') {
+      const selectedCount = props.videoList.filter((video) => video.selected)
+        .length;
+      let selected: boolean;
+      if (selectedCount < props.videoList.length) {
+        selected = true;
+      } else {
+        selected = false;
+      }
+      props.setVideoList((prevVideoList) => {
+        const newVideoList = prevVideoList.map((prevVideo) => {
+          return { ...prevVideo, selected };
+        });
+        return newVideoList;
+      });
+    } else {
+      console.error('invalid tab key');
+    }
   };
 
   const handleCloseDownload = () => {
-    props.setImageList((prevImageList) => {
-      const newImageList = prevImageList.map((prevImage) => {
-        return { ...prevImage, selected: false };
+    // let list = imageList | videoList
+    if (selectedTab === 'images') {
+      props.setImageList((prevImageList) => {
+        const newImageList = prevImageList.map((prevImage) => {
+          return { ...prevImage, selected: false };
+        });
+        return newImageList;
       });
-      return newImageList;
-    });
-    props.setDownloadMode(false);
+    } else if (selectedTab === 'videos') {
+      props.setVideoList((prevVideoList) => {
+        const newVideoList = prevVideoList.map((prevVideo) => {
+          return { ...prevVideo, selected: false };
+        });
+        return newVideoList;
+      });
+    } else {
+      console.error('invalid tab key');
+    }
+    dispatch(setDownloadMode(false));
   };
 
   const handleDownload = async () => {
-    // const downloadArray = props.imageList
-    //   .filter((image) => image.selected)
-    //   .map((image) => {
-    //     return {
-    //       url: image.src.high,
-    //       file: image.id + '.png',
-    //     };
-    //   });
-    // console.log(downloadArray);
+    let downloadArray = [];
+
+    if (selectedTab === 'images') {
+      downloadArray = props.imageList
+        .filter((image) => image.selected)
+        .map((image) => {
+          return {
+            url: image.src.high,
+            file: image.id + '.png',
+          };
+        });
+      console.log(downloadArray);
+    } else if (selectedTab === 'videos') {
+      downloadArray = props.videoList
+        .filter((video) => video.selected)
+        .map((video) => {
+          return {
+            url: video.videoUrl,
+            file: video.id + '.png',
+          };
+        });
+      console.log(downloadArray);
+    } else {
+      console.error('invalid tab key');
+    }
+
     // try {
     //   const res = await axios.post(
     //     'http://localhost:3001/download',
@@ -147,15 +204,20 @@ const DisplayGrid: React.FC<Props> = (props) => {
     // }
   };
 
+  const handleShowMedia = (index: number) => {
+    dispatch(setSelectedMediaIndex(index));
+    dispatch(setShowMedia(true));
+  };
+
   let render;
-  if (props.selectedTab === 'images') {
+  if (selectedTab === 'images') {
     if (props.imageList.length) {
       render = (
         <ImageGrid
           user={props.user}
           imageList={props.imageList}
           setImageList={props.setImageList}
-          handleSelect={props.handleSelect}
+          handleShowMedia={handleShowMedia}
           downloadMode={props.downloadMode}
         />
       );
@@ -166,13 +228,15 @@ const DisplayGrid: React.FC<Props> = (props) => {
         render = <Error>Este usuario aún no ha publicado fotos</Error>;
       }
     }
-  } else if (props.selectedTab === 'videos') {
+  } else if (selectedTab === 'videos') {
     if (props.videoList.length) {
       render = (
         <VideoGrid
           user={props.user}
           videoList={props.videoList}
-          handleSelect={props.handleSelect}
+          setVideoList={props.setVideoList}
+          handleShowMedia={handleShowMedia}
+          downloadMode={props.downloadMode}
         />
       );
     } else {
@@ -198,8 +262,8 @@ const DisplayGrid: React.FC<Props> = (props) => {
   return (
     <>
       <TabNavigation
-        selectedTab={props.selectedTab}
-        setSelectedTab={props.setSelectedTab}
+        selectedTab={selectedTab}
+        handleCloseDownload={handleCloseDownload}
       />
       {render}
       {props.pageInfo?.has_next_page && (
@@ -207,10 +271,13 @@ const DisplayGrid: React.FC<Props> = (props) => {
       )}
       <DownloadControls
         downloadMode={props.downloadMode}
-        setDownloadMode={props.setDownloadMode}
         handleSelectAll={handleSelectAll}
         handleCloseDownload={handleCloseDownload}
-        selectedCount={props.imageList.filter((img) => img.selected).length}
+        selectedCount={
+          selectedTab === 'images'
+            ? props.imageList.filter((img) => img.selected).length
+            : props.videoList.filter((vid) => vid.selected).length
+        }
         handleDownload={handleDownload}
       />
     </>
