@@ -193,7 +193,7 @@ const SearchBar: React.FC = () => {
       } catch (err) {
         if (axios.isCancel(err)) return;
         if (err === 'redirect') {
-          setError('Algo salió mal. Intente nuevamente más tarde.');
+          setError('Algo salió mal. Intente nuevamente más tarde');
         }
         setLoading(false);
       }
