@@ -9,7 +9,7 @@ import {
   setSelectedMediaIndex,
   setShowMedia,
   setDownloadMode,
-} from '../../slices/UserInterfaceSlice';
+} from '../../slices/userInterfaceSlice';
 import { User, Image, Video, PageInfo, MediaResponse } from '../../interfaces';
 import { bakeImageList, bakeVideoList, mediaUrl } from '../../utils';
 import ImageGrid from './ImageGrid';
@@ -157,7 +157,7 @@ const DisplayGrid: React.FC<Props> = (props) => {
   };
 
   const handleDownload = async () => {
-    let downloadArray = [];
+    let downloadArray: { url: string; file: string }[];
 
     if (selectedTab === 'images') {
       downloadArray = props.imageList
@@ -168,40 +168,50 @@ const DisplayGrid: React.FC<Props> = (props) => {
             file: image.id + '.png',
           };
         });
-      console.log(downloadArray);
-    } else if (selectedTab === 'videos') {
+      // try {
+      //   const res = await axios.post(
+      //     'http://18.223.188.23:3000/download',
+      //     downloadArray,
+      //     {
+      //       responseType: 'blob',
+      //       headers: {
+      //         'content-type': 'application/x-www-form-urlencoded',
+      //       },
+      //     }
+      //   );
+      //   fileDownload(res.data, 'fotogram.zip');
+      // } catch (err) {
+      //   console.log(err);
+      // }
+    } else {
       downloadArray = props.videoList
         .filter((video) => video.selected)
         .map((video) => {
           return {
             url: video.videoUrl,
-            file: video.id + '.png',
+            file: video.id + '.mp4',
           };
         });
-      console.log(downloadArray);
-    } else {
-      console.error('invalid tab key');
     }
 
-    // try {
-    //   const res = await axios.post(
-    //     'http://localhost:3001/download',
-    //     downloadArray,
-    //     {
-    //       onDownloadProgress: (progressEvent) => {
-    //         console.log(progressEvent);
-    //         // let percentCompleted = Math.floor(
-    //         //   (progressEvent.loaded * 100) / progressEvent.total
-    //         // );
-    //         // console.log(percentCompleted);
-    //       },
-    //       responseType: 'blob',
-    //     }
-    //   );
-    //   fileDownload(res.data, 'fotogram.zip');
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    downloadArray.forEach((item) => {
+      axios({
+        url: item.url,
+        method: 'GET',
+        responseType: 'blob', // important
+      })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', item.file);
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch((err) => console.log(err));
+    });
   };
 
   const handleShowMedia = (index: number) => {

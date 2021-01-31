@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
-import { setSelectedTab, setDownloadMode } from '../slices/UserInterfaceSlice';
+import { setSelectedTab, setDownloadMode } from '../slices/userInterfaceSlice';
 import { RootState } from '../store';
 import styled from 'styled-components';
 import axios from 'axios';

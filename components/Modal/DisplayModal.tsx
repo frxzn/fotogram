@@ -23,6 +23,7 @@ const DisplayModal: React.FC<Props> = (props) => {
     render = (
       <ImageModal
         src={props.imageList[selectedMediaIndex].src.high}
+        id={props.imageList[selectedMediaIndex].id}
         mediaCount={props.imageList.length}
         selectedIndex={selectedMediaIndex}
       />
@@ -31,6 +32,7 @@ const DisplayModal: React.FC<Props> = (props) => {
     render = (
       <VideoModal
         src={props.videoList[selectedMediaIndex].videoUrl}
+        id={props.imageList[selectedMediaIndex].id}
         mediaCount={props.videoList.length}
         selectedIndex={selectedMediaIndex}
       />

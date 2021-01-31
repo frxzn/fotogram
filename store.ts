@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userInterfaceReducer from './slices/UserInterfaceSlice';
+import userInterfaceReducer from './slices/userInterfaceSlice';
+import apiReducer from './slices/apiSlice';
 
 const store = configureStore({
   reducer: {
     userInterface: userInterfaceReducer,
+    api: apiReducer,
   },
 });
 

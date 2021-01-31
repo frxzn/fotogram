@@ -5,10 +5,12 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import {
   setShowMedia,
   setSelectedMediaIndex,
-} from '../../slices/UserInterfaceSlice';
+} from '../../slices/userInterfaceSlice';
+import axios from 'axios';
 
 interface Props {
   src: string;
+  id: string;
   mediaCount: number;
   selectedIndex: number;
 }
@@ -109,7 +111,12 @@ const CloseIcon = styled.div`
 const amplitude = 2;
 const intercept = 0.9;
 
-const ImageModal: React.FC<Props> = ({ src, mediaCount, selectedIndex }) => {
+const ImageModal: React.FC<Props> = ({
+  src,
+  id,
+  mediaCount,
+  selectedIndex,
+}) => {
   const dispatch = useDispatch();
 
   const [zoom, setZoom] = useState(false);
@@ -229,8 +236,22 @@ const ImageModal: React.FC<Props> = ({ src, mediaCount, selectedIndex }) => {
   };
 
   const handleDownload = () => {
-    console.log(src);
-    // call api, return file
+    axios({
+      url: src,
+      method: 'GET',
+      responseType: 'blob', // important
+    })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', id + '.png');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((err) => console.log(err));
   };
 
   return (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { setDownloadMode } from '../slices/UserInterfaceSlice';
+import { setDownloadMode } from '../slices/userInterfaceSlice';
 import styled from 'styled-components';
 
 interface Props {

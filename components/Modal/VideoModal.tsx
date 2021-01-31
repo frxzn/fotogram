@@ -5,10 +5,12 @@ import ReactPlayer from 'react-player';
 import {
   setShowMedia,
   setSelectedMediaIndex,
-} from '../../slices/UserInterfaceSlice';
+} from '../../slices/userInterfaceSlice';
+import axios from 'axios';
 
 interface Props {
   src: string;
+  id: string;
   mediaCount: number;
   selectedIndex: number;
 }
@@ -91,7 +93,12 @@ const CloseIcon = styled.div`
   }
 `;
 
-const VideoModal: React.FC<Props> = ({ src, mediaCount, selectedIndex }) => {
+const VideoModal: React.FC<Props> = ({
+  src,
+  id,
+  mediaCount,
+  selectedIndex,
+}) => {
   const dispatch = useDispatch();
   const [reset, setReset] = useState(false);
 
@@ -172,6 +179,22 @@ const VideoModal: React.FC<Props> = ({ src, mediaCount, selectedIndex }) => {
   const handleDownload = () => {
     console.log(src);
     // call api, return file
+    axios({
+      url: src,
+      method: 'GET',
+      responseType: 'blob', // important
+    })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', id + '.mp4');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
