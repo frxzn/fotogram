@@ -97,7 +97,7 @@ const UserList = styled.div`
     width: 100%;
     border: none;
     border-top: 1px solid ${(props) => props.theme.colors.borderColor};
-    /* border-bottom: 1px solid ${(props) => props.theme.colors.borderColor}; */
+    border-bottom: 1px solid ${(props) => props.theme.colors.borderColor};
     border-radius: 0;
   }
 `;
