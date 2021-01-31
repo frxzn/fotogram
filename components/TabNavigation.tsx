@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { setSelectedTab } from '../slices/userInterfaceSlice';
+import { setSelectedTab } from '../slices/UserInterfaceSlice';
 import styled from 'styled-components';
 
 interface Props {

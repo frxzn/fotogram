@@ -9,7 +9,7 @@ import {
   setSelectedMediaIndex,
   setShowMedia,
   setDownloadMode,
-} from '../../slices/userInterfaceSlice';
+} from '../../slices/UserInterfaceSlice';
 import { User, Image, Video, PageInfo, MediaResponse } from '../../interfaces';
 import { bakeImageList, bakeVideoList, mediaUrl } from '../../utils';
 import ImageGrid from './ImageGrid';

@@ -5,7 +5,7 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import {
   setShowMedia,
   setSelectedMediaIndex,
-} from '../../slices/userInterfaceSlice';
+} from '../../slices/UserInterfaceSlice';
 import axios from 'axios';
 
 interface Props {

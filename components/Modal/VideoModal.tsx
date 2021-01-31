@@ -5,7 +5,7 @@ import ReactPlayer from 'react-player';
 import {
   setShowMedia,
   setSelectedMediaIndex,
-} from '../../slices/userInterfaceSlice';
+} from '../../slices/UserInterfaceSlice';
 import axios from 'axios';
 
 interface Props {
