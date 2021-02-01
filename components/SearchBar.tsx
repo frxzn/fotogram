@@ -3,24 +3,29 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import axios from 'axios';
 import Spinner from 'react-spinner-material';
+import { useMediaQuery } from 'react-responsive';
 import { Users } from '../interfaces/index';
 import UserListItem from './UserListItem';
-import { useMediaQuery } from 'react-responsive';
+import Logo from './Logo';
 
 const Center = styled.div`
+  display: flex;
+  align-items: center;
   width: 100%;
   max-width: ${(props) => props.theme.dimensions.maxWidth};
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 1rem;
   position: relative;
 `;
 
-const SearchContainer = styled.div`
+const SearchContainer = styled.form`
   background-color: ${(props) => props.theme.colors.backgroundColor};
   border: 1px solid ${(props) => props.theme.colors.borderColor};
   border-radius: 3px;
   display: flex;
   align-items: center;
+  flex: 1;
+  margin-left: 1rem;
 `;
 
 const Icon = styled.img`
@@ -41,8 +46,8 @@ const Close = styled.img`
 
 const StyledInput = styled.input`
   flex: 1;
+  width: 0 !important;
   height: 2rem;
-  min-width: 50px;
   font-size: 1.2rem;
   border: none;
   background-color: ${(props) => props.theme.colors.backgroundColor};
@@ -253,25 +258,22 @@ const SearchBar: React.FC = () => {
 
   return (
     <Center ref={node}>
-      <form onSubmit={handleSubmit}>
-        <SearchContainer>
-          <Icon src="/icons/magnifying-glass.svg" alt="magnifying glass icon" />
-          <StyledLabel htmlFor="search-input">
-            Search Instagram User
-          </StyledLabel>
-          <StyledInput
-            value={input}
-            onChange={handleChange}
-            onFocus={handleFocus}
-            placeholder="Buscar"
-            id="search-input"
-            autoComplete="off"
-          />
-          {renderSpinner}
-          {renderClose}
-          <SearchButton type="submit">Buscar</SearchButton>
-        </SearchContainer>
-      </form>
+      <Logo />
+      <SearchContainer onSubmit={handleSubmit}>
+        <Icon src="/icons/magnifying-glass.svg" alt="magnifying glass icon" />
+        <StyledLabel htmlFor="search-input">Search Instagram User</StyledLabel>
+        <StyledInput
+          value={input}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          placeholder="Buscar"
+          id="search-input"
+          autoComplete="off"
+        />
+        {renderSpinner}
+        {renderClose}
+        <SearchButton type="submit">Buscar</SearchButton>
+      </SearchContainer>
       {show && <UserList>{renderList}</UserList>}
     </Center>
   );

@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
+import Logo from '../Logo';
 
 interface Props {}
 
@@ -16,17 +17,6 @@ const Container = styled.div`
   height: ${(props) => props.theme.dimensions.barHeight};
   max-width: ${(props) => props.theme.dimensions.maxWidth};
   padding-left: 1rem;
-`;
-
-const Logo = styled.a`
-  display: flex;
-  align-items: center;
-  color: ${(props) => props.theme.colors.primary};
-  font-size: 1.2rem;
-
-  :hover {
-    cursor: pointer;
-  }
 `;
 
 const List = styled.ul`
@@ -67,9 +57,7 @@ const Navbar: React.FC<Props> = () => {
   return (
     <Header>
       <Container>
-        <Link href={'/'} passHref>
-          <Logo>fotogram</Logo>
-        </Link>
+        <Logo />
         <List>
           {routes.map((route) => (
             <Item key={route.slug}>
