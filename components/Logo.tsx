@@ -27,7 +27,8 @@ const ComponentName: React.FC = () => {
   return (
     <Link href={'/'} passHref>
       <LogoContainer>
-        <Logo className="logo" src="/logo.png" />
+        <span style={{ display: 'none' }}>Go to home page</span>
+        <Logo className="logo" src="/logo.png" alt="Fotogram logo" />
       </LogoContainer>
     </Link>
   );
