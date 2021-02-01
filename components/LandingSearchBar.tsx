@@ -40,6 +40,7 @@ const Close = styled.img`
 
 const StyledInput = styled.input`
   flex: 1;
+  width: 0;
   height: 2rem;
   font-size: 1.2rem;
   border: none;
