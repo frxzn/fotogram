@@ -224,14 +224,14 @@ const SearchBar: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (isMobile) {
-      node.current?.scrollIntoView({ behavior: 'smooth' });
+      node.current?.scrollIntoView();
     }
     setInput(e.target.value);
   };
 
   const handleFocus = () => {
     if (isMobile) {
-      node.current?.scrollIntoView({ behavior: 'smooth' });
+      node.current?.scrollIntoView();
     }
     setClosed(false);
   };
