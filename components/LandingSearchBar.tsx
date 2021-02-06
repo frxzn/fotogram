@@ -11,6 +11,7 @@ const Center = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+  margin-bottom: 4rem;
 `;
 
 const SearchContainer = styled.div`
@@ -306,7 +307,7 @@ const SearchBar: React.FC = () => {
             checked={checked}
             onChange={handleCheck}
           />
-          <label htmlFor="scales">No mostrar cuentas privadas</label>
+          <label htmlFor="scales">Ocultar cuentas privadas</label>
         </Checkbox>
         <form onSubmit={handleSubmit}>
           <SearchContainer>
