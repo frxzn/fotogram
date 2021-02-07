@@ -71,7 +71,7 @@ const IndexPage = () => (
           Instagram de forma anónima, descargar sus fotos y videos en alta
           calidad de manera simple y rápida.
         </Paragraph>
-        <StyledH2>Como buscar un usuario?</StyledH2>
+        {/* <StyledH2>Como buscar un usuario?</StyledH2>
         <Paragraph>
           Simplemente ingresa el nombre del usuario cuyo perfil quieras ver en
           la barra anterior, y automáticamente aparecerá una lista de resultados
@@ -104,7 +104,7 @@ const IndexPage = () => (
           </li>
           <li>Compatible con cualquier dispositivo.</li>
           <li>Simple de usar.</li>
-        </ul>
+        </ul> */}
       </Center>
     </Container>
   </Layout>
