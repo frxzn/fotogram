@@ -20,7 +20,7 @@ const FlexContainer = styled.div`
 const Layout = ({
   children,
   title = 'Fotogram',
-  content = 'Mira, haz zoom y descarga fotos en alta definición de Instagram de forma anónima.',
+  content = 'Descargar fotos y videos de Instagram en alta calidad. Ver perfiles de forma anónima.',
 }: Props) => (
   <>
     <Head>

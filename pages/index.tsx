@@ -60,7 +60,7 @@ const Paragraph = styled.p`
 `;
 
 const IndexPage = () => (
-  <Layout title="Descargar fotos Instagram | Fotogram">
+  <Layout title="Descargar fotos y videos de Instagram | Fotogram">
     <Container>
       <StyledH1>Descargar fotos y videos de Instagram</StyledH1>
       <LandingSearchBar />
