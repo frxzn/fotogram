@@ -6,13 +6,12 @@ import {
   setShowMedia,
   setSelectedMediaIndex,
 } from '../../slices/UserInterfaceSlice';
-import axios from 'axios';
-
 interface Props {
   src: string;
   id: string;
   mediaCount: number;
   selectedIndex: number;
+  handleDownload: (src: string, id: string) => void;
 }
 
 const Container = styled.div`
@@ -116,6 +115,7 @@ const ImageModal: React.FC<Props> = ({
   id,
   mediaCount,
   selectedIndex,
+  handleDownload,
 }) => {
   const dispatch = useAppDispatch();
 
@@ -235,25 +235,6 @@ const ImageModal: React.FC<Props> = ({
     }
   };
 
-  const handleDownload = () => {
-    axios({
-      url: src,
-      method: 'GET',
-      responseType: 'blob', // important
-    })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', id + '.png');
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((err) => console.log(err));
-  };
-
   return (
     <Container
       style={{
@@ -265,7 +246,7 @@ const ImageModal: React.FC<Props> = ({
       ref={container}
     >
       <Icons>
-        <DownloadIcon onClick={handleDownload}>
+        <DownloadIcon onClick={() => handleDownload(src, id)}>
           <Icon src="/icons/download.svg" alt="close icon" />
         </DownloadIcon>
         <CloseIcon onClick={() => dispatch(setShowMedia(false))}>

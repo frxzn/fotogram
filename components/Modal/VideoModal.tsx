@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
 import ReactPlayer from 'react-player';
 import { useAppDispatch } from '../../store';
 import {
@@ -13,6 +12,7 @@ interface Props {
   id: string;
   mediaCount: number;
   selectedIndex: number;
+  handleDownload: (src: string, id: string) => void;
 }
 
 const Container = styled.div`
@@ -98,6 +98,7 @@ const VideoModal: React.FC<Props> = ({
   id,
   mediaCount,
   selectedIndex,
+  handleDownload,
 }) => {
   const dispatch = useAppDispatch();
   const [reset, setReset] = useState(false);
@@ -176,31 +177,10 @@ const VideoModal: React.FC<Props> = ({
     }
   };
 
-  const handleDownload = () => {
-    console.log(src);
-    // call api, return file
-    axios({
-      url: src,
-      method: 'GET',
-      responseType: 'blob', // important
-    })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', id + '.mp4');
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((err) => console.log(err));
-  };
-
   return (
     <Container onKeyDown={handleKeyDown} tabIndex={1} ref={container}>
       <Icons>
-        <DownloadIcon onClick={handleDownload}>
+        <DownloadIcon onClick={() => handleDownload(src, id)}>
           <Icon src="/icons/download.svg" alt="close icon" />
         </DownloadIcon>
         <CloseIcon onClick={() => dispatch(setShowMedia(false))}>

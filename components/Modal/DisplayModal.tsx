@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -14,6 +15,27 @@ const DisplayModal: React.FC = () => {
     (state: RootState) => state.userInterface.selectedTab
   );
 
+  const handleDownload = (src: string, id: string) => {
+    const extension = selectedTab === 'images' ? '.png' : '.mp4';
+
+    axios({
+      url: src,
+      method: 'GET',
+      responseType: 'blob', // important
+    })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', id + extension);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((err) => console.log(err));
+  };
+
   let render;
   if (selectedTab === 'images') {
     render = (
@@ -22,6 +44,7 @@ const DisplayModal: React.FC = () => {
         id={images[selectedMediaIndex].id}
         mediaCount={images.length}
         selectedIndex={selectedMediaIndex}
+        handleDownload={handleDownload}
       />
     );
   } else if (selectedTab === 'videos') {
@@ -31,6 +54,7 @@ const DisplayModal: React.FC = () => {
         id={videos[selectedMediaIndex].id}
         mediaCount={videos.length}
         selectedIndex={selectedMediaIndex}
+        handleDownload={handleDownload}
       />
     );
   } else {
