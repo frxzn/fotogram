@@ -1,17 +1,16 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Spinner from 'react-spinner-material';
 import { useMediaQuery } from 'react-responsive';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../store';
+import { initialize } from '../slices/apiSlice';
 import Layout from '../components/Layout';
 import Navbar from '../components/Navbar';
 import Profile from '../components/Profile';
 import DisplayGrid from '../components/Grid/DisplayGrid';
 import DisplayModal from '../components/Modal/DisplayModal';
-// rtk
-import { RootState, useAppDispatch } from '../store';
-import { initialize } from '../slices/apiSlice';
 
 const Center = styled.div`
   max-width: ${(props) => props.theme.dimensions.maxWidth};
@@ -44,16 +43,6 @@ const UserProfile: React.FC = () => {
   const downloadMode = useSelector(
     (state: RootState) => state.userInterface.downloadMode
   );
-
-  // const [error, setError] = useState('');
-  // const [loading, setLoading] = useState(true);
-  // const [user, setUser] = useState<User>();
-  // const [pageInfo, setPageInfo] = useState<PageInfo>();
-  // const [imageList, setImageList] = useState<Image[]>([]);
-  // const [videoList, setVideoList] = useState<Video[]>([]);
-
-  // new selectors:
-
   const loading = useSelector((state: RootState) => state.api.loading);
   const error = useSelector((state: RootState) => state.api.error);
   const user = useSelector((state: RootState) => state.api.user);
@@ -87,95 +76,6 @@ const UserProfile: React.FC = () => {
       };
     }
   }, [username]);
-
-  // useEffect(() => {
-  //   const userSource = axios.CancelToken.source();
-  //   const mediaSource = axios.CancelToken.source();
-
-  //   const init = async () => {
-  //     setLoading(true);
-  //     dispatch(setSelectedTab('images'));
-  //     dispatch(setDownloadMode(false));
-  //     try {
-  //       const userRes = await axios.get<UserResponse>(
-  //         `https://www.instagram.com/web/search/topsearch/?query=${username}`,
-  //         {
-  //           cancelToken: userSource.token,
-  //         }
-  //       );
-
-  //       const currentUser = userRes.data.users.find(
-  //         (users: Users) => users.user.username === username
-  //       );
-
-  //       if (currentUser) {
-  //         setUser(currentUser.user);
-  //         if (!currentUser.user.is_private) {
-  //           const mediaRes = await axios.get<MediaResponse>(
-  //             mediaUrl(currentUser.user.pk),
-  //             {
-  //               cancelToken: mediaSource.token,
-  //             }
-  //           );
-
-  //           const images = bakeImageList(
-  //             mediaRes.data.data.user.edge_owner_to_timeline_media.edges
-  //           );
-  //           const videos = bakeVideoList(
-  //             mediaRes.data.data.user.edge_owner_to_timeline_media.edges
-  //           );
-  //           setPageInfo(
-  //             mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
-  //           );
-  //           setImageList(images);
-  //           setVideoList(videos);
-  //         } else {
-  //           if (pageInfo) {
-  //             setPageInfo(undefined);
-  //           }
-  //           if (imageList) {
-  //             setImageList([]);
-  //           }
-  //           if (videoList) {
-  //             setVideoList([]);
-  //           }
-  //         }
-  //       } else {
-  //         throw '404';
-  //       }
-
-  //       if (error) {
-  //         setError('');
-  //       }
-  //     } catch (err) {
-  //       if (axios.isCancel(err)) return;
-  //       if (pageInfo) {
-  //         setPageInfo(undefined);
-  //       }
-  //       if (imageList) {
-  //         setImageList([]);
-  //       }
-  //       if (videoList) {
-  //         setVideoList([]);
-  //       }
-  //       if (err === '404') {
-  //         setError('Usuario no encontrado');
-  //       } else {
-  //         setError('Algo salió mal, intenta nuevamente más tarde');
-  //       }
-  //     }
-  //     setLoading(false);
-  //   };
-
-  //   if (username) {
-  //     init();
-  //   }
-
-  //   return () => {
-  //     userSource.cancel();
-  //     mediaSource.cancel();
-  //   };
-  // }, [username]);
 
   let main;
   if (error) {

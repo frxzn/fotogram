@@ -7,8 +7,7 @@ import {
 } from 'react-lazy-load-image-component';
 import { Image, Video } from '../../interfaces';
 import { useSelector } from 'react-redux';
-import { RootState, useAppDispatch } from '../../store';
-import { selectOne } from '../../slices/apiSlice';
+import { RootState } from '../../store';
 
 interface Props {
   handleClick: (item: Image | Video) => void;
