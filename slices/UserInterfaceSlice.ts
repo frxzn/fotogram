@@ -1,6 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const initialState = {
+interface IState {
+  selectedTab: 'images' | 'videos';
+  showMedia: boolean;
+  selectedMediaIndex: number;
+  downloadMode: boolean;
+}
+
+const initialState: IState = {
   selectedTab: 'images',
   showMedia: false,
   selectedMediaIndex: 0,
@@ -11,16 +18,17 @@ const userInterfaceSlice = createSlice({
   name: 'userInterface',
   initialState,
   reducers: {
-    setSelectedTab(state, action: PayloadAction<string>) {
+    reset: () => initialState,
+    setSelectedTab: (state, action: PayloadAction<'images' | 'videos'>) => {
       state.selectedTab = action.payload;
     },
-    setShowMedia(state, action: PayloadAction<boolean>) {
+    setShowMedia: (state, action: PayloadAction<boolean>) => {
       state.showMedia = action.payload;
     },
-    setSelectedMediaIndex(state, action: PayloadAction<number>) {
+    setSelectedMediaIndex: (state, action: PayloadAction<number>) => {
       state.selectedMediaIndex = action.payload;
     },
-    setDownloadMode(state, action: PayloadAction<boolean>) {
+    setDownloadMode: (state, action: PayloadAction<boolean>) => {
       state.downloadMode = action.payload;
     },
   },
@@ -29,6 +37,7 @@ const userInterfaceSlice = createSlice({
 const { actions, reducer } = userInterfaceSlice;
 
 export const {
+  reset,
   setSelectedTab,
   setShowMedia,
   setSelectedMediaIndex,

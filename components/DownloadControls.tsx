@@ -1,10 +1,10 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { setDownloadMode } from '../slices/UserInterfaceSlice';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../store';
+import { setDownloadMode } from '../slices/UserInterfaceSlice';
 
 interface Props {
-  downloadMode: boolean;
   handleSelectAll: () => void;
   handleCloseDownload: () => void;
   handleDownload: () => void;
@@ -80,14 +80,17 @@ const Button = styled.div`
 `;
 
 const DownloadControls: React.FC<Props> = ({
-  downloadMode,
   handleSelectAll,
   handleCloseDownload,
   selectedCount,
   handleDownload,
   listCount,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+
+  const downloadMode = useSelector(
+    (state: RootState) => state.userInterface.downloadMode
+  );
 
   let render = <></>;
   if (downloadMode) {

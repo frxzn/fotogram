@@ -1,32 +1,26 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-// import fileDownload from 'js-file-download';
+import fileDownload from 'js-file-download';
 import Spinner from 'react-spinner-material';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../store';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../../store';
 import {
   setSelectedMediaIndex,
   setShowMedia,
   setDownloadMode,
 } from '../../slices/UserInterfaceSlice';
-import { User, Image, Video, PageInfo, MediaResponse } from '../../interfaces';
-import { bakeImageList, bakeVideoList, mediaUrl } from '../../utils';
+import {
+  loadMore,
+  selectAll,
+  closeDownload,
+  selectOne,
+} from '../../slices/apiSlice';
 import ImageGrid from './ImageGrid';
 import VideoGrid from './VideoGrid';
 import TabNavigation from '../TabNavigation';
 import DownloadControls from '../DownloadControls';
-
-interface Props {
-  user: User | undefined;
-  imageList: Image[];
-  videoList: Video[];
-  pageInfo: PageInfo | undefined;
-  downloadMode: boolean;
-  setImageList: React.Dispatch<React.SetStateAction<Image[]>>;
-  setVideoList: React.Dispatch<React.SetStateAction<Video[]>>;
-  setPageInfo: React.Dispatch<React.SetStateAction<PageInfo | undefined>>;
-}
+import { Image, Video } from '../../interfaces';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -60,107 +54,91 @@ const Error = styled.div`
   margin: 0 1rem;
 `;
 
-const DisplayGrid: React.FC<Props> = (props) => {
-  const dispatch = useDispatch();
+const DisplayGrid: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  const user = useSelector((state: RootState) => state.api.user);
+  const pageInfo = useSelector((state: RootState) => state.api.pageInfo);
+  const images = useSelector((state: RootState) => state.api.images);
+  const videos = useSelector((state: RootState) => state.api.videos);
+  const loadingMore = useSelector((state: RootState) => state.api.loadingMore);
+  const downloadMode = useSelector(
+    (state: RootState) => state.userInterface.downloadMode
+  );
   const selectedTab = useSelector(
     (state: RootState) => state.userInterface.selectedTab
   );
 
-  const [loadingMore, setLoadingMore] = useState(false);
-
   const handleLoadMore = async () => {
-    if (props.user && props.pageInfo) {
-      if (props.pageInfo.has_next_page) {
-        setLoadingMore(true);
-        try {
-          const mediaRes = await axios.get<MediaResponse>(
-            mediaUrl(props.user.pk, props.pageInfo.end_cursor)
-          );
-          const images = bakeImageList(
-            mediaRes.data.data.user.edge_owner_to_timeline_media.edges,
-            props.imageList.length
-          );
-          const videos = bakeVideoList(
-            mediaRes.data.data.user.edge_owner_to_timeline_media.edges,
-            props.videoList.length
-          );
-          props.setPageInfo(
-            mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
-          );
-          props.setImageList((prev) => [...prev, ...images]);
-          props.setVideoList((prev) => [...prev, ...videos]);
-        } catch (err) {
-          console.log(err);
-        }
-        setLoadingMore(false);
+    if (user && pageInfo) {
+      if (pageInfo.has_next_page) {
+        dispatch(
+          loadMore({
+            pk: user.pk,
+            endCursor: pageInfo.end_cursor,
+            imagesCount: images.length,
+            videosCount: videos.length,
+          })
+        );
       }
     }
   };
 
   const handleSelectAll = () => {
-    // let list = imageList | videoList
-    if (selectedTab === 'images') {
-      const selectedCount = props.imageList.filter((image) => image.selected)
-        .length;
-      let selected: boolean;
-      if (selectedCount < props.imageList.length) {
-        selected = true;
-      } else {
-        selected = false;
-      }
-      props.setImageList((prevImageList) => {
-        const newImageList = prevImageList.map((prevImage) => {
-          return { ...prevImage, selected };
-        });
-        return newImageList;
-      });
-    } else if (selectedTab === 'videos') {
-      const selectedCount = props.videoList.filter((video) => video.selected)
-        .length;
-      let selected: boolean;
-      if (selectedCount < props.videoList.length) {
-        selected = true;
-      } else {
-        selected = false;
-      }
-      props.setVideoList((prevVideoList) => {
-        const newVideoList = prevVideoList.map((prevVideo) => {
-          return { ...prevVideo, selected };
-        });
-        return newVideoList;
-      });
-    } else {
-      console.error('invalid tab key');
-    }
+    dispatch(selectAll(selectedTab));
   };
 
   const handleCloseDownload = () => {
-    // let list = imageList | videoList
-    if (selectedTab === 'images') {
-      props.setImageList((prevImageList) => {
-        const newImageList = prevImageList.map((prevImage) => {
-          return { ...prevImage, selected: false };
-        });
-        return newImageList;
-      });
-    } else if (selectedTab === 'videos') {
-      props.setVideoList((prevVideoList) => {
-        const newVideoList = prevVideoList.map((prevVideo) => {
-          return { ...prevVideo, selected: false };
-        });
-        return newVideoList;
-      });
-    } else {
-      console.error('invalid tab key');
-    }
+    dispatch(closeDownload(selectedTab));
     dispatch(setDownloadMode(false));
   };
 
-  const handleDownload = async () => {
-    let downloadArray: { url: string; file: string }[];
+  // const handleDownload = async () => {
+  //   let downloadArray: { url: string; file: string }[];
 
-    if (selectedTab === 'images') {
-      downloadArray = props.imageList
+  //   if (selectedTab === 'images') {
+  //     downloadArray = props.imageList
+  //       .filter((image) => image.selected)
+  //       .map((image) => {
+  //         return {
+  //           url: image.src.high,
+  //           file: image.id + '.png',
+  //         };
+  //       });
+  //   } else {
+  //     downloadArray = props.videoList
+  //       .filter((video) => video.selected)
+  //       .map((video) => {
+  //         return {
+  //           url: video.videoUrl,
+  //           file: video.id + '.mp4',
+  //         };
+  //       });
+  //   }
+
+  //   downloadArray.forEach((item) => {
+  //     axios({
+  //       url: item.url,
+  //       method: 'GET',
+  //       responseType: 'blob', // important
+  //     })
+  //       .then((response) => {
+  //         const url = window.URL.createObjectURL(new Blob([response.data]));
+  //         const link = document.createElement('a');
+  //         link.href = url;
+  //         link.setAttribute('download', item.file);
+  //         document.body.appendChild(link);
+  //         link.click();
+  //         link.remove();
+  //         window.URL.revokeObjectURL(url);
+  //       })
+  //       .catch((err) => console.log(err));
+  //   });
+  // };
+
+  const handleDownload2 = async () => {
+    try {
+      const downloadArray = images
         .filter((image) => image.selected)
         .map((image) => {
           return {
@@ -168,89 +146,47 @@ const DisplayGrid: React.FC<Props> = (props) => {
             file: image.id + '.png',
           };
         });
-      // try {
-      //   const res = await axios.post(
-      //     'http://18.223.188.23:3000/download',
-      //     downloadArray,
-      //     {
-      //       responseType: 'blob',
-      //       headers: {
-      //         'content-type': 'application/x-www-form-urlencoded',
-      //       },
-      //     }
-      //   );
-      //   fileDownload(res.data, 'fotogram.zip');
-      // } catch (err) {
-      //   console.log(err);
-      // }
-    } else {
-      downloadArray = props.videoList
-        .filter((video) => video.selected)
-        .map((video) => {
-          return {
-            url: video.videoUrl,
-            file: video.id + '.mp4',
-          };
-        });
+      const res = await axios.post(
+        'http://18.191.46.59:3000/download',
+        downloadArray,
+        {
+          responseType: 'blob',
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+      fileDownload(res.data, 'fotogram.zip');
+    } catch (err) {
+      console.log(err);
     }
-
-    downloadArray.forEach((item) => {
-      axios({
-        url: item.url,
-        method: 'GET',
-        responseType: 'blob', // important
-      })
-        .then((response) => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', item.file);
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          window.URL.revokeObjectURL(url);
-        })
-        .catch((err) => console.log(err));
-    });
   };
 
-  const handleShowMedia = (index: number) => {
-    dispatch(setSelectedMediaIndex(index));
-    dispatch(setShowMedia(true));
+  const handleClick = (item: Image | Video) => {
+    if (!downloadMode) {
+      dispatch(setSelectedMediaIndex(item.index));
+      dispatch(setShowMedia(true));
+    } else {
+      dispatch(selectOne({ selectedTab, item }));
+    }
   };
 
   let render;
   if (selectedTab === 'images') {
-    if (props.imageList.length) {
-      render = (
-        <ImageGrid
-          user={props.user}
-          imageList={props.imageList}
-          setImageList={props.setImageList}
-          handleShowMedia={handleShowMedia}
-          downloadMode={props.downloadMode}
-        />
-      );
+    if (images.length) {
+      render = <ImageGrid handleClick={handleClick} />;
     } else {
-      if (props.pageInfo?.has_next_page) {
+      if (pageInfo?.has_next_page) {
         render = <Error>No hay fotos para mostrar, intenta cargando más</Error>;
       } else {
         render = <Error>Este usuario aún no ha publicado fotos</Error>;
       }
     }
   } else if (selectedTab === 'videos') {
-    if (props.videoList.length) {
-      render = (
-        <VideoGrid
-          user={props.user}
-          videoList={props.videoList}
-          setVideoList={props.setVideoList}
-          handleShowMedia={handleShowMedia}
-          downloadMode={props.downloadMode}
-        />
-      );
+    if (videos.length) {
+      render = <VideoGrid handleClick={handleClick} />;
     } else {
-      if (props.pageInfo?.has_next_page) {
+      if (pageInfo?.has_next_page) {
         render = (
           <Error>No hay videos para mostrar, intenta cargando más</Error>
         );
@@ -276,24 +212,19 @@ const DisplayGrid: React.FC<Props> = (props) => {
         handleCloseDownload={handleCloseDownload}
       />
       {render}
-      {props.pageInfo?.has_next_page && (
+      {pageInfo?.has_next_page && (
         <ButtonContainer>{renderButton}</ButtonContainer>
       )}
       <DownloadControls
-        listCount={
-          selectedTab === 'images'
-            ? props.imageList.length
-            : props.videoList.length
-        }
-        downloadMode={props.downloadMode}
+        listCount={selectedTab === 'images' ? images.length : videos.length}
         handleSelectAll={handleSelectAll}
         handleCloseDownload={handleCloseDownload}
         selectedCount={
           selectedTab === 'images'
-            ? props.imageList.filter((img) => img.selected).length
-            : props.videoList.filter((vid) => vid.selected).length
+            ? images.filter((img) => img.selected).length
+            : videos.filter((vid) => vid.selected).length
         }
-        handleDownload={handleDownload}
+        handleDownload={handleDownload2}
       />
     </>
   );

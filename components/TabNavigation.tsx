@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../store';
 import { setSelectedTab } from '../slices/UserInterfaceSlice';
 import styled from 'styled-components';
 
@@ -40,7 +40,7 @@ const Tab = styled.div`
 `;
 
 const TabNavigation: React.FC<Props> = (props) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleTabNavigation = (key: string) => {
     props.handleCloseDownload();

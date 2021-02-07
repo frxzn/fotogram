@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import axios from 'axios';
 import ReactPlayer from 'react-player';
+import { useAppDispatch } from '../../store';
 import {
   setShowMedia,
   setSelectedMediaIndex,
 } from '../../slices/UserInterfaceSlice';
-import axios from 'axios';
 
 interface Props {
   src: string;
@@ -99,7 +99,7 @@ const VideoModal: React.FC<Props> = ({
   mediaCount,
   selectedIndex,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [reset, setReset] = useState(false);
 
   const container = useRef<HTMLDivElement>(null);

@@ -1,27 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useSelector, useDispatch } from 'react-redux';
-import { setSelectedTab, setDownloadMode } from '../slices/UserInterfaceSlice';
-import { RootState } from '../store';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import axios from 'axios';
 import Spinner from 'react-spinner-material';
 import { useMediaQuery } from 'react-responsive';
-import {
-  User,
-  Users,
-  UserResponse,
-  MediaResponse,
-  PageInfo,
-  Image,
-  Video,
-} from '../interfaces';
-import { bakeImageList, bakeVideoList, mediaUrl } from '../utils';
 import Layout from '../components/Layout';
 import Navbar from '../components/Navbar';
 import Profile from '../components/Profile';
 import DisplayGrid from '../components/Grid/DisplayGrid';
 import DisplayModal from '../components/Modal/DisplayModal';
+// rtk
+import { RootState, useAppDispatch } from '../store';
+import { initialize } from '../slices/apiSlice';
 
 const Center = styled.div`
   max-width: ${(props) => props.theme.dimensions.maxWidth};
@@ -43,7 +33,7 @@ const Error = styled.div`
 `;
 
 const UserProfile: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const { username } = router.query;
   const isMobile = useMediaQuery({ query: `(max-width: 735px)` });
@@ -55,12 +45,18 @@ const UserProfile: React.FC = () => {
     (state: RootState) => state.userInterface.downloadMode
   );
 
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<User>();
-  const [pageInfo, setPageInfo] = useState<PageInfo>();
-  const [imageList, setImageList] = useState<Image[]>([]);
-  const [videoList, setVideoList] = useState<Video[]>([]);
+  // const [error, setError] = useState('');
+  // const [loading, setLoading] = useState(true);
+  // const [user, setUser] = useState<User>();
+  // const [pageInfo, setPageInfo] = useState<PageInfo>();
+  // const [imageList, setImageList] = useState<Image[]>([]);
+  // const [videoList, setVideoList] = useState<Video[]>([]);
+
+  // new selectors:
+
+  const loading = useSelector((state: RootState) => state.api.loading);
+  const error = useSelector((state: RootState) => state.api.error);
+  const user = useSelector((state: RootState) => state.api.user);
 
   useEffect(() => {
     const HtmlCenter = document.getElementById('username-center');
@@ -82,93 +78,104 @@ const UserProfile: React.FC = () => {
   }, [downloadMode]);
 
   useEffect(() => {
-    const userSource = axios.CancelToken.source();
-    const mediaSource = axios.CancelToken.source();
-
-    const init = async () => {
-      setLoading(true);
-      dispatch(setSelectedTab('images'));
-      dispatch(setDownloadMode(false));
-      try {
-        const userRes = await axios.get<UserResponse>(
-          `https://www.instagram.com/web/search/topsearch/?query=${username}`,
-          {
-            cancelToken: userSource.token,
-          }
-        );
-
-        const currentUser = userRes.data.users.find(
-          (users: Users) => users.user.username === username
-        );
-
-        if (currentUser) {
-          setUser(currentUser.user);
-          if (!currentUser.user.is_private) {
-            const mediaRes = await axios.get<MediaResponse>(
-              mediaUrl(currentUser.user.pk),
-              {
-                cancelToken: mediaSource.token,
-              }
-            );
-
-            const images = bakeImageList(
-              mediaRes.data.data.user.edge_owner_to_timeline_media.edges
-            );
-            const videos = bakeVideoList(
-              mediaRes.data.data.user.edge_owner_to_timeline_media.edges
-            );
-            setPageInfo(
-              mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
-            );
-            setImageList(images);
-            setVideoList(videos);
-          } else {
-            if (pageInfo) {
-              setPageInfo(undefined);
-            }
-            if (imageList) {
-              setImageList([]);
-            }
-            if (videoList) {
-              setVideoList([]);
-            }
-          }
-        } else {
-          throw '404';
-        }
-
-        if (error) {
-          setError('');
-        }
-      } catch (err) {
-        if (axios.isCancel(err)) return;
-        if (pageInfo) {
-          setPageInfo(undefined);
-        }
-        if (imageList) {
-          setImageList([]);
-        }
-        if (videoList) {
-          setVideoList([]);
-        }
-        if (err === '404') {
-          setError('Usuario no encontrado');
-        } else {
-          setError('Algo salió mal, intenta nuevamente más tarde');
-        }
-      }
-      setLoading(false);
-    };
-
     if (username) {
-      init();
+      // reset UI slice
+      // reset api
+      const promise = dispatch(initialize(username as string));
+      return () => {
+        promise.abort();
+      };
     }
-
-    return () => {
-      userSource.cancel();
-      mediaSource.cancel();
-    };
   }, [username]);
+
+  // useEffect(() => {
+  //   const userSource = axios.CancelToken.source();
+  //   const mediaSource = axios.CancelToken.source();
+
+  //   const init = async () => {
+  //     setLoading(true);
+  //     dispatch(setSelectedTab('images'));
+  //     dispatch(setDownloadMode(false));
+  //     try {
+  //       const userRes = await axios.get<UserResponse>(
+  //         `https://www.instagram.com/web/search/topsearch/?query=${username}`,
+  //         {
+  //           cancelToken: userSource.token,
+  //         }
+  //       );
+
+  //       const currentUser = userRes.data.users.find(
+  //         (users: Users) => users.user.username === username
+  //       );
+
+  //       if (currentUser) {
+  //         setUser(currentUser.user);
+  //         if (!currentUser.user.is_private) {
+  //           const mediaRes = await axios.get<MediaResponse>(
+  //             mediaUrl(currentUser.user.pk),
+  //             {
+  //               cancelToken: mediaSource.token,
+  //             }
+  //           );
+
+  //           const images = bakeImageList(
+  //             mediaRes.data.data.user.edge_owner_to_timeline_media.edges
+  //           );
+  //           const videos = bakeVideoList(
+  //             mediaRes.data.data.user.edge_owner_to_timeline_media.edges
+  //           );
+  //           setPageInfo(
+  //             mediaRes.data.data.user.edge_owner_to_timeline_media.page_info
+  //           );
+  //           setImageList(images);
+  //           setVideoList(videos);
+  //         } else {
+  //           if (pageInfo) {
+  //             setPageInfo(undefined);
+  //           }
+  //           if (imageList) {
+  //             setImageList([]);
+  //           }
+  //           if (videoList) {
+  //             setVideoList([]);
+  //           }
+  //         }
+  //       } else {
+  //         throw '404';
+  //       }
+
+  //       if (error) {
+  //         setError('');
+  //       }
+  //     } catch (err) {
+  //       if (axios.isCancel(err)) return;
+  //       if (pageInfo) {
+  //         setPageInfo(undefined);
+  //       }
+  //       if (imageList) {
+  //         setImageList([]);
+  //       }
+  //       if (videoList) {
+  //         setVideoList([]);
+  //       }
+  //       if (err === '404') {
+  //         setError('Usuario no encontrado');
+  //       } else {
+  //         setError('Algo salió mal, intenta nuevamente más tarde');
+  //       }
+  //     }
+  //     setLoading(false);
+  //   };
+
+  //   if (username) {
+  //     init();
+  //   }
+
+  //   return () => {
+  //     userSource.cancel();
+  //     mediaSource.cancel();
+  //   };
+  // }, [username]);
 
   let main;
   if (error) {
@@ -176,18 +183,7 @@ const UserProfile: React.FC = () => {
   } else if (user?.is_private) {
     main = <Error>Esta cuenta es privada</Error>;
   } else {
-    main = (
-      <DisplayGrid
-        user={user}
-        imageList={imageList}
-        videoList={videoList}
-        pageInfo={pageInfo}
-        setPageInfo={setPageInfo}
-        setImageList={setImageList}
-        setVideoList={setVideoList}
-        downloadMode={downloadMode}
-      />
-    );
+    main = <DisplayGrid />;
   }
 
   let render;
@@ -209,9 +205,7 @@ const UserProfile: React.FC = () => {
       <Center id="username-center">
         {!error && <Profile user={user} />}
         {main}
-        {showMedia && (
-          <DisplayModal imageList={imageList} videoList={videoList} />
-        )}
+        {showMedia && <DisplayModal />}
       </Center>
     );
   }

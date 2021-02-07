@@ -5,14 +5,13 @@ import {
   trackWindowScroll,
   LazyComponentProps,
 } from 'react-lazy-load-image-component';
-import { User, Image } from '../../interfaces';
+import { Image, Video } from '../../interfaces';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../../store';
+import { selectOne } from '../../slices/apiSlice';
 
 interface Props {
-  downloadMode: boolean;
-  user: User | undefined;
-  imageList: Image[];
-  setImageList: React.Dispatch<React.SetStateAction<Image[]>>;
-  handleShowMedia: (index: number) => void;
+  handleClick: (item: Image | Video) => void;
 }
 
 interface ImageProps {
@@ -86,34 +85,18 @@ const Placeholder = styled.div`
 `;
 
 const ImageGrid: React.FC<Props & LazyComponentProps> = ({
-  user,
-  imageList,
-  setImageList,
   scrollPosition,
-  downloadMode,
-  handleShowMedia,
+  handleClick,
 }) => {
-  const handleClick = (image: Image) => {
-    if (!downloadMode) {
-      handleShowMedia(image.index);
-    } else {
-      setImageList((prevImageList) => {
-        const imageIndex = prevImageList.findIndex(
-          (currImage) => currImage.id === image.id
-        );
-        let newImageList = [...prevImageList];
-        newImageList[imageIndex] = {
-          ...newImageList[imageIndex],
-          selected: !newImageList[imageIndex].selected,
-        };
-        return newImageList;
-      });
-    }
-  };
+  const downloadMode = useSelector(
+    (state: RootState) => state.userInterface.downloadMode
+  );
+  const user = useSelector((state: RootState) => state.api.user);
+  const images = useSelector((state: RootState) => state.api.images);
 
   return (
     <GridContainer>
-      {imageList.map((image) => (
+      {images.map((image) => (
         <GridItem
           key={image.id}
           onClick={() => handleClick(image)}

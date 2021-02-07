@@ -1,16 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { Image, Video } from '../../interfaces';
 import ImageModal from './ImageModal';
 import VideoModal from './VideoModal';
 
-interface Props {
-  imageList: Image[];
-  videoList: Video[];
-}
-
-const DisplayModal: React.FC<Props> = (props) => {
+const DisplayModal: React.FC = () => {
+  const images = useSelector((state: RootState) => state.api.images);
+  const videos = useSelector((state: RootState) => state.api.videos);
   const selectedMediaIndex = useSelector(
     (state: RootState) => state.userInterface.selectedMediaIndex
   );
@@ -22,18 +18,18 @@ const DisplayModal: React.FC<Props> = (props) => {
   if (selectedTab === 'images') {
     render = (
       <ImageModal
-        src={props.imageList[selectedMediaIndex].src.high}
-        id={props.imageList[selectedMediaIndex].id}
-        mediaCount={props.imageList.length}
+        src={images[selectedMediaIndex].src.high}
+        id={images[selectedMediaIndex].id}
+        mediaCount={images.length}
         selectedIndex={selectedMediaIndex}
       />
     );
   } else if (selectedTab === 'videos') {
     render = (
       <VideoModal
-        src={props.videoList[selectedMediaIndex].videoUrl}
-        id={props.videoList[selectedMediaIndex].id}
-        mediaCount={props.videoList.length}
+        src={videos[selectedMediaIndex].videoUrl}
+        id={videos[selectedMediaIndex].id}
+        mediaCount={videos.length}
         selectedIndex={selectedMediaIndex}
       />
     );

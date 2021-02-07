@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
+import { useAppDispatch } from '../../store';
 import {
   setShowMedia,
   setSelectedMediaIndex,
@@ -117,7 +117,7 @@ const ImageModal: React.FC<Props> = ({
   mediaCount,
   selectedIndex,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [zoom, setZoom] = useState(false);
   const [timer, setTimer] = useState(0);
