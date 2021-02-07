@@ -39,18 +39,25 @@ const Tab = styled.div`
   }
 `;
 
+interface Item {
+  key: 'images' | 'videos';
+  name: string;
+}
+
+const tabs: Item[] = [
+  { key: 'images', name: 'Fotos' },
+  { key: 'videos', name: 'Videos' },
+];
+
 const TabNavigation: React.FC<Props> = (props) => {
   const dispatch = useAppDispatch();
 
-  const handleTabNavigation = (key: string) => {
+  const handleTabNavigation = (key: 'images' | 'videos') => {
     props.handleCloseDownload();
     dispatch(setSelectedTab(key));
   };
 
-  const render = [
-    { key: 'images', name: 'Fotos' },
-    { key: 'videos', name: 'Videos' },
-  ].map((item) => {
+  const render = tabs.map((item) => {
     return (
       <Tab
         className={props.selectedTab === item.key ? 'active' : ''}
