@@ -43,12 +43,12 @@ const StyledH2 = styled.h2`
   }
 `;
 
-const StyledH3 = styled.h3`
-  margin-left: 2rem;
+// const StyledH3 = styled.h3`
+//   margin-left: 2rem;
 
-  @media (max-width: 735px) {
-  }
-`;
+//   @media (max-width: 735px) {
+//   }
+// `;
 
 const Paragraph = styled.p`
   /* font-size: 1.2rem; */
