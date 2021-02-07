@@ -11,6 +11,39 @@ import {
   Video,
 } from '../interfaces';
 
+export const search = createAsyncThunk(
+  'api/search',
+  async (input: string, { signal, rejectWithValue }) => {
+    const source = axios.CancelToken.source();
+
+    signal.addEventListener('abort', () => {
+      source.cancel();
+    });
+
+    try {
+      if (input.length) {
+        const res = await axios.get<UserResponse>(
+          `https://www.instagram.com/web/search/topsearch/?query=${input}`,
+          {
+            cancelToken: source.token,
+          }
+        );
+        if (res.request.responseURL.includes('accounts/login')) {
+          throw 'redirect';
+        }
+        return res.data.users;
+      } else {
+        return [];
+      }
+    } catch (err) {
+      if (axios.isCancel(err)) return;
+      if (err === 'redirect') {
+        return rejectWithValue('Algo salió mal. Intente nuevamente más tarde');
+      }
+    }
+  }
+);
+
 export const initialize = createAsyncThunk(
   'api/initialize',
   async (username: string, { signal, rejectWithValue }) => {
@@ -73,11 +106,9 @@ export const initialize = createAsyncThunk(
     } catch (err) {
       if (axios.isCancel(err)) return; // abort promise
       if (err === '404') {
-        return rejectWithValue({ message: 'Usuario no encontrado' });
+        return rejectWithValue('Usuario no encontrado');
       } else {
-        return rejectWithValue({
-          message: 'Algo salió mal, intenta nuevamente más tarde',
-        });
+        return rejectWithValue('Algo salió mal, intenta nuevamente más tarde');
       }
     }
   }
@@ -130,6 +161,9 @@ interface IState {
   videos: Video[];
   fresh: boolean;
   loadingMore: boolean;
+  searchList: Users[];
+  searchLoading: boolean;
+  searchError: string;
 }
 
 const initialState: IState = {
@@ -141,6 +175,9 @@ const initialState: IState = {
   videos: [],
   fresh: true,
   loadingMore: false,
+  searchList: [],
+  searchLoading: false,
+  searchError: '',
 };
 
 const apiSlice = createSlice({
@@ -186,12 +223,11 @@ const apiSlice = createSlice({
         state.videos = action.payload.videos;
       }
       state.loading = false;
+      state.error = '';
       state.fresh = false;
     });
     builder.addCase(initialize.rejected, (state, action) => {
-      if (action.error.message) {
-        state.error = action.error.message;
-      }
+      state.error = action.payload as string;
       state.loading = false;
       state.fresh = false;
     });
@@ -208,6 +244,21 @@ const apiSlice = createSlice({
     });
     builder.addCase(loadMore.rejected, (state) => {
       state.loadingMore = false;
+    });
+    builder.addCase(search.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.searchList = action.payload;
+      }
+      state.searchLoading = false;
+    });
+    builder.addCase(search.pending, (state) => {
+      state.searchLoading = true;
+    });
+    builder.addCase(search.rejected, (state, action) => {
+      state.searchLoading = false;
+      if (action.payload) {
+        state.searchError = action.payload as string;
+      }
     });
   },
 });

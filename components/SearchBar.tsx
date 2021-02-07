@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import axios from 'axios';
 import Spinner from 'react-spinner-material';
 import { useMediaQuery } from 'react-responsive';
-import { Users } from '../interfaces/index';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../store';
+import { search } from '../slices/apiSlice';
 import UserListItem from './UserListItem';
 import Logo from './Logo';
 
@@ -119,14 +120,17 @@ const StyledLabel = styled.label`
 `;
 
 const SearchBar: React.FC = () => {
+  const dispatch = useAppDispatch();
   const isMobile = useMediaQuery({ query: `(max-width: 735px)` });
   const router = useRouter();
   const { username } = router.query;
+
+  const searchList = useSelector((state: RootState) => state.api.searchList);
+  const loading = useSelector((state: RootState) => state.api.searchLoading);
+
   const [input, setInput] = useState('');
   const [show, setShow] = useState(false);
   const [closed, setClosed] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [searchList, setSearchList] = useState<Users[]>([]);
   const node = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -154,41 +158,15 @@ const SearchBar: React.FC = () => {
     };
   }, []);
 
-  // Effect to fetch IG's search API
   useEffect(() => {
-    const source = axios.CancelToken.source();
-
-    const search = async () => {
-      try {
-        if (input.length) {
-          if (!loading) {
-            setLoading(true);
-          }
-          const res = await axios.get(
-            `https://www.instagram.com/web/search/topsearch/?query=${input}`,
-            {
-              cancelToken: source.token,
-            }
-          );
-          if (res.data.users) {
-            setSearchList(res.data.users);
-          }
-          setLoading(false);
-        } else {
-          setSearchList([]);
-        }
-      } catch (err) {
-        if (axios.isCancel(err)) return;
-      }
-    };
-
-    // 500ms sweetspot for not triggering another request on key holding
+    let promise: any;
     const timer = setTimeout(() => {
-      search();
+      promise = dispatch(search(input));
     }, 500);
-
     return () => {
-      source.cancel();
+      if (promise) {
+        promise.abort();
+      }
       clearTimeout(timer);
     };
   }, [input]);

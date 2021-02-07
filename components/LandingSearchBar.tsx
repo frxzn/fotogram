@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import axios from 'axios';
 import { useMediaQuery } from 'react-responsive';
 import Spinner from 'react-spinner-material';
-import { Users } from '../interfaces/index';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../store';
+import { search } from '../slices/apiSlice';
 import UserListItem from './UserListItem';
 
 const Center = styled.div`
@@ -125,16 +126,18 @@ const DisplayError = styled.div`
 `;
 
 const SearchBar: React.FC = () => {
+  const dispatch = useAppDispatch();
   const router = useRouter();
   const isMobile = useMediaQuery({ query: `(max-width: 735px)` });
 
+  const searchList = useSelector((state: RootState) => state.api.searchList);
+  const loading = useSelector((state: RootState) => state.api.searchLoading);
+  const error = useSelector((state: RootState) => state.api.searchError);
+
   const [input, setInput] = useState('');
-  const [error, setError] = useState('');
   const [show, setShow] = useState(false);
   const [closed, setClosed] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [searchList, setSearchList] = useState<Users[]>([]);
 
   const node = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -160,54 +163,15 @@ const SearchBar: React.FC = () => {
     }
   }, [show, isMobile]);
 
-  // Effect to fetch IG's search API
   useEffect(() => {
-    const source = axios.CancelToken.source();
-
-    const search = async () => {
-      try {
-        if (input.length) {
-          if (!loading) {
-            setLoading(true);
-          }
-          const res = await axios.get(
-            `https://www.instagram.com/web/search/topsearch/?query=${input}`,
-            {
-              cancelToken: source.token,
-            }
-          );
-          if (
-            res.request.responseURL ===
-            'https://www.instagram.com/accounts/login/'
-          ) {
-            throw 'redirect';
-          }
-          if (res.data.users) {
-            setSearchList(res.data.users);
-          }
-          if (error) {
-            setError('');
-          }
-          setLoading(false);
-        } else {
-          setSearchList([]);
-        }
-      } catch (err) {
-        if (axios.isCancel(err)) return;
-        if (err === 'redirect') {
-          setError('Algo salió mal. Intente nuevamente más tarde');
-        }
-        setLoading(false);
-      }
-    };
-
-    // 500ms sweetspot for not triggering another request on key holding
+    let promise: any;
     const timer = setTimeout(() => {
-      search();
+      promise = dispatch(search(input));
     }, 500);
-
     return () => {
-      source.cancel();
+      if (promise) {
+        promise.abort();
+      }
       clearTimeout(timer);
     };
   }, [input]);
