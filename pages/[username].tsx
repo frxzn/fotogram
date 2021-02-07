@@ -5,7 +5,8 @@ import Spinner from 'react-spinner-material';
 import { useMediaQuery } from 'react-responsive';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../store';
-import { initialize } from '../slices/apiSlice';
+import { initialize, reset as resetApi } from '../slices/apiSlice';
+import { reset as resetUI } from '../slices/UserInterfaceSlice';
 import Layout from '../components/Layout';
 import Navbar from '../components/Navbar';
 import Profile from '../components/Profile';
@@ -68,8 +69,8 @@ const UserProfile: React.FC = () => {
 
   useEffect(() => {
     if (username) {
-      // reset UI slice
-      // reset api
+      dispatch(resetUI());
+      dispatch(resetApi());
       const promise = dispatch(initialize(username as string));
       return () => {
         promise.abort();
