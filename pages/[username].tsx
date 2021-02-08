@@ -114,7 +114,7 @@ const UserProfile: React.FC = () => {
   return (
     <Layout
       title={`${
-        user?.full_name ? user?.full_name + ' | Fotogram' : '' + 'Fotogram'
+        user?.full_name ? user?.full_name + ' | Fotogram' : 'Fotogram'
       } `}
     >
       <Navbar />

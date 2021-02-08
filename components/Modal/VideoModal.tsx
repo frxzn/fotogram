@@ -71,6 +71,14 @@ const Icons = styled.div`
     div {
       padding: 0.8rem;
     }
+    width: 100%;
+    justify-content: flex-end;
+    background: rgb(0, 0, 0);
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 1) 20%,
+      rgba(0, 0, 0, 0) 100%
+    );
   }
 `;
 

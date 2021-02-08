@@ -103,7 +103,7 @@ export const initialize = createAsyncThunk(
         videos,
       };
     } catch (err) {
-      if (axios.isCancel(err)) return; // abort promise
+      if (axios.isCancel(err)) return;
       if (err === '404') {
         return rejectWithValue('Usuario no encontrado');
       } else {
