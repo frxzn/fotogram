@@ -185,13 +185,11 @@ const apiSlice = createSlice({
   reducers: {
     reset: () => initialState,
     selectAll: (state, action: PayloadAction<'images' | 'videos'>) => {
-      const selectedCount = (state[action.payload] as any[]).filter(
-        (item: Multimedia) => item.selected
+      const selectedCount = state[action.payload].filter(
+        (item) => item.selected
       ).length;
       const selected = selectedCount < state[action.payload].length;
-      (state[action.payload] as any[]).map(
-        (item: Multimedia) => (item.selected = selected)
-      );
+      state[action.payload].map((item) => (item.selected = selected));
     },
     selectOne: (
       state,
@@ -208,9 +206,7 @@ const apiSlice = createSlice({
       ][itemIndex].selected;
     },
     closeDownload: (state, action: PayloadAction<'images' | 'videos'>) => {
-      (state[action.payload] as any[]).map(
-        (item: Multimedia) => (item.selected = false)
-      );
+      state[action.payload].map((item) => (item.selected = false));
     },
   },
   extraReducers: (builder) => {
