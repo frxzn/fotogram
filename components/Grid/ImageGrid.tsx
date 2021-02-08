@@ -5,12 +5,12 @@ import {
   trackWindowScroll,
   LazyComponentProps,
 } from 'react-lazy-load-image-component';
-import { Image, Video } from '../../interfaces';
+import { Multimedia } from '../../interfaces';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 
 interface Props {
-  handleClick: (item: Image | Video) => void;
+  handleClick: (item: Multimedia) => void;
 }
 
 interface ImageProps {
@@ -103,7 +103,7 @@ const ImageGrid: React.FC<Props & LazyComponentProps> = ({
           selected={image.selected}
         >
           <StyledImage
-            src={image.src.low}
+            src={image.preview}
             placeholder={<Placeholder />}
             alt={`Foto de ${user?.full_name}`}
             scrollPosition={scrollPosition}

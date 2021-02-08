@@ -20,7 +20,7 @@ import ImageGrid from './ImageGrid';
 import VideoGrid from './VideoGrid';
 import TabNavigation from '../TabNavigation';
 import DownloadControls from '../DownloadControls';
-import { Image, Video } from '../../interfaces';
+import { Multimedia } from '../../interfaces';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -93,59 +93,20 @@ const DisplayGrid: React.FC = () => {
     dispatch(setDownloadMode(false));
   };
 
-  // const handleDownload = async () => {
-  //   let downloadArray: { url: string; file: string }[];
+  const handleDownload = async () => {
+    const list = selectedTab === 'images' ? images : videos;
+    const extension = selectedTab === 'images' ? '.png' : '.mp4';
 
-  //   if (selectedTab === 'images') {
-  //     downloadArray = props.imageList
-  //       .filter((image) => image.selected)
-  //       .map((image) => {
-  //         return {
-  //           url: image.src.high,
-  //           file: image.id + '.png',
-  //         };
-  //       });
-  //   } else {
-  //     downloadArray = props.videoList
-  //       .filter((video) => video.selected)
-  //       .map((video) => {
-  //         return {
-  //           url: video.videoUrl,
-  //           file: video.id + '.mp4',
-  //         };
-  //       });
-  //   }
+    const downloadArray = list
+      .filter((item) => item.selected)
+      .map((item) => {
+        return {
+          url: item.src,
+          file: item.id + extension,
+        };
+      });
 
-  //   downloadArray.forEach((item) => {
-  //     axios({
-  //       url: item.url,
-  //       method: 'GET',
-  //       responseType: 'blob', // important
-  //     })
-  //       .then((response) => {
-  //         const url = window.URL.createObjectURL(new Blob([response.data]));
-  //         const link = document.createElement('a');
-  //         link.href = url;
-  //         link.setAttribute('download', item.file);
-  //         document.body.appendChild(link);
-  //         link.click();
-  //         link.remove();
-  //         window.URL.revokeObjectURL(url);
-  //       })
-  //       .catch((err) => console.log(err));
-  //   });
-  // };
-
-  const handleDownload2 = async () => {
     try {
-      const downloadArray = images
-        .filter((image) => image.selected)
-        .map((image) => {
-          return {
-            url: image.src.high,
-            file: image.id + '.png',
-          };
-        });
       const res = await axios.post(
         'http://18.191.46.59:3000/download',
         downloadArray,
@@ -162,7 +123,7 @@ const DisplayGrid: React.FC = () => {
     }
   };
 
-  const handleClick = (item: Image | Video) => {
+  const handleClick = (item: Multimedia) => {
     if (!downloadMode) {
       dispatch(setSelectedMediaIndex(item.index));
       dispatch(setShowMedia(true));
@@ -224,7 +185,7 @@ const DisplayGrid: React.FC = () => {
             ? images.filter((img) => img.selected).length
             : videos.filter((vid) => vid.selected).length
         }
-        handleDownload={handleDownload2}
+        handleDownload={handleDownload}
       />
     </>
   );

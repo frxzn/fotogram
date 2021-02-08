@@ -40,7 +40,7 @@ const DisplayModal: React.FC = () => {
   if (selectedTab === 'images') {
     render = (
       <ImageModal
-        src={images[selectedMediaIndex].src.high}
+        src={images[selectedMediaIndex].src}
         id={images[selectedMediaIndex].id}
         mediaCount={images.length}
         selectedIndex={selectedMediaIndex}
@@ -50,7 +50,7 @@ const DisplayModal: React.FC = () => {
   } else if (selectedTab === 'videos') {
     render = (
       <VideoModal
-        src={videos[selectedMediaIndex].videoUrl}
+        src={videos[selectedMediaIndex].src}
         id={videos[selectedMediaIndex].id}
         mediaCount={videos.length}
         selectedIndex={selectedMediaIndex}

@@ -7,8 +7,7 @@ import {
   User,
   MediaResponse,
   PageInfo,
-  Image,
-  Video,
+  Multimedia,
 } from '../interfaces';
 
 export const search = createAsyncThunk(
@@ -58,8 +57,8 @@ export const initialize = createAsyncThunk(
     try {
       let user;
       let pageInfo;
-      let images: Image[] = [];
-      let videos: Video[] = [];
+      let images: Multimedia[] = [];
+      let videos: Multimedia[] = [];
 
       const userRes = await axios.get<UserResponse>(
         `https://www.instagram.com/web/search/topsearch/?query=${username}`,
@@ -157,8 +156,8 @@ interface IState {
   error: string;
   user: User | undefined;
   pageInfo: PageInfo | undefined;
-  images: Image[];
-  videos: Video[];
+  images: Multimedia[];
+  videos: Multimedia[];
   fresh: boolean;
   loadingMore: boolean;
   searchList: Users[];
@@ -187,22 +186,22 @@ const apiSlice = createSlice({
     reset: () => initialState,
     selectAll: (state, action: PayloadAction<'images' | 'videos'>) => {
       const selectedCount = (state[action.payload] as any[]).filter(
-        (item: Image | Video) => item.selected
+        (item: Multimedia) => item.selected
       ).length;
       const selected = selectedCount < state[action.payload].length;
       (state[action.payload] as any[]).map(
-        (item: Image | Video) => (item.selected = selected)
+        (item: Multimedia) => (item.selected = selected)
       );
     },
     selectOne: (
       state,
       action: PayloadAction<{
         selectedTab: 'images' | 'videos';
-        item: Image | Video;
+        item: Multimedia;
       }>
     ) => {
       const itemIndex = state[action.payload.selectedTab].findIndex(
-        (currItem: Image | Video) => currItem.id === action.payload.item.id
+        (currItem: Multimedia) => currItem.id === action.payload.item.id
       );
       state[action.payload.selectedTab][itemIndex].selected = !state[
         action.payload.selectedTab
@@ -210,7 +209,7 @@ const apiSlice = createSlice({
     },
     closeDownload: (state, action: PayloadAction<'images' | 'videos'>) => {
       (state[action.payload] as any[]).map(
-        (item: Image | Video) => (item.selected = false)
+        (item: Multimedia) => (item.selected = false)
       );
     },
   },
@@ -268,5 +267,3 @@ const { actions, reducer } = apiSlice;
 export const { reset, selectAll, selectOne, closeDownload } = actions;
 
 export default reducer;
-
-// Add search thunk

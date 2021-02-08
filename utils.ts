@@ -9,13 +9,11 @@ export const bakeImageList = (arr: Media[], mediaCount = 0) => {
       if (sideCar) {
         const sideCarMedia = sideCar.edges.map((item) => {
           return {
-            src: {
-              low: item.node.display_resources[0].src,
-              high:
-                item.node.display_resources[
-                  item.node.display_resources.length - 1
-                ].src,
-            },
+            src:
+              item.node.display_resources[
+                item.node.display_resources.length - 1
+              ].src,
+            preview: item.node.display_resources[0].src,
             id: item.node.id,
             selected: false,
           };
@@ -23,12 +21,10 @@ export const bakeImageList = (arr: Media[], mediaCount = 0) => {
         return sideCarMedia;
       }
       return {
-        src: {
-          low: item.node.display_resources[0].src,
-          high:
-            item.node.display_resources[item.node.display_resources.length - 1]
-              .src,
-        },
+        src:
+          item.node.display_resources[item.node.display_resources.length - 1]
+            .src,
+        preview: item.node.display_resources[0].src,
         id: item.node.id,
         selected: false,
       };
@@ -47,7 +43,7 @@ export const bakeVideoList = (arr: Media[], mediaCount = 0) => {
     .map((item, index) => {
       return {
         id: item.node.id,
-        videoUrl: item.node.video_url,
+        src: item.node.video_url,
         preview: item.node.display_resources[0].src,
         selected: false,
         index: index + mediaCount,

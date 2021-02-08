@@ -20,14 +20,10 @@ export interface UserResponse {
   users: Users[];
 }
 
-interface Src {
-  low: string;
-  high: string;
-}
-
-export interface Image {
+export interface Multimedia {
   id: string;
-  src: Src;
+  src: string;
+  preview: string;
   selected: boolean;
   index: number;
 }
@@ -35,14 +31,6 @@ export interface Image {
 export interface ResponseImage {
   id: string;
   src: string;
-  selected: boolean;
-  index: number;
-}
-
-export interface Video {
-  id: string;
-  videoUrl: string;
-  preview: string;
   selected: boolean;
   index: number;
 }
