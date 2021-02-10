@@ -1,10 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { User } from '../interfaces';
+import { Owner, User } from '../interfaces';
+import { baseUrl } from '../utils';
 import Share from './Share';
 
 interface Props {
-  user: User | undefined;
+  user: User | Owner | undefined;
 }
 
 const Container = styled.div`
@@ -55,7 +56,7 @@ const Profile: React.FC<Props> = ({ user }) => {
         alt={`Foto de perfil de ${user?.full_name}`}
       />
       <div className="profile-right-side">
-        <a href={`https://www.instagram.com/${user?.username}`} target="blank">
+        <a href={`${baseUrl}/${user?.username}`} target="blank">
           {user?.username}
         </a>
         <Share />

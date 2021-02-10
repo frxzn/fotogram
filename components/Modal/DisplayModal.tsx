@@ -42,6 +42,16 @@ const DisplayModal: React.FC = () => {
       <ImageModal
         src={images[selectedMediaIndex].src}
         id={images[selectedMediaIndex].id}
+        prevShortcode={
+          selectedMediaIndex > 0
+            ? images[selectedMediaIndex - 1].shortcode
+            : undefined
+        }
+        nextShortcode={
+          selectedMediaIndex + 1 < images.length
+            ? images[selectedMediaIndex + 1].shortcode
+            : undefined
+        }
         mediaCount={images.length}
         selectedIndex={selectedMediaIndex}
         handleDownload={handleDownload}
@@ -52,6 +62,16 @@ const DisplayModal: React.FC = () => {
       <VideoModal
         src={videos[selectedMediaIndex].src}
         id={videos[selectedMediaIndex].id}
+        prevShortcode={
+          selectedMediaIndex > 0
+            ? videos[selectedMediaIndex - 1].shortcode
+            : undefined
+        }
+        nextShortcode={
+          selectedMediaIndex + 1 < videos.length
+            ? videos[selectedMediaIndex + 1].shortcode
+            : undefined
+        }
         mediaCount={videos.length}
         selectedIndex={selectedMediaIndex}
         handleDownload={handleDownload}

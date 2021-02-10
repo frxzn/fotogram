@@ -6,7 +6,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../store';
 import { initialize, reset as resetApi } from '../slices/apiSlice';
-import { reset as resetUI } from '../slices/UserInterfaceSlice';
+import { reset as resetUI, setUsername } from '../slices/UserInterfaceSlice';
 import Layout from '../components/Layout';
 import Navbar from '../components/Navbar';
 import Profile from '../components/Profile';
@@ -35,11 +35,11 @@ const Error = styled.div`
 const UserProfile: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { username } = router.query;
+  const { slug } = router.query;
   const isMobile = useMediaQuery({ query: `(max-width: 735px)` });
 
-  const showMedia = useSelector(
-    (state: RootState) => state.userInterface.showMedia
+  const username = useSelector(
+    (state: RootState) => state.userInterface.username
   );
   const downloadMode = useSelector(
     (state: RootState) => state.userInterface.downloadMode
@@ -68,10 +68,16 @@ const UserProfile: React.FC = () => {
   }, [downloadMode]);
 
   useEffect(() => {
+    if (slug) {
+      dispatch(setUsername(slug[0]));
+    }
+  }, [slug]);
+
+  useEffect(() => {
     if (username) {
       dispatch(resetUI());
       dispatch(resetApi());
-      const promise = dispatch(initialize(username as string));
+      const promise = dispatch(initialize(username));
       return () => {
         promise.abort();
       };
@@ -106,7 +112,7 @@ const UserProfile: React.FC = () => {
       <Center id="username-center">
         {!error && <Profile user={user} />}
         {main}
-        {showMedia && <DisplayModal />}
+        {!!router.query.shortcode && <DisplayModal />}
       </Center>
     );
   }

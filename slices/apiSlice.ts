@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { bakeImageList, bakeVideoList, mediaUrl } from '../utils';
+import { bakeImageList, bakeVideoList, baseUrl, mediaUrl } from '../utils';
 import {
   UserResponse,
   Users,
@@ -22,7 +22,7 @@ export const search = createAsyncThunk(
     try {
       if (input.length) {
         const res = await axios.get<UserResponse>(
-          `https://www.instagram.com/web/search/topsearch/?query=${input}`,
+          `${baseUrl}/web/search/topsearch/?query=${input}`,
           {
             cancelToken: source.token,
           }
@@ -61,7 +61,7 @@ export const initialize = createAsyncThunk(
       let videos: Multimedia[] = [];
 
       const userRes = await axios.get<UserResponse>(
-        `https://www.instagram.com/web/search/topsearch/?query=${username}`,
+        `${baseUrl}/web/search/topsearch/?query=${username}`,
         {
           cancelToken: userSource.token,
         }

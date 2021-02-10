@@ -1,14 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
-import { useAppDispatch } from '../../store';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../../store';
 import {
   setShowMedia,
   setSelectedMediaIndex,
 } from '../../slices/UserInterfaceSlice';
+
 interface Props {
   src: string;
   id: string;
+  prevShortcode: string | undefined;
+  nextShortcode: string | undefined;
   mediaCount: number;
   selectedIndex: number;
   handleDownload: (src: string, id: string) => void;
@@ -48,7 +53,7 @@ const StyledImage = styled.img`
   object-fit: contain;
 `;
 
-const IconContainer = styled.div`
+const IconContainer = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,16 +118,22 @@ const intercept = 0.9;
 const ImageModal: React.FC<Props> = ({
   src,
   id,
+  prevShortcode,
+  nextShortcode,
   mediaCount,
   selectedIndex,
   handleDownload,
 }) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const username = useSelector(
+    (state: RootState) => state.userInterface.username
+  );
 
   const [zoom, setZoom] = useState(false);
   const [timer, setTimer] = useState(0);
   const [transparency, setTransparency] = useState(intercept);
-  const [reset, setReset] = useState(false);
   const [resetingPan, setResetingPan] = useState(false);
 
   const container = useRef<HTMLDivElement>(null);
@@ -150,21 +161,29 @@ const ImageModal: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (!reset) {
-      setReset(true);
-    }
+    setZoom(false);
   }, [src]);
 
   const handleArrowChange = (side: string) => {
     if (side === 'right') {
       if (selectedIndex + 1 < mediaCount) {
+        if (username && nextShortcode) {
+          router.replace(
+            `/${username}?shortcode=${nextShortcode}`,
+            `/${username}/${nextShortcode}`
+          );
+        }
         dispatch(setSelectedMediaIndex(selectedIndex + 1));
-        setReset(false);
       }
     } else if (side === 'left') {
       if (selectedIndex - 1 >= 0) {
+        if (username && prevShortcode) {
+          router.replace(
+            `/${username}?shortcode=${prevShortcode}`,
+            `/${username}/${prevShortcode}`
+          );
+        }
         dispatch(setSelectedMediaIndex(selectedIndex - 1));
-        setReset(false);
       }
     }
   };
@@ -172,7 +191,8 @@ const ImageModal: React.FC<Props> = ({
   const handleDragClose = (e: any) => {
     if (imageContainer.current && e.scale === 1) {
       if (Math.abs(e.positionY / imageContainer.current.offsetHeight) >= 0.3) {
-        dispatch(setShowMedia(false));
+        // router.back();
+        router.back();
       } else {
         setResetingPan(true);
         setTransparency(intercept);
@@ -208,16 +228,26 @@ const ImageModal: React.FC<Props> = ({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'ArrowRight') {
       if (selectedIndex + 1 < mediaCount) {
+        if (username && nextShortcode) {
+          router.replace(
+            `/${username}?shortcode=${nextShortcode}`,
+            `/${username}/${nextShortcode}`
+          );
+        }
         dispatch(setSelectedMediaIndex(selectedIndex + 1));
-        setReset(false);
       }
     } else if (e.key === 'ArrowLeft') {
       if (selectedIndex - 1 >= 0) {
+        if (username && prevShortcode) {
+          router.replace(
+            `/${username}?shortcode=${prevShortcode}`,
+            `/${username}/${prevShortcode}`
+          );
+        }
         dispatch(setSelectedMediaIndex(selectedIndex - 1));
-        setReset(false);
       }
     } else if (e.key === 'Escape') {
-      dispatch(setShowMedia(false));
+      router.back();
     }
   };
 
@@ -231,7 +261,7 @@ const ImageModal: React.FC<Props> = ({
         return;
       }
       // outside click
-      dispatch(setShowMedia(false));
+      router.back();
     }
   };
 
@@ -249,7 +279,7 @@ const ImageModal: React.FC<Props> = ({
         <DownloadIcon onClick={() => handleDownload(src, id)}>
           <Icon src="/icons/download.svg" alt="close icon" />
         </DownloadIcon>
-        <CloseIcon onClick={() => dispatch(setShowMedia(false))}>
+        <CloseIcon onClick={() => router.back()}>
           <Icon src="/icons/cancel.svg" alt="close icon" />
         </CloseIcon>
       </Icons>
@@ -263,9 +293,7 @@ const ImageModal: React.FC<Props> = ({
       )}
       <ImageContainer ref={imageContainer} zoom={zoom}>
         <TransformWrapper
-          scale={reset ? undefined : 1}
-          positionX={reset ? undefined : 0}
-          positionY={reset ? undefined : 0}
+          key={src}
           doubleClick={{ mode: zoom ? 'reset' : 'zoomIn', step: 30 }}
           pan={{ lockAxisX: !zoom }}
           onPanningStop={handleDragClose}

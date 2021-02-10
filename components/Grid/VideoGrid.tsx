@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import styled from 'styled-components';
 import {
   LazyLoadImage,
@@ -100,27 +101,33 @@ const VideoGrid: React.FC<Props & LazyComponentProps> = ({
   return (
     <GridContainer>
       {videos.map((video) => (
-        <GridItem
+        <Link
+          href={`/${user?.username}?shortcode=${video.shortcode}`}
+          as={`/${user?.username}/${video.shortcode}`}
           key={video.id}
-          onClick={() => handleClick(video)}
-          downloadmode={downloadMode ? 1 : 0}
-          selected={video.selected}
+          scroll={false}
         >
-          <StyledImage
-            src={video.preview}
-            placeholder={<Placeholder />}
-            alt={`Video de ${user?.full_name}`}
-            scrollPosition={scrollPosition}
-          />
-          {downloadMode && (
-            <Circle
-              key={video.index}
-              className="circle"
-              selected={video.selected}
-              downloadmode={downloadMode ? 1 : 0}
+          <GridItem
+            onClick={() => handleClick(video)}
+            downloadmode={downloadMode ? 1 : 0}
+            selected={video.selected}
+          >
+            <StyledImage
+              src={video.preview}
+              placeholder={<Placeholder />}
+              alt={`Video de ${user?.full_name}`}
+              scrollPosition={scrollPosition}
             />
-          )}
-        </GridItem>
+            {downloadMode && (
+              <Circle
+                key={video.index}
+                className="circle"
+                selected={video.selected}
+                downloadmode={downloadMode ? 1 : 0}
+              />
+            )}
+          </GridItem>
+        </Link>
       ))}
     </GridContainer>
   );

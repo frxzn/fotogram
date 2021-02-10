@@ -1,4 +1,6 @@
 import React from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 import styled from 'styled-components';
 import {
   LazyLoadImage,
@@ -30,7 +32,7 @@ const GridContainer = styled.div`
   }
 `;
 
-const GridItem = styled.div<ImageProps>`
+const GridItem = styled.a<ImageProps>`
   display: flex;
   position: relative;
   justify-content: center;
@@ -96,29 +98,35 @@ const ImageGrid: React.FC<Props & LazyComponentProps> = ({
   return (
     <GridContainer>
       {images.map((image) => (
-        <GridItem
+        <Link
+          href={`/${user?.username}?shortcode=${image.shortcode}`}
+          as={`/${user?.username}/${image.shortcode}`}
           key={image.id}
-          onClick={() => handleClick(image)}
-          downloadmode={downloadMode ? 1 : 0}
-          selected={image.selected}
+          scroll={false}
         >
-          <StyledImage
-            src={image.preview}
-            placeholder={<Placeholder />}
-            alt={`Foto de ${user?.full_name}`}
-            scrollPosition={scrollPosition}
-            selected={image.selected}
+          <GridItem
+            onClick={() => handleClick(image)}
             downloadmode={downloadMode ? 1 : 0}
-          />
-          {downloadMode && (
-            <Circle
-              key={image.index}
-              className="circle"
+            selected={image.selected}
+          >
+            <StyledImage
+              src={image.preview}
+              placeholder={<Placeholder />}
+              alt={`Foto de ${user?.full_name}`}
+              scrollPosition={scrollPosition}
               selected={image.selected}
               downloadmode={downloadMode ? 1 : 0}
             />
-          )}
-        </GridItem>
+            {downloadMode && (
+              <Circle
+                key={image.index}
+                className="circle"
+                selected={image.selected}
+                downloadmode={downloadMode ? 1 : 0}
+              />
+            )}
+          </GridItem>
+        </Link>
       ))}
     </GridContainer>
   );

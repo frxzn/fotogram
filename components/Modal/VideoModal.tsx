@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import ReactPlayer from 'react-player';
-import { useAppDispatch } from '../../store';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../../store';
 import {
   setShowMedia,
   setSelectedMediaIndex,
@@ -10,6 +12,8 @@ import {
 interface Props {
   src: string;
   id: string;
+  prevShortcode: string | undefined;
+  nextShortcode: string | undefined;
   mediaCount: number;
   selectedIndex: number;
   handleDownload: (src: string, id: string) => void;
@@ -104,12 +108,18 @@ const CloseIcon = styled.div`
 const VideoModal: React.FC<Props> = ({
   src,
   id,
+  prevShortcode,
+  nextShortcode,
   mediaCount,
   selectedIndex,
   handleDownload,
 }) => {
   const dispatch = useAppDispatch();
-  const [reset, setReset] = useState(false);
+  const router = useRouter();
+
+  const username = useSelector(
+    (state: RootState) => state.userInterface.username
+  );
 
   const container = useRef<HTMLDivElement>(null);
   const node = useRef<HTMLDivElement>(null);
@@ -135,22 +145,26 @@ const VideoModal: React.FC<Props> = ({
     }
   }, []);
 
-  useEffect(() => {
-    if (!reset) {
-      setReset(true);
-    }
-  }, [src]);
-
   const handleArrowChange = (side: string) => {
     if (side === 'right') {
       if (selectedIndex + 1 < mediaCount) {
+        if (username && nextShortcode) {
+          router.replace(
+            `/${username}?shortcode=${nextShortcode}`,
+            `/${username}/${nextShortcode}`
+          );
+        }
         dispatch(setSelectedMediaIndex(selectedIndex + 1));
-        setReset(false);
       }
     } else if (side === 'left') {
       if (selectedIndex - 1 >= 0) {
+        if (username && prevShortcode) {
+          router.replace(
+            `/${username}?shortcode=${prevShortcode}`,
+            `/${username}/${prevShortcode}`
+          );
+        }
         dispatch(setSelectedMediaIndex(selectedIndex - 1));
-        setReset(false);
       }
     }
   };
@@ -158,16 +172,26 @@ const VideoModal: React.FC<Props> = ({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'ArrowRight') {
       if (selectedIndex + 1 < mediaCount) {
+        if (username && nextShortcode) {
+          router.replace(
+            `/${username}?shortcode=${nextShortcode}`,
+            `/${username}/${nextShortcode}`
+          );
+        }
         dispatch(setSelectedMediaIndex(selectedIndex + 1));
-        setReset(false);
       }
     } else if (e.key === 'ArrowLeft') {
       if (selectedIndex - 1 >= 0) {
+        if (username && prevShortcode) {
+          router.replace(
+            `/${username}?shortcode=${prevShortcode}`,
+            `/${username}/${prevShortcode}`
+          );
+        }
         dispatch(setSelectedMediaIndex(selectedIndex - 1));
-        setReset(false);
       }
     } else if (e.key === 'Escape') {
-      dispatch(setShowMedia(false));
+      router.back();
     }
   };
 
@@ -181,7 +205,7 @@ const VideoModal: React.FC<Props> = ({
         return;
       }
       // outside click
-      dispatch(setShowMedia(false));
+      router.back();
     }
   };
 
@@ -191,7 +215,7 @@ const VideoModal: React.FC<Props> = ({
         <DownloadIcon onClick={() => handleDownload(src, id)}>
           <Icon src="/icons/download.svg" alt="close icon" />
         </DownloadIcon>
-        <CloseIcon onClick={() => dispatch(setShowMedia(false))}>
+        <CloseIcon onClick={() => router.back()}>
           <Icon src="/icons/cancel.svg" alt="close icon" />
         </CloseIcon>
       </Icons>

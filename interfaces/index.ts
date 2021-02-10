@@ -1,9 +1,3 @@
-// You can include shared interfaces/types in a separate file
-// and then use them in any component by importing them. For
-// example, to import the interface below do:
-//
-// import User from 'path/to/interfaces';
-
 export interface User {
   pk: string;
   full_name: string;
@@ -22,6 +16,7 @@ export interface UserResponse {
 
 export interface Multimedia {
   id: string;
+  shortcode: string;
   src: string;
   preview: string;
   selected: boolean;
@@ -49,6 +44,7 @@ export interface Media {
     is_video: boolean;
     id: string;
     video_url: string;
+    shortcode: string;
     edge_sidecar_to_children: {
       edges: SidecarItem[];
     };
@@ -66,6 +62,51 @@ export interface MediaResponse {
       edge_owner_to_timeline_media: {
         edges: Media[];
         page_info: PageInfo;
+      };
+    };
+  };
+}
+
+export interface Owner {
+  id: string;
+  profile_pic_url: string;
+  username: string;
+  full_name: string;
+  is_private: boolean;
+}
+
+export interface Dimensions {
+  width: string;
+  height: string;
+}
+
+export interface SidecarEdges {
+  node: {
+    id: string;
+    shortcode: string;
+    dimensions: Dimensions;
+    display_resources: {
+      src: string;
+    }[];
+    is_video: boolean;
+    video_url?: string;
+  };
+}
+
+export interface SingleMediaResponse {
+  data: {
+    shortcode_media: {
+      id: string;
+      shortcode: string;
+      is_video: boolean;
+      video_url?: string;
+      display_resources: {
+        src: string;
+      }[];
+      owner: Owner;
+      dimensions: Dimensions;
+      edge_sidecar_to_children?: {
+        edges: SidecarEdges[];
       };
     };
   };

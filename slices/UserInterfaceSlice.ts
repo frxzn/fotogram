@@ -5,6 +5,7 @@ interface IState {
   showMedia: boolean;
   selectedMediaIndex: number;
   downloadMode: boolean;
+  username?: string;
 }
 
 const initialState: IState = {
@@ -12,13 +13,17 @@ const initialState: IState = {
   showMedia: false,
   selectedMediaIndex: 0,
   downloadMode: false,
+  username: undefined,
 };
 
 const userInterfaceSlice = createSlice({
   name: 'userInterface',
   initialState,
   reducers: {
-    reset: () => initialState,
+    reset: (state) => ({ ...initialState, username: state.username }),
+    setUsername: (state, action: PayloadAction<string>) => {
+      state.username = action.payload;
+    },
     setSelectedTab: (state, action: PayloadAction<'images' | 'videos'>) => {
       state.selectedTab = action.payload;
     },
@@ -38,6 +43,7 @@ const { actions, reducer } = userInterfaceSlice;
 
 export const {
   reset,
+  setUsername,
   setSelectedTab,
   setShowMedia,
   setSelectedMediaIndex,
