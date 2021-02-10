@@ -130,7 +130,8 @@ const DisplayGrid: React.FC = () => {
       if (user) {
         router.push(
           `/${user.username}?shortcode=${item.shortcode}`,
-          `/${user.username}/${item.shortcode}`
+          `/${user.username}/${item.shortcode}`,
+          { shallow: true }
         );
       }
     } else {
