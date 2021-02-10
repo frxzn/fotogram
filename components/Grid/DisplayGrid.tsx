@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../store';
 import {
   setSelectedMediaIndex,
-  setShowMedia,
   setDownloadMode,
 } from '../../slices/UserInterfaceSlice';
 import {
@@ -21,6 +20,7 @@ import VideoGrid from './VideoGrid';
 import TabNavigation from '../TabNavigation';
 import DownloadControls from '../DownloadControls';
 import { Multimedia } from '../../interfaces';
+import { useRouter } from 'next/router';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -56,6 +56,7 @@ const Error = styled.div`
 
 const DisplayGrid: React.FC = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const user = useSelector((state: RootState) => state.api.user);
   const pageInfo = useSelector((state: RootState) => state.api.pageInfo);
@@ -126,7 +127,12 @@ const DisplayGrid: React.FC = () => {
   const handleClick = (item: Multimedia) => {
     if (!downloadMode) {
       dispatch(setSelectedMediaIndex(item.index));
-      dispatch(setShowMedia(true));
+      if (user) {
+        router.push(
+          `/${user.username}?shortcode=${item.shortcode}`,
+          `/${user.username}/${item.shortcode}`
+        );
+      }
     } else {
       dispatch(selectOne({ selectedTab, item }));
     }
