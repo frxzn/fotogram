@@ -2,9 +2,7 @@
 
 Visit deployed site at [fotogram.app](https://fotogram.app).
 
----
-
-This repo contains fotogram's frontend developed with:
+## This repo contains fotogram's frontend developed with:
 
 - React
 - Typescript
@@ -12,9 +10,9 @@ This repo contains fotogram's frontend developed with:
 - Redux
 - Styled Components
 
----
+## Run Locally
 
-## Run Locally:
+### Clone and install dependencies
 
 ```bash
 gh repo clone frxzn/fotogram
@@ -23,13 +21,13 @@ npm install
 npm run dev
 ```
 
-## Contentful enviroment variables:
+### Set enviroment variables
 
-- CONTENTFUL_SPACE_ID
-- CONTENTFUL_ACCESS_TOKEN
+Create a file `.env.local` at the root of the project and add the following:
 
-Create a file `.env.local` at the root of the project and add them there.
-
----
+```
+CONTENTFUL_SPACE_ID=YOUR_SPACE_ID
+CONTENTFUL_ACCESS_TOKEN=YOUR_ACCESS_TOKEN
+```
 
 Deployed with [Vercel](https://vercel.com).
