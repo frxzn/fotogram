@@ -4,10 +4,7 @@ import styled from 'styled-components';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../store';
-import {
-  setShowMedia,
-  setSelectedMediaIndex,
-} from '../../slices/UserInterfaceSlice';
+import { setSelectedMediaIndex } from '../../slices/UserInterfaceSlice';
 
 interface Props {
   src: string;

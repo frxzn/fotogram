@@ -1,13 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import ReactPlayer from 'react-player';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../store';
-import {
-  setShowMedia,
-  setSelectedMediaIndex,
-} from '../../slices/UserInterfaceSlice';
+import { setSelectedMediaIndex } from '../../slices/UserInterfaceSlice';
 
 interface Props {
   src: string;
