@@ -8,6 +8,7 @@ import { RootState, useAppDispatch } from '../store';
 import { search } from '../slices/apiSlice';
 import UserListItem from './UserListItem';
 import Logo from './Logo';
+import { setUsername } from '../slices/UserInterfaceSlice';
 
 const Center = styled.div`
   display: flex;
@@ -123,8 +124,11 @@ const SearchBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const isMobile = useMediaQuery({ query: `(max-width: 735px)` });
   const router = useRouter();
-  const { username } = router.query;
+  const { slug } = router.query;
 
+  const username = useSelector(
+    (state: RootState) => state.userInterface.username
+  );
   const searchList = useSelector((state: RootState) => state.api.searchList);
   const loading = useSelector((state: RootState) => state.api.searchLoading);
 
@@ -132,6 +136,12 @@ const SearchBar: React.FC = () => {
   const [show, setShow] = useState(false);
   const [closed, setClosed] = useState(false);
   const node = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (slug) {
+      dispatch(setUsername(slug[0]));
+    }
+  }, [slug]);
 
   useEffect(() => {
     setInput('');
