@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import styled from 'styled-components';
 import axios from 'axios';
 import ReactPlayer from 'react-player';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 import { Owner, SingleMediaResponse } from '../../interfaces';
 import { bakeFromSideCar, baseUrl } from '../../utils';
 import Prev from '../../components/Icons/Prev';
@@ -12,7 +15,6 @@ import Navbar from '../../components/Navbar';
 import Profile from '../../components/Profile';
 import ShowImage from '../../components/Modal/ShowImage';
 import Spinner from 'react-spinner-material';
-import Link from 'next/link';
 
 const Center = styled.div`
   display: flex;
@@ -120,12 +122,19 @@ const Shortcode: React.FC = () => {
   const router = useRouter();
   const { username, shortcode } = router.query;
 
+  const selectedTab = useSelector(
+    (state: RootState) => state.userInterface.selectedTab
+  );
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [user, setUser] = useState<Owner>();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [images, setImages] = useState<{ src: string; index: number }[]>();
+  const [images, setImages] = useState<
+    { src: string; index: number; id: string }[]
+  >();
   const [videoSrc, setVideoSrc] = useState<string>();
+  const [videoId, setVideoId] = useState<string>();
   const [isVideo, setIsVideo] = useState<boolean>();
 
   useEffect(() => {
@@ -166,12 +175,14 @@ const Shortcode: React.FC = () => {
                           1
                       ].src,
                     index: 0,
+                    id: res.data.data.shortcode_media.id,
                   },
                 ]);
               }
             } else {
               if (res.data.data.shortcode_media.video_url) {
                 setVideoSrc(res.data.data.shortcode_media.video_url);
+                setVideoId(res.data.data.shortcode_media.id);
               }
             }
           } else {
@@ -195,6 +206,27 @@ const Shortcode: React.FC = () => {
       init();
     }
   }, [shortcode]);
+
+  const handleDownload = (src: string, id: string) => {
+    const extension = selectedTab === 'images' ? '.png' : '.mp4';
+
+    axios({
+      url: src,
+      method: 'GET',
+      responseType: 'blob', // important
+    })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', id + extension);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((err) => console.log(err));
+  };
 
   const handleArrowChange = (side: string) => {
     if (images) {
@@ -247,7 +279,16 @@ const Shortcode: React.FC = () => {
                       <Prev hexColor={hasPrev ? '#000' : '#EBEBE4'} />
                     </IconContainer>
                   )}
-                  <DownloadButton>Descargar</DownloadButton>
+                  <DownloadButton
+                    onClick={() =>
+                      handleDownload(
+                        images[currentIndex].src,
+                        images[currentIndex].id
+                      )
+                    }
+                  >
+                    Descargar
+                  </DownloadButton>
                   {images.length > 1 && (
                     <IconContainer
                       disable={!hasNext}
@@ -264,13 +305,24 @@ const Shortcode: React.FC = () => {
           } else {
             // render video component
             render = (
-              <ReactPlayer
-                key={videoSrc}
-                url={videoSrc}
-                controls={true}
-                loop
-                wrapper={VideoContainer}
-              />
+              <>
+                <Controls>
+                  <DownloadButton
+                    onClick={() =>
+                      handleDownload(videoSrc as string, videoId as string)
+                    }
+                  >
+                    Descargar
+                  </DownloadButton>
+                </Controls>
+                <ReactPlayer
+                  key={videoSrc}
+                  url={videoSrc}
+                  controls={true}
+                  loop
+                  wrapper={VideoContainer}
+                />
+              </>
             );
           }
         } else {

@@ -62,6 +62,7 @@ export const bakeFromSideCar = (arr: SidecarEdges[]) => {
       src:
         item.node.display_resources[item.node.display_resources.length - 1].src,
       index,
+      id: item.node.id,
     };
   });
 };
