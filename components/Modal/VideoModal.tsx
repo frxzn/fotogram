@@ -148,7 +148,8 @@ const VideoModal: React.FC<Props> = ({
         if (username && nextShortcode) {
           router.replace(
             `/${username}?shortcode=${nextShortcode}`,
-            `/${username}/${nextShortcode}`
+            `/${username}/${nextShortcode}`,
+            { shallow: true }
           );
         }
         dispatch(setSelectedMediaIndex(selectedIndex + 1));
@@ -158,7 +159,8 @@ const VideoModal: React.FC<Props> = ({
         if (username && prevShortcode) {
           router.replace(
             `/${username}?shortcode=${prevShortcode}`,
-            `/${username}/${prevShortcode}`
+            `/${username}/${prevShortcode}`,
+            { shallow: true }
           );
         }
         dispatch(setSelectedMediaIndex(selectedIndex - 1));
@@ -172,7 +174,8 @@ const VideoModal: React.FC<Props> = ({
         if (username && nextShortcode) {
           router.replace(
             `/${username}?shortcode=${nextShortcode}`,
-            `/${username}/${nextShortcode}`
+            `/${username}/${nextShortcode}`,
+            { shallow: true }
           );
         }
         dispatch(setSelectedMediaIndex(selectedIndex + 1));
@@ -182,7 +185,8 @@ const VideoModal: React.FC<Props> = ({
         if (username && prevShortcode) {
           router.replace(
             `/${username}?shortcode=${prevShortcode}`,
-            `/${username}/${prevShortcode}`
+            `/${username}/${prevShortcode}`,
+            { shallow: true }
           );
         }
         dispatch(setSelectedMediaIndex(selectedIndex - 1));
