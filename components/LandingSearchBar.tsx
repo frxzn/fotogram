@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../store';
 import { search } from '../slices/apiSlice';
 import UserListItem from './UserListItem';
+import { setUsername } from '../slices/UserInterfaceSlice';
 
 const Center = styled.div`
   display: flex;
@@ -141,6 +142,10 @@ const SearchBar: React.FC = () => {
 
   const node = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    dispatch(setUsername(''));
+  }, []);
 
   // Effect to close modal on outsides click
   useEffect(() => {
