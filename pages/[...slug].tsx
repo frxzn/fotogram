@@ -68,6 +68,12 @@ const UserProfile: React.FC = () => {
   }, [downloadMode]);
 
   useEffect(() => {
+    return () => {
+      dispatch(setUsername(''));
+    };
+  }, []);
+
+  useEffect(() => {
     if (slug) {
       dispatch(setUsername(slug[0]));
     }
