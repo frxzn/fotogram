@@ -19,11 +19,5 @@
     "target": "esnext"
   },
   "exclude": ["node_modules"],
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "pages/_document.js",
-    "index.test.js",
-    "client.js"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.js"]
 }

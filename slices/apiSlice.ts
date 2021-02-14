@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { bakeImageList, bakeVideoList, baseUrl, mediaUrl } from '../utils';
+import {
+  bakeImageList,
+  bakeVideoList,
+  baseUrl,
+  mediaUrl,
+} from '../utils/utils';
 import {
   UserResponse,
   Users,

@@ -7,7 +7,7 @@ import ReactPlayer from 'react-player';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { Owner, SingleMediaResponse } from '../../interfaces';
-import { bakeFromSideCar, baseUrl } from '../../utils';
+import { bakeFromSideCar, baseUrl } from '../../utils/utils';
 import Prev from '../../components/Icons/Prev';
 import Next from '../../components/Icons/Next';
 import Layout from '../../components/Layout';

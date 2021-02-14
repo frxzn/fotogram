@@ -1,4 +1,4 @@
-import { Media, SidecarEdges } from './interfaces/index';
+import { Media, SidecarEdges } from '../interfaces/index';
 
 // Filter out videos, map item, flatten nested array, map to add index
 export const bakeImageList = (arr: Media[], mediaCount = 0) => {

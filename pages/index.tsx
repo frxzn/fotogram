@@ -59,10 +59,12 @@ const Paragraph = styled.p`
   }
 `;
 
+export const mainTitle = 'Descargar fotos y videos de Instagram';
+
 const IndexPage = () => (
   <Layout title="Descargar fotos y videos de Instagram | Fotogram">
     <Container>
-      <StyledH1>Descargar fotos y videos de Instagram</StyledH1>
+      <StyledH1>{mainTitle}</StyledH1>
       <LandingSearchBar />
       <Center>
         <StyledH2>Que es Fotogram?</StyledH2>

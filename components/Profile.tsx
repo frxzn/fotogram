@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Owner, User } from '../interfaces';
-import { baseUrl } from '../utils';
+import { baseUrl } from '../utils/utils';
 import Share from './Share';
 
 interface Props {
