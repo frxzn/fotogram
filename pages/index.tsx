@@ -67,7 +67,7 @@ const IndexPage = () => (
       <StyledH1>{mainTitle}</StyledH1>
       <LandingSearchBar />
       <Center>
-        <StyledH2>Que es Fotogram?</StyledH2>
+        <StyledH2>¿Qué es Fotogram?</StyledH2>
         <Paragraph>
           Fotogram es una plataforma online que te permite ver perfiles de
           Instagram de forma anónima, descargar sus fotos y videos en alta

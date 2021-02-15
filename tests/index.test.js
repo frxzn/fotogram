@@ -1,19 +1,9 @@
 import React from 'react';
 import { render, screen, waitFor } from '../utils/test-utils';
 import userEvent from '@testing-library/user-event';
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
 import Index from '../pages';
 import { mainTitle } from '../pages/index';
-import { mock } from './mock-data';
-import { baseUrl } from '../utils/utils';
-
-const server = setupServer(
-  rest.get(`${baseUrl}/web/search/topsearch/`, (req, res, ctx) => {
-    const qs = req.url.searchParams.get('query');
-    return res(ctx.status(200), ctx.json(mock(qs)));
-  })
-);
+import { server } from './server';
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
