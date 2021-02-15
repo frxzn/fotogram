@@ -247,14 +247,26 @@ const SearchBar: React.FC = () => {
   if (loading && input.length !== 0) {
     renderSpinner = (
       <div style={{ margin: '0 1rem' }}>
-        <Spinner radius={16} color={'#ff0078'} stroke={2} visible={true} />
+        <Spinner
+          id="spinner"
+          radius={16}
+          color={'#ff0078'}
+          stroke={2}
+          visible={true}
+        />
       </div>
     );
   }
 
   let renderClose;
   if (!loading && input.length !== 0) {
-    renderClose = <Close src="/icons/close.svg" onClick={() => setInput('')} />;
+    renderClose = (
+      <Close
+        id="close-icon"
+        src="/icons/close.svg"
+        onClick={() => setInput('')}
+      />
+    );
   }
 
   return (
