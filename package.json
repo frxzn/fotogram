@@ -5,6 +5,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
+    "test": "npx cypress open",
     "type-check": "tsc"
   },
   "dependencies": {
