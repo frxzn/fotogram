@@ -21,13 +21,10 @@ npm install
 npm run dev
 ```
 
-### Set enviroment variables
-
-Create a file `.env.local` at the root of the project and add the following:
+### Running cypress tests
 
 ```
-CONTENTFUL_SPACE_ID=YOUR_SPACE_ID
-CONTENTFUL_ACCESS_TOKEN=YOUR_ACCESS_TOKEN
+npm run test
 ```
 
 Deployed with [Vercel](https://vercel.com).
