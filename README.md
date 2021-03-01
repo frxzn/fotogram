@@ -18,6 +18,7 @@ Visit deployed site at [fotogram.app](https://fotogram.app).
 gh repo clone frxzn/fotogram
 cd ./fotogram
 npm install
+npm install --only=dev
 npm run dev
 ```
 
