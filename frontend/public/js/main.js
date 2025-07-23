@@ -1,12 +1,15 @@
 // frontend/public/js/main.js
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Local Storage'dan 'token' anahtarını al
     const token = localStorage.getItem('token');
-    // Eğer kullanıcı zaten giriş yapmışsa (token varsa), dashboard sayfasına yönlendir
+
+    // Eğer 'token' varsa (yani kullanıcı daha önce giriş yapmışsa)
     if (token) {
+        // Kullanıcıyı dashboard sayfasına yönlendir
         window.location.href = '/dashboard.html';
     }
-
-    // NOT: Anasayfadaki "Kayıt Ol / Giriş Yap" butonlarına tıklama olayları artık auth.js içinde yönetiliyor.
-    // Bu dosya temel olarak sadece yetkilendirme yönlendirmesi için kullanılıyor.
+    // Bu dosya, ana sayfadaki "Kayıt Ol / Giriş Yap" butonlarına tıklama olaylarını doğrudan yönetmez.
+    // Bu butonların olay yönetimi ve modal açma/kapama işlemleri 'auth.js' dosyasında yapılır.
+    // 'main.js' sadece başlangıçta yetkilendirme tabanlı yönlendirme için kullanılır.
 });
