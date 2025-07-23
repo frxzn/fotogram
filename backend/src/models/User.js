@@ -49,7 +49,9 @@ UserSchema.pre('save', async function(next) {
 
 // Girilen şifrenin hashlenmiş şifre ile eşleşip eşleşmediğini kontrol et
 UserSchema.methods.matchPassword = async function(enteredPassword) {
-    // select: false olduğu için şifreyi bu yöntemle çekmeliyiz
+    // Burada this.password zaten model instance'ından geldiği için dolu olmalıdır.
+    // Eğer login veya resetPassword sırasında .select('+password') kullanılmazsa,
+    // bu methoda gelen this.password "undefined" olabilir.
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
