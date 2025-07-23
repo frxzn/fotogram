@@ -1,11 +1,13 @@
-/* Genel Stil */
+/* Genel Stil: Koyu Tema */
 :root {
-    --primary-color: #5C8D89; /* Hafif pastel yeşil */
-    --secondary-color: #74B9FF; /* Açık mavi */
-    --background-color: #F8F8F8; /* Hafif gri */
-    --text-color: #333;
-    --border-color: #E0E0E0;
-    --card-background: #FFFFFF;
+    --primary-color: #BB86FC;   /* Morumsu/Açık Lila (Vurgu rengi) */
+    --secondary-color: #03DAC6; /* Turkuaz (İkincil vurgu rengi) */
+    --background-color: #121212; /* Koyu arka plan */
+    --surface-color: #1E1E1E;    /* Kartlar, modallar için daha açık koyu */
+    --text-color: #E0E0E0;      /* Beyaz/açık gri yazı rengi */
+    --text-secondary-color: #A0A0A0; /* Daha az önemli metinler */
+    --border-color: #333333;    /* Koyu sınırlar */
+    --error-color: #CF6679;     /* Hata mesajları için kırmızımsı */
 }
 
 * {
@@ -15,7 +17,7 @@
 }
 
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; /* Daha modern bir font */
     background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
@@ -29,11 +31,12 @@ body {
 .welcome-container {
     text-align: center;
     padding: 30px;
-    background-color: var(--card-background);
+    background-color: var(--surface-color); /* Yüzey rengini kullan */
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); /* Daha belirgin koyu gölge */
     max-width: 500px;
     width: 90%;
+    border: 1px solid var(--border-color); /* Hafif bir sınır */
 }
 
 .welcome-title {
@@ -45,7 +48,7 @@ body {
 
 .welcome-message {
     font-size: 1.1em;
-    color: #666;
+    color: var(--text-secondary-color);
     margin-bottom: 40px;
 }
 
@@ -65,16 +68,18 @@ body {
     transition: all 0.3s ease;
     cursor: pointer;
     border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Düğmelerde hafif gölge */
 }
 
 .primary-btn {
     background-color: var(--primary-color);
-    color: white;
+    color: var(--background-color); /* Koyu arka plan rengiyle uyumlu yazı */
 }
 
 .primary-btn:hover {
-    background-color: #4A7A77;
+    background-color: #9A5DE5; /* Daha koyu mor */
     transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 .secondary-btn {
@@ -85,8 +90,9 @@ body {
 
 .secondary-btn:hover {
     background-color: var(--primary-color);
-    color: white;
+    color: var(--background-color);
     transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
 /* Modal Styilleri */
@@ -99,21 +105,22 @@ body {
     width: 100%;
     height: 100%;
     overflow: auto; /* Gerekirse scroll */
-    background-color: rgba(0,0,0,0.5); /* Hafif karartılmış arka plan */
+    background-color: rgba(0,0,0,0.7); /* Daha koyu karartılmış arka plan */
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background-color: var(--card-background);
+    background-color: var(--surface-color); /* Yüzey rengini kullan */
     margin: auto;
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     position: relative;
     max-width: 450px;
     width: 90%;
     animation: fadeIn 0.3s ease-out;
+    border: 1px solid var(--border-color);
 }
 
 @keyframes fadeIn {
@@ -122,7 +129,7 @@ body {
 }
 
 .close-button {
-    color: #aaa;
+    color: var(--text-secondary-color);
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -155,7 +162,7 @@ body {
     display: block;
     margin-bottom: 8px;
     font-weight: bold;
-    color: #555;
+    color: var(--text-color);
 }
 
 .form-group input[type="email"],
@@ -167,6 +174,8 @@ body {
     border-radius: 8px;
     font-size: 1em;
     outline: none;
+    background-color: var(--background-color); /* Koyu tema input arkaplanı */
+    color: var(--text-color); /* Koyu tema input yazı rengi */
     transition: border-color 0.3s ease;
 }
 
@@ -174,7 +183,7 @@ body {
 .form-group input[type="password"]:focus,
 .form-group input[type="text"]:focus {
     border-color: var(--secondary-color);
-    box-shadow: 0 0 0 3px rgba(116, 185, 255, 0.2);
+    box-shadow: 0 0 0 3px rgba(3, 218, 198, 0.2); /* Vurgu rengiyle gölge */
 }
 
 .form-actions {
@@ -191,7 +200,7 @@ body {
 
 .form-actions .btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .form-text-link {
@@ -216,7 +225,7 @@ body {
     margin-top: 25px;
     margin-bottom: 20px;
     font-size: 0.9em;
-    color: #666;
+    color: var(--text-secondary-color);
 }
 
 .terms-checkbox input[type="checkbox"] {
