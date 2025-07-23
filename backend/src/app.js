@@ -43,9 +43,7 @@ console.log('--- UYGULAMA BAŞLANGICI: Middlewareler (JSON, URL-encoded) eklendi
 
 
 // CORS Ayarları
-// Geçici olarak, tüm kaynaklardan gelen isteklere izin veriyoruz.
-// UYARI: Üretimde bu şekilde KULLANILMAMALIDIR! Güvenlik zafiyeti yaratır.
-app.use(cors());
+app.use(cors()); // Güvenlik riski taşıdığından, üretimde daha spesifik hale getirilmelidir.
 console.log('--- UYGULAMA BAŞLANGICI: CORS middleware eklendi (Tüm originlere açık) ---');
 
 
@@ -56,8 +54,10 @@ app.use('/api/photos', require('./routes/photoRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 console.log('--- UYGULAMA BAŞLANGICI: API Rotaları yüklendi ---');
 
-// Frontend Dosyalarını Servis Etme
-// Bu kısım, Render'da tek bir Web Service olarak hem backend hem de frontend'i sunuyorsan gereklidir.
+// --- DİKKAT: BU KISIM ARTIK YORUM SATIRI VEYA SİLİNMİŞ OLMALIDIR ---
+// Frontend dosyalarını servis etme kısmı DEVRE DIŞI BIRAKILDI
+// Çünkü frontend ayrı bir Render servisi olarak yayınlanıyor (fotogram-app).
+/*
 if (process.env.NODE_ENV === 'production' || process.env.SERVE_FRONTEND) {
     app.use(express.static(path.join(__dirname, '../../frontend/public')));
 
@@ -66,10 +66,10 @@ if (process.env.NODE_ENV === 'production' || process.env.SERVE_FRONTEND) {
     });
     console.log('--- UYGULAMA BAŞLANGICI: Frontend statik dosya sunumu aktif ---');
 }
+*/
 
 
 // Sunucuyu Render'ın atadığı port üzerinde dinlemeye başla
-// process.env.PORT, Render'ın uygulamaya atadığı port numarasıdır.
 app.listen(process.env.PORT, () => {
     console.log(`--- SUNUCU BAŞLATILIYOR: Sunucu ${process.env.PORT} portunda çalışıyor. ---`);
 });
