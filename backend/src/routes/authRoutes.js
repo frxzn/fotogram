@@ -1,40 +1,15 @@
-// backend/server.js
+// backend/src/routes/authRoutes.js
 const express = require('express');
-const dotenv = require('dotenv');
-const connectDB = require('./src/config/db'); // Veritabanı bağlantısı
-const authRoutes = require('./src/routes/authRoutes'); // Auth rotaları
-const cors = require('cors'); // CORS middleware
-// const path = require('path'); // Path modülü - şimdilik kullanılmıyor
+// BURADA 'db.js' veya './config/db' İLE İLGİLİ HİÇBİR require SATIRI OLMAYACAK!
+// SADECE authController'dan fonksiyonları import edeceğiz.
+const { register, completeRegister, login, forgotPassword, resetPassword } = require('../controllers/authController');
 
-// .env dosyasındaki değişkenleri yükle
-dotenv.config();
+const router = express.Router();
 
-// Veritabanına bağlan
-connectDB();
+router.post('/register', register); // E-posta ile ilk kayıt isteği
+router.post('/complete-register', completeRegister); // Kaydı tamamlama (kullanıcı adı ve şifre belirleme)
+router.post('/login', login); // Giriş yapma
+router.post('/forgot-password', forgotPassword); // Şifremi unuttum isteği
+router.post('/reset-password', resetPassword); // Şifreyi sıfırlama
 
-const app = express();
-
-// CORS ayarları
-app.use(cors({
-    origin: process.env.CLIENT_URL, // Sadece frontend URL'ine izin ver
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-}));
-
-// Body parser middleware (JSON verilerini ayrıştırmak için)
-app.use(express.json());
-
-// API rotalarını kullan
-app.use('/api/auth', authRoutes);
-
-// Ana sayfa veya test rotası (isteğe bağlı)
-app.get('/', (req, res) => {
-    res.send('Fotogram Backend API is running...');
-});
-
-// Port belirle
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-    console.log(`Sunucu ${PORT} portunda çalışıyor.`);
-});
+module.exports = router;
