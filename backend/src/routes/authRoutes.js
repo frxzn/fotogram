@@ -1,25 +1,40 @@
-// backend/src/routes/authRoutes.js
-
+// backend/server.js
 const express = require('express');
-const router = express.Router();
-const authController = require('../controllers/authController');
-const { protect } = require('../middleware/authMiddleware'); // Eğer varsa
+const dotenv = require('dotenv');
+const connectDB = require('./src/config/db'); // Veritabanı bağlantısı
+const authRoutes = require('./src/routes/authRoutes'); // Auth rotaları
+const cors = require('cors'); // CORS middleware
+// const path = require('path'); // Path modülü - şimdilik kullanılmıyor
 
+// .env dosyasındaki değişkenleri yükle
+dotenv.config();
 
-router.post('/register', (req, res, next) => {
-    console.log('Backend Log: /api/auth/register rotasına istek geldi.'); // Yeni log
-    authController.register(req, res, next);
+// Veritabanına bağlan
+connectDB();
+
+const app = express();
+
+// CORS ayarları
+app.use(cors({
+    origin: process.env.CLIENT_URL, // Sadece frontend URL'ine izin ver
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+// Body parser middleware (JSON verilerini ayrıştırmak için)
+app.use(express.json());
+
+// API rotalarını kullan
+app.use('/api/auth', authRoutes);
+
+// Ana sayfa veya test rotası (isteğe bağlı)
+app.get('/', (req, res) => {
+    res.send('Fotogram Backend API is running...');
 });
 
-// ... diğer rotalar
+// Port belirle
+const PORT = process.env.PORT || 5000;
 
-router.post('/login', (req, res, next) => {
-    console.log('Backend Log: /api/auth/login rotasına istek geldi.'); // Yeni log
-    authController.login(req, res, next);
+app.listen(PORT, () => {
+    console.log(`Sunucu ${PORT} portunda çalışıyor.`);
 });
-
-
-// Eğer varsa, örnek protect middleware kullanımı
-// router.get('/me', protect, authController.getMe);
-
-module.exports = router;
