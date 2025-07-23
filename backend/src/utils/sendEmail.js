@@ -6,13 +6,13 @@ const sendEmail = async (options) => {
     const transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
         port: process.env.EMAIL_PORT,
-        secure: process.env.EMAIL_PORT == 465 ? true : false,
+        secure: process.env.EMAIL_PORT == 465 ? true : false, // Port 465 ise true, değilse false
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
         },
-        tls: { // Bazı SMTP sunucuları için gerekli olabilir
-            rejectUnauthorized: false
+        tls: { // Bazı SMTP sunucuları için gerekli olabilir, genellikle geliştirme ortamında kullanılır.
+            rejectUnauthorized: false // Sertifika doğrulamasını atla (Üretimde true olması önerilir)
         }
     });
 
