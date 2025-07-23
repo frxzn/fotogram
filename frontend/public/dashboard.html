@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fotogram - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css"> <link rel="stylesheet" href="css/auth.css"> </head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Fotogram</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Anasayfa</a></li>
+                    <li><a href="#" id="logoutButton">Çıkış Yap</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="dashboard-section">
+            <div class="container">
+                <h2>Hoş Geldin, Fotogram Kullanıcısı!</h2>
+                <p>Burası giriş yaptıktan sonra göreceğin ana sayfan. Henüz yapım aşamasında.</p>
+                <p>Giriş başarılı!</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Fotogram. Tüm Hakları Saklıdır.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Çıkış yapma butonu için basit bir JavaScript
+        document.getElementById('logoutButton').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('token'); // Token'ı Local Storage'dan sil
+            window.location.href = '/'; // Ana sayfaya yönlendir
+        });
+
+        // Giriş yapılmış mı kontrolü (opsiyonel ama iyi bir pratik)
+        // Eğer token yoksa ana sayfaya yönlendir
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>
