@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fotogram'a Hoş Geldiniz!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="welcome-container">
+        <h1 class="welcome-title">Fotogram'a Hoş Geldiniz!</h1>
+        <p class="welcome-message">Fotoğraflarınızı puanlayın, yeni insanlarla tanışın ve yaratıcılığınızı sergileyin.</p>
+        <div class="button-group">
+            <a href="#" id="registerBtn" class="btn primary-btn">Kayıt Ol</a>
+            <a href="#" id="loginBtn" class="btn secondary-btn">Giriş Yap</a>
+        </div>
+    </div>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="authFormContainer">
+                </div>
+        </div>
+    </div>
+
+    <script src="/src/js/main.js"></script>
+    <script src="/src/js/auth.js"></script>
+</body>
+</html>
