@@ -3,33 +3,23 @@
 const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
-    // 1. E-posta göndermek için bir taşıyıcı (transporter) oluştur
-    // Bu, e-postaları göndermek için SMTP sunucusu bilgilerini içerir.
     const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST, // Ortam değişkenlerinden e-posta sunucusunun adresi
-        port: process.env.EMAIL_PORT, // Ortam değişkenlerinden e-posta sunucusunun portu
-        // Eğer port 465 ise güvenli bağlantı (SSL/TLS) kullan, değilse kullanma
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
         secure: process.env.EMAIL_PORT == 465 ? true : false,
         auth: {
-            user: process.env.EMAIL_USER, // Ortam değişkenlerinden e-posta kullanıcı adı
-            pass: process.env.EMAIL_PASS // Ortam değişkenlerinden e-posta şifresi
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
         },
-        // Güvenlik ayarları: Eğer SSL sertifikası self-signed ise veya doğrulanmamışsa
-        // rejectUnauthorized'ı false yapabiliriz. Ancak üretimde true olması önerilir.
-        // TLS protokolü ayarları (Gmail için gerekli olabilir)
-        tls: {
+        tls: { // Bazı SMTP sunucuları için gerekli olabilir
             rejectUnauthorized: false
         }
     });
 
-    // 2. E-posta içeriği ve seçeneklerini tanımla
-    // 'options' objesi, e-posta alıcısı, konu ve mesaj/link bilgilerini taşır.
     const mailOptions = {
-        from: `Fotogram Destek <${process.env.EMAIL_USER}>`, // E-postayı gönderen kişi/adres
-        to: options.email, // E-postanın gönderileceği alıcı adresi
-        subject: options.subject, // E-postanın konusu
-        // E-postanın HTML içeriği. Bu kısım, e-postayı daha görsel hale getirir.
-        // options.message değişkeni, aslında kayıt linkinin kendisini içerir.
+        from: `Fotogram Destek <${process.env.EMAIL_USER}>`,
+        to: options.email,
+        subject: options.subject,
         html: `
             <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
                 <div style="background-color: #f7f7f7; padding: 20px; text-align: center;">
@@ -55,12 +45,10 @@ const sendEmail = async (options) => {
         `,
     };
 
-    // 3. E-postayı gönder
     try {
         await transporter.sendMail(mailOptions);
         console.log('E-posta başarıyla gönderildi.');
     } catch (error) {
-        // E-posta gönderirken bir hata oluşursa konsola yazdır ve hata fırlat
         console.error('E-posta gönderirken hata oluştu:', error);
         throw new Error('E-posta gönderilemedi. Lütfen sunucu loglarını kontrol edin.');
     }
