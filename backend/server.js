@@ -1,39 +1,20 @@
-// backend/server.js
+// Örnek server.js veya app.js dosyası
 const express = require('express');
-const dotenv = require('dotenv');
-const connectDB = require('./src/config/db'); // db.js BURADA import EDİLİR
-const authRoutes = require('./src/routes/authRoutes'); // Auth rotaları
-const cors = require('cors'); // CORS middleware
-
-// .env dosyasındaki değişkenleri yükle
-dotenv.config();
-
-// Veritabanına bağlan
-connectDB(); // connectDB fonksiyonu BURADA çağrılır
-
 const app = express();
+const cors = require('cors'); // Burası
 
-// CORS ayarları
+// ... diğer importlar (mongoose, dotenv vb.)
+
+// Middleware'ler (öncelik sırası önemli!)
+app.use(express.json()); // JSON body parser
+app.use(express.urlencoded({ extended: true })); // URL-encoded body parser
+
+// KESİN KONTROL: CORS middleware'i buraya gelmeli
 app.use(cors({
-    origin: process.env.CLIENT_URL,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: '*' // TÜM KAYNAKLARDAN GELEN İSTEKLERE İZİN VER
 }));
 
-// Body parser middleware (JSON verilerini ayrıştırmak için)
-app.use(express.json());
+// Rota tanımlamaları
+// Örnek: app.use('/api/auth', require('./routes/authRoutes'));
 
-// API rotalarını kullan
-app.use('/api/auth', authRoutes);
-
-// Ana sayfa veya test rotası (isteğe bağlı)
-app.get('/', (req, res) => {
-    res.send('Fotogram Backend API is running...');
-});
-
-// Port belirle
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-    console.log(`Sunucu ${PORT} portunda çalışıyor.`);
-});
+// ... diğer kodlar ve app.listen()
