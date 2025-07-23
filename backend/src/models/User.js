@@ -1,58 +1,56 @@
 // backend/src/models/User.js
+
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs'); // Şifreleri hashlemek için
+const bcrypt = require('bcryptjs'); // bcryptjs kullandığından emin ol
 
-const UserSchema = mongoose.Schema({
-    email: {
-        type: String,
-        required: [true, 'Lütfen bir e-posta adresi girin.'],
-        unique: true,
-        match: [
-            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-            'Lütfen geçerli bir e-posta adresi girin.'
-        ]
+const userSchema = mongoose.Schema(
+    {
+        username: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        password: { // Şifre alanının burada 'password' olarak tanımlandığından emin ol
+            type: String,
+            required: true,
+        },
+        // Diğer alanlar (isAdmin, profilePicture vb. varsa)
     },
-    username: {
-        type: String,
-        unique: true,
-        sparse: true, // username alanı boş olabilirken unique olmasını sağlar (ilk kayıt anı için)
-        minlength: [3, 'Kullanıcı adı en az 3 karakter olmalıdır.'],
-        maxlength: [20, 'Kullanıcı adı en fazla 20 karakter olmalıdır.']
-    },
-    password: {
-        type: String,
-        minlength: [6, 'Şifre en az 6 karakter olmalıdır.'],
-        select: false // Şifre sorgularda varsayılan olarak dönmez
-    },
-    isVerified: {
-        type: Boolean,
-        default: false // E-posta doğrulanana kadar false
-    },
-    registrationToken: String, // E-posta doğrulama için kullanılan geçici token
-    resetPasswordToken: String, // Şifre sıfırlama için kullanılan token
-    resetPasswordExpire: Date, // Şifre sıfırlama token'ının geçerlilik süresi
-}, {
-    timestamps: true // createdAt ve updatedAt alanlarını otomatik ekler
-});
+    {
+        timestamps: true, // createdAt, updatedAt otomatik ekler
+    }
+);
 
-// Şifreyi kaydetmeden önce hashle
-UserSchema.pre('save', async function(next) {
-    // Şifre değiştirilmemişse veya yeni oluşturulmuyorsa bir şey yapma
+// Şifreyi kaydetmeden önce hashleme (PRE-SAVE HOOK)
+userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         next();
     }
-    // Şifreyi hashle
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-    next();
 });
 
-// Girilen şifrenin hashlenmiş şifre ile eşleşip eşleşmediğini kontrol et
-UserSchema.methods.matchPassword = async function(enteredPassword) {
-    // Burada this.password zaten model instance'ından geldiği için dolu olmalıdır.
-    // Eğer login veya resetPassword sırasında .select('+password') kullanılmazsa,
-    // bu methoda gelen this.password "undefined" olabilir.
-    return await bcrypt.compare(enteredPassword, this.password);
+// Kullanıcının girdiği şifreyi veritabanındaki hashlenmiş şifre ile karşılaştırma metodu
+userSchema.methods.matchPassword = async function (enteredPassword) {
+    // HATA BURADA: 'this.password' yani kullanıcının veritabanındaki şifresi undefined geliyor.
+    // Bunun iki nedeni olabilir:
+    // 1. Veritabanındaki şema tanımında 'password' alanı yok veya farklı isimde.
+    // 2. Kullanıcı kaydolurken şifre hiç kaydedilmemiş veya boş kaydedilmiş.
+    // 3. User modelini çağırdığında şifre alanını 'select: false' yaparak dışarıda bırakmış olabilirsin.
+
+    // Aşağıdaki satırı kontrol et:
+    return await bcrypt.compare(enteredPassword, this.password); // <-- BU SATIRDA HATA OLUŞUYOR
+
+    // 'this.password' gerçekten kullanıcının hashlenmiş şifresi mi?
+    // Eğer veritabanında şifre yoksa veya 'password' alanı farklı isimdeyse,
+    // 'this.password' 'undefined' olur ve bcrypt.compare hata verir.
 };
 
-module.exports = mongoose.model('User', UserSchema);
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
