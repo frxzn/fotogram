@@ -1,5 +1,6 @@
 // frontend/public/js/auth.js
-
+// frontend/public/js/auth.js'in en başına
+const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // BURAYA KOPYALADIĞIN BACKEND URL'İNİ YAPIŞTIR
 document.addEventListener('DOMContentLoaded', () => {
     // Tüm gerekli DOM elementlerini seç
     const authModal = document.getElementById('authModal');
