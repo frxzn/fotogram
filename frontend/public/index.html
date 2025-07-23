@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fotogram</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
+    <title>Fotogram - Fotoğraflarını Paylaş!</title>
+    <link rel="stylesheet" href="css/style.css"> </head>
 <body>
     <header>
         <div class="container">
-            <h1>Fotogram</h1>
+            <h1 class="logo">Fotogram</h1>
             <nav>
                 <ul>
-                    <li><a href="/">Anasayfa</a></li>
                     <li><a href="#" id="registerButton">Kayıt Ol</a></li>
                     <li><a href="#" id="loginButton">Giriş Yap</a></li>
                 </ul>
@@ -20,48 +18,42 @@
         </div>
     </header>
 
-    <main>
-        <section class="hero-section">
-            <div class="container">
-                <h2>Fotoğraflarınızı puanlayın, yeni insanlarla tanışın ve yaratıcılığınızı sergileyin!</h2>
-                <p>Hemen katıl ve fotogram topluluğunun bir parçası ol.</p>
-                <button class="btn primary-btn" id="registerButtonMain">Kayıt Ol</button>
-                <button class="btn secondary-btn" id="loginButtonMain">Giriş Yap</button>
+    <main class="hero">
+        <div class="container">
+            <h1>Anılarını Paylaş</h1>
+            <p>Fotogram ile fotoğraf ve videolarını kolayca paylaş, arkadaşlarınla etkileşimde kal.</p>
+            <div class="cta-buttons">
+                <button id="registerButtonMain" class="btn primary">Şimdi Kayıt Ol</button>
+                <button id="loginButtonMain" class="btn secondary">Giriş Yap</button>
             </div>
-        </section>
+        </div>
     </main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2023 Fotogram. Tüm Hakları Saklıdır.</p>
-        </div>
-    </footer>
-
-    <div id="authModal" class="auth-modal">
+    <div id="authModal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
-            <h2 id="modalTitle"></h2>
+            <h2 id="modalTitle">Kayıt Ol</h2>
             <form id="authForm">
+                <div class="form-group" id="usernameGroup">
+                    <label for="username">Kullanıcı Adı</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
                 <div class="form-group" id="emailGroup">
                     <label for="email">E-posta</label>
                     <input type="email" id="email" name="email" required>
                 </div>
-                <div class="form-group" id="usernameGroup" style="display: none;">
-                    <label for="username">Kullanıcı Adı</label>
-                    <input type="text" id="username" name="username">
-                </div>
-                <div class="form-group" id="passwordGroup" style="display: none;">
+                <div class="form-group" id="passwordGroup">
                     <label for="password">Şifre</label>
-                    <input type="password" id="password" name="password">
+                    <input type="password" id="password" name="password" required>
                 </div>
-                <div class="form-group" id="confirmPasswordGroup" style="display: none;">
+                <div class="form-group" id="confirmPasswordGroup">
                     <label for="confirmPassword">Şifreyi Onayla</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword">
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
                 </div>
-                <button type="submit" class="btn" id="submitButton"></button>
                 <p id="authMessage" class="message"></p>
-                <p id="toggleAuthMode"></p>
-                <p id="forgotPasswordLink" style="display: none;"><a href="#">Şifremi Unuttum?</a></p>
+                <button type="submit" id="submitButton" class="btn primary">Kayıt Ol</button>
+                <p id="toggleAuthMode" class="toggle-mode">Zaten hesabın var mı? <a href="#" id="toggleLogin">Giriş Yap</a></p>
+                <p id="forgotPasswordLink" class="forgot-password" style="display: none;"><a href="#">Şifremi Unuttum?</a></p>
             </form>
         </div>
     </div>
