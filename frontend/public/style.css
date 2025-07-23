@@ -1,159 +1,120 @@
-/* Genel Stil: Koyu Tema */
-:root {
-    --primary-color: #BB86FC;   /* Morumsu/Açık Lila (Vurgu rengi) */
-    --secondary-color: #03DAC6; /* Turkuaz (İkincil vurgu rengi) */
-    --background-color: #121212; /* Koyu arka plan */
-    --surface-color: #1E1E1E;    /* Kartlar, modallar için daha açık koyu */
-    --text-color: #E0E0E0;      /* Beyaz/açık gri yazı rengi */
-    --text-secondary-color: #A0A0A0; /* Daha az önemli metinler */
-    --border-color: #333333;    /* Koyu sınırlar */
-    --error-color: #CF6679;     /* Hata mesajları için kırmızımsı */
-}
+/* frontend/public/css/style.css - Tüm Proje için Kapsamlı CSS */
 
+/* --- 1. Genel Resetler ve Temel Stiller --- */
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; /* Daha modern bir font */
-    background-color: var(--background-color);
-    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern ve okunaklı bir font */
     line-height: 1.6;
+    color: #333;
+    background-color: #f0f2f5; /* Hafif gri arka plan */
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     min-height: 100vh;
 }
 
-/* Hoş Geldiniz Sayfası */
-.welcome-container {
-    text-align: center;
-    padding: 30px;
-    background-color: var(--surface-color); /* Yüzey rengini kullan */
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); /* Daha belirgin koyu gölge */
-    max-width: 500px;
-    width: 90%;
-    border: 1px solid var(--border-color); /* Hafif bir sınır */
-}
-
-.welcome-title {
-    font-size: 2.8em;
-    color: var(--primary-color);
-    margin-bottom: 20px;
-    letter-spacing: -0.5px;
-}
-
-.welcome-message {
-    font-size: 1.1em;
-    color: var(--text-secondary-color);
-    margin-bottom: 40px;
-}
-
-.button-group {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-}
-
-.btn {
-    display: inline-block;
-    padding: 14px 28px;
-    border-radius: 30px;
+/* Link Stilleri */
+a {
+    color: #007bff; /* Mavi tonu */
     text-decoration: none;
-    font-size: 1.05em;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Düğmelerde hafif gölge */
+    transition: color 0.3s ease;
 }
 
-.primary-btn {
-    background-color: var(--primary-color);
-    color: var(--background-color); /* Koyu arka plan rengiyle uyumlu yazı */
+a:hover {
+    color: #0056b3; /* Daha koyu mavi */
 }
 
-.primary-btn:hover {
-    background-color: #9A5DE5; /* Daha koyu mor */
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+/* --- 2. Ortak Düzen ve Konteyner Stilleri --- */
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
 }
 
-.secondary-btn {
-    background-color: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
+/* --- 3. Header Stili --- */
+header {
+    background: #283747; /* Koyu lacivert/gri */
+    color: #fff;
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.secondary-btn:hover {
-    background-color: var(--primary-color);
-    color: var(--background-color);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-}
-
-/* Modal Styilleri */
-.modal {
-    display: none; /* Varsayılan olarak gizli */
-    position: fixed; /* Ekranın üzerinde duracak */
-    z-index: 1000; /* Diğer her şeyin önünde */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto; /* Gerekirse scroll */
-    background-color: rgba(0,0,0,0.7); /* Daha koyu karartılmış arka plan */
-    justify-content: center;
+header .container {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
 }
 
-.modal-content {
-    background-color: var(--surface-color); /* Yüzey rengini kullan */
-    margin: auto;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    position: relative;
-    max-width: 450px;
-    width: 90%;
-    animation: fadeIn 0.3s ease-out;
-    border: 1px solid var(--border-color);
+header h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    color: #f7b731; /* Turuncu-sarı vurgu */
+    letter-spacing: 1px;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+header nav ul {
+    list-style: none;
+    display: flex;
 }
 
-.close-button {
-    color: var(--text-secondary-color);
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    cursor: pointer;
+header nav ul li {
+    margin-left: 25px;
 }
 
-.close-button:hover,
-.close-button:focus {
-    color: var(--primary-color);
+header nav ul li a {
+    color: #fff;
     text-decoration: none;
-    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: color 0.3s ease, transform 0.2s ease;
 }
 
-/* Form Styilleri (Genel) */
-.auth-form h2 {
-    text-align: center;
-    color: var(--primary-color);
+header nav ul li a:hover {
+    color: #f7b731;
+    transform: translateY(-2px);
+}
+
+/* --- 4. Main İçerik Alanı --- */
+main {
+    flex: 1; /* İçeriğin esnemesini ve footer'ı alta itmesini sağlar */
+    padding: 30px 0;
+}
+
+/* Section Stilleri (Genel Kullanım İçin) */
+section {
+    background-color: #fff;
+    padding: 40px;
     margin-bottom: 25px;
-    font-size: 2em;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
+section h2 {
+    font-size: 2.8rem;
+    color: #283747;
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 700;
+}
+
+section p {
+    font-size: 1.15rem;
+    color: #555;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 20px auto;
+}
+
+/* --- 5. Form ve Giriş Stilleri (Auth Modalı ve diğer formlar için) --- */
 .form-group {
     margin-bottom: 20px;
 }
@@ -161,109 +122,247 @@ body {
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    font-weight: bold;
-    color: var(--text-color);
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
 }
 
 .form-group input[type="email"],
 .form-group input[type="password"],
 .form-group input[type="text"] {
     width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 1em;
-    outline: none;
-    background-color: var(--background-color); /* Koyu tema input arkaplanı */
-    color: var(--text-color); /* Koyu tema input yazı rengi */
-    transition: border-color 0.3s ease;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-group input[type="email"]:focus,
 .form-group input[type="password"]:focus,
 .form-group input[type="text"]:focus {
-    border-color: var(--secondary-color);
-    box-shadow: 0 0 0 3px rgba(3, 218, 198, 0.2); /* Vurgu rengiyle gölge */
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
 }
 
-.form-actions {
-    margin-top: 30px;
+/* --- 6. Buton Stilleri --- */
+.btn {
+    display: inline-block;
+    background: #007bff; /* Mavi */
+    color: #fff;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%; /* Form butonları için genişlik */
+    margin-top: 10px;
+}
+
+.btn:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Farklı buton türleri */
+.primary-btn {
+    background: #28a745; /* Yeşil */
+}
+.primary-btn:hover {
+    background: #218838;
+}
+
+.secondary-btn {
+    background: #6c757d; /* Gri */
+}
+.secondary-btn:hover {
+    background: #5a6268;
+}
+
+
+/* --- 7. Mesaj Stilleri (Hata/Başarı) --- */
+.message {
+    padding: 12px 20px;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-size: 1rem;
     text-align: center;
+    font-weight: 500;
+    display: none; /* Varsayılan olarak gizli */
 }
 
-.form-actions .btn {
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* --- 8. Auth Modal Stilleri (Önceki auth.css'ten entegre edildi) --- */
+.auth-modal {
+    display: none; /* Varsayılan olarak gizli */
+    position: fixed; /* Sabit konum */
+    z-index: 1000; /* Diğer her şeyin üstünde */
+    left: 0;
+    top: 0;
     width: 100%;
-    padding: 15px;
-    border-radius: 8px;
-    font-size: 1.1em;
+    height: 100%;
+    overflow: auto; /* İçerik taşarsa kaydırma */
+    background-color: rgba(0, 0, 0, 0.6); /* Yarı şeffaf siyah arka plan */
+    justify-content: center; /* İçeriği ortalamak için */
+    align-items: center; /* İçeriği ortalamak için */
 }
 
-.form-actions .btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+.modal-content {
+    background-color: #fff;
+    margin: auto; /* Dikey ve yatay ortalama için */
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-width: 450px;
+    width: 90%; /* Küçük ekranlarda esnek */
+    animation-name: animatetop;
+    animation-duration: 0.4s;
 }
 
-.form-text-link {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-    color: var(--primary-color);
-    text-decoration: none;
-    font-size: 0.95em;
-    transition: color 0.2s ease;
+/* Modal Açılma Animasyonu */
+@keyframes animatetop {
+    from { top: -300px; opacity: 0; }
+    to { top: 0; opacity: 1; }
 }
 
-.form-text-link:hover {
-    color: var(--secondary-color);
-    text-decoration: underline;
-}
-
-/* Checkbox ve Kurallar */
-.terms-checkbox {
-    display: flex;
-    align-items: center;
-    margin-top: 25px;
-    margin-bottom: 20px;
-    font-size: 0.9em;
-    color: var(--text-secondary-color);
-}
-
-.terms-checkbox input[type="checkbox"] {
-    margin-right: 10px;
-    transform: scale(1.2);
-    accent-color: var(--primary-color); /* Checkbox rengi */
-}
-
-.terms-checkbox a {
-    color: var(--secondary-color);
-    text-decoration: none;
+.close-button {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 35px;
     font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
 }
 
-.terms-checkbox a:hover {
-    text-decoration: underline;
+.close-button:hover,
+.close-button:focus {
+    color: #333;
+    text-decoration: none;
 }
 
-/* Mobile Uyumluluk */
+.modal-content h2 {
+    text-align: center;
+    color: #283747;
+    margin-bottom: 25px;
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.modal-content p {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1rem;
+}
+
+.modal-content p a {
+    font-weight: 600;
+}
+
+
+/* --- 9. Footer Stili --- */
+footer {
+    background: #283747;
+    color: #fff;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: auto;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+
+/* --- 10. Medya Sorguları (Responsive Tasarım) --- */
 @media (max-width: 768px) {
-    .welcome-title {
-        font-size: 2.2em;
-    }
-
-    .welcome-message {
-        font-size: 1em;
-    }
-
-    .button-group {
+    header .container {
         flex-direction: column;
-        gap: 15px;
+        text-align: center;
     }
 
-    .btn {
-        width: 100%;
+    header nav ul {
+        margin-top: 15px;
+        flex-wrap: wrap; /* Menü öğeleri küçük ekranda alt alta düşebilir */
+        justify-content: center;
+    }
+
+    header nav ul li {
+        margin: 0 10px 10px 10px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    main {
+        padding: 20px 0;
+    }
+
+    section {
+        padding: 30px 15px;
+    }
+
+    section h2 {
+        font-size: 2.2rem;
+    }
+
+    section p {
+        font-size: 1.05rem;
     }
 
     .modal-content {
-        padding: 20px;
+        padding: 25px 30px;
+        width: 95%;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    header nav ul li {
+        margin: 0 8px 8px 8px;
+    }
+
+    section h2 {
+        font-size: 1.8rem;
+    }
+
+    .form-group input {
+        padding: 10px 12px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+
+    .modal-content h2 {
+        font-size: 1.8rem;
     }
 }
