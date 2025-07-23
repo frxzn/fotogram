@@ -27,7 +27,7 @@
                 <p>Giriş başarılı!</p>
             </div>
         </section>
-    </main>
+        </main>
 
     <footer>
         <div class="container">
@@ -36,19 +36,24 @@
     </footer>
 
     <script>
-        // Çıkış yapma butonu için basit bir JavaScript
-        document.getElementById('logoutButton').addEventListener('click', function(e) {
-            e.preventDefault();
-            localStorage.removeItem('token'); // Token'ı Local Storage'dan sil
-            window.location.href = '/'; // Ana sayfaya yönlendir
-        });
+        document.addEventListener('DOMContentLoaded', () => {
+            // Giriş yapılmış mı kontrolü
+            const token = localStorage.getItem('token');
+            if (!token) {
+                // Eğer token yoksa ana sayfaya yönlendir
+                window.location.href = '/';
+            }
 
-        // Giriş yapılmış mı kontrolü (opsiyonel ama iyi bir pratik)
-        // Eğer token yoksa ana sayfaya yönlendir
-        const token = localStorage.getItem('token');
-        if (!token) {
-            window.location.href = '/';
-        }
+            // Çıkış yapma butonu için JavaScript
+            const logoutButton = document.getElementById('logoutButton');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    localStorage.removeItem('token'); // Token'ı Local Storage'dan sil
+                    window.location.href = '/'; // Ana sayfaya yönlendir
+                });
+            }
+        });
     </script>
 </body>
 </html>
