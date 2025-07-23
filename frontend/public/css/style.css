@@ -1,0 +1,371 @@
+/* frontend/public/css/style.css - VSCO Benzeri Kapsamlı CSS */
+
+/* --- 1. Genel Resetler ve Temel Stiller --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; /* Modern ve sade bir font */
+    line-height: 1.5;
+    color: #333;
+    background-color: #f8f8f8; /* Çok açık gri, neredeyse beyaz */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Link Stilleri */
+a {
+    color: #4CAF50; /* Yumuşak yeşil vurgu */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #388E3C; /* Daha koyu yeşil */
+}
+
+/* --- 2. Ortak Düzen ve Konteyner Stilleri --- */
+.container {
+    width: 90%;
+    max-width: 1000px; /* Daha dar bir orta alan hissi */
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* --- 3. Header Stili --- */
+header {
+    background: #ffffff; /* Beyaz header */
+    color: #333;
+    padding: 1.2rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* Hafif gölge */
+    border-bottom: 1px solid #eee; /* İnce alt çizgi */
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-family: 'Georgia', serif; /* Daha sanatsal bir font denemesi */
+    font-size: 2.2rem;
+    margin: 0;
+    color: #333;
+    letter-spacing: -0.5px;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+}
+
+header nav ul li {
+    margin-left: 25px;
+}
+
+header nav ul li a {
+    color: #555; /* Yumuşak gri metin */
+    text-decoration: none;
+    font-weight: 500; /* Daha az kalın font */
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+header nav ul li a:hover {
+    color: #4CAF50; /* Yeşil hover */
+}
+
+/* --- 4. Main İçerik Alanı --- */
+main {
+    flex: 1;
+    padding: 40px 0;
+}
+
+/* Section Stilleri (Genel Kullanım İçin) */
+section {
+    background-color: #ffffff;
+    padding: 50px; /* Daha fazla padding */
+    margin-bottom: 30px;
+    border-radius: 12px; /* Yuvarlak köşeler */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); /* Daha belirgin ama soft gölge */
+    text-align: center; /* Genelde ortalanmış içerik */
+}
+
+section h2 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+section p {
+    font-size: 1.1rem;
+    color: #666;
+    max-width: 700px;
+    margin: 0 auto 30px auto;
+    line-height: 1.7;
+}
+
+/* --- 5. Form ve Giriş Stilleri (Auth Modalı ve diğer formlar için) --- */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left; /* Form elemanları sola yaslı */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+    font-size: 0.95rem;
+}
+
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0; /* Açık gri kenarlık */
+    border-radius: 8px; /* Daha yuvarlak */
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input[type="email"]:focus,
+.form-group input[type="password"]:focus,
+.form-group input[type="text"]:focus {
+    border-color: #9CCC65; /* Yeşil odak rengi */
+    box-shadow: 0 0 0 3px rgba(156, 204, 101, 0.3); /* Soft yeşil gölge */
+    outline: none;
+}
+
+/* --- 6. Buton Stilleri --- */
+.btn {
+    display: inline-block;
+    background: #4CAF50; /* Yeşil buton */
+    color: #fff;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px; /* Yuvarlak köşeler */
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    width: 100%; /* Form butonları için genişlik */
+    margin-top: 15px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Hafif buton gölgesi */
+}
+
+.btn:hover {
+    background: #388E3C;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Farklı buton türleri (varsa) */
+.primary-btn {
+    background: #607D8B; /* Pastel gri-mavi */
+}
+.primary-btn:hover {
+    background: #455A64;
+}
+
+.secondary-btn {
+    background: #B0BEC5; /* Daha açık gri */
+    color: #333;
+}
+.secondary-btn:hover {
+    background: #90A4AE;
+}
+
+/* --- 7. Mesaj Stilleri (Hata/Başarı) --- */
+.message {
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-size: 0.95rem;
+    text-align: center;
+    font-weight: 500;
+    display: none;
+}
+
+.message.success {
+    background-color: #e8f5e9; /* Çok açık yeşil */
+    color: #2E7D32;
+    border: 1px solid #A5D6A7;
+}
+
+.message.error {
+    background-color: #ffebee; /* Çok açık kırmızı */
+    color: #D32F2F;
+    border: 1px solid #EF9A9A;
+}
+
+/* --- 8. Auth Modal Stilleri (Önceki auth.css'ten entegre edildi) --- */
+.auth-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Yarı şeffaf siyah */
+    justify-content: center;
+    align-items: center;
+    padding: 20px; /* Kenarlardan boşluk bırak */
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 35px 45px;
+    border-radius: 12px; /* Yuvarlak köşeler */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* Daha derin gölge */
+    position: relative;
+    max-width: 400px; /* Daha dar modal */
+    width: 100%;
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+}
+
+@keyframes animatetop {
+    from { top: -300px; opacity: 0; }
+    to { top: 0; opacity: 1; }
+}
+
+.close-button {
+    color: #888;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 30px; /* Daha küçük */
+    font-weight: normal; /* Daha az kalın */
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #444;
+}
+
+.modal-content h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.modal-content p {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.modal-content p a {
+    font-weight: 600;
+}
+
+/* --- 9. Footer Stili --- */
+footer {
+    background: #ffffff;
+    color: #777;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: auto;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
+    border-top: 1px solid #eee;
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* --- 10. Medya Sorguları (Responsive Tasarım) --- */
+@media (max-width: 768px) {
+    header .container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    header nav ul {
+        margin-top: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    header nav ul li {
+        margin: 0 10px 10px 10px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    main {
+        padding: 30px 0;
+    }
+
+    section {
+        padding: 30px 20px;
+    }
+
+    section h2 {
+        font-size: 2rem;
+    }
+
+    section p {
+        font-size: 1rem;
+    }
+
+    .modal-content {
+        padding: 30px;
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    header nav ul li {
+        margin: 0 8px 8px 8px;
+    }
+
+    section h2 {
+        font-size: 1.6rem;
+    }
+
+    .form-group input {
+        padding: 10px 12px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+
+    .modal-content h2 {
+        font-size: 1.8rem;
+    }
+  }
