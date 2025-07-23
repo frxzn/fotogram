@@ -1,22 +1,21 @@
 // backend/server.js
 const express = require('express');
 const dotenv = require('dotenv');
-const connectDB = require('./src/config/db'); // Veritabanı bağlantısı
+const connectDB = require('./src/config/db'); // db.js BURADA import EDİLİR
 const authRoutes = require('./src/routes/authRoutes'); // Auth rotaları
 const cors = require('cors'); // CORS middleware
-// const path = require('path'); // Path modülü - şimdilik kullanılmıyor
 
 // .env dosyasındaki değişkenleri yükle
 dotenv.config();
 
 // Veritabanına bağlan
-connectDB();
+connectDB(); // connectDB fonksiyonu BURADA çağrılır
 
 const app = express();
 
 // CORS ayarları
 app.use(cors({
-    origin: process.env.CLIENT_URL, // Sadece frontend URL'ine izin ver
+    origin: process.env.CLIENT_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
