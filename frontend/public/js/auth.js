@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // BURAYI KENDİ BACKEND SERVİSİNİN RENDER URL'İ İLE DEĞİŞTİR!
     // Örnek: https://fotogram-backend-abcdef.onrender.com
-    const API_BASE_URL = 'https://fotogram-backend.onrender.com/'; // Lütfen burayı güncelleyin!
+    const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Lütfen burayı güncelleyin!
 
     // Tüm gerekli DOM elementlerini seç
     const authModal = document.getElementById('authModal');
