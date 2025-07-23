@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fotogram</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Fotogram</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">Anasayfa</a></li>
+                    <li><a href="#" id="registerButton">Kayıt Ol</a></li>
+                    <li><a href="#" id="loginButton">Giriş Yap</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h2>Fotoğraflarınızı puanlayın, yeni insanlarla tanışın ve yaratıcılığınızı sergileyin!</h2>
+                <p>Hemen katıl ve fotogram topluluğunun bir parçası ol.</p>
+                <button class="btn primary-btn" id="registerButtonMain">Kayıt Ol</button>
+                <button class="btn secondary-btn" id="loginButtonMain">Giriş Yap</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Fotogram. Tüm Hakları Saklıdır.</p>
+        </div>
+    </footer>
+
+    <div id="authModal" class="auth-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <form id="authForm">
+                <div class="form-group" id="emailGroup">
+                    <label for="email">E-posta</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group" id="usernameGroup" style="display: none;">
+                    <label for="username">Kullanıcı Adı</label>
+                    <input type="text" id="username" name="username">
+                </div>
+                <div class="form-group" id="passwordGroup" style="display: none;">
+                    <label for="password">Şifre</label>
+                    <input type="password" id="password" name="password">
+                </div>
+                <div class="form-group" id="confirmPasswordGroup" style="display: none;">
+                    <label for="confirmPassword">Şifreyi Onayla</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword">
+                </div>
+                <button type="submit" class="btn" id="submitButton"></button>
+                <p id="authMessage" class="message"></p>
+                <p id="toggleAuthMode"></p>
+                <p id="forgotPasswordLink" style="display: none;"><a href="#">Şifremi Unuttum?</a></p>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script> </body>
+</html>
