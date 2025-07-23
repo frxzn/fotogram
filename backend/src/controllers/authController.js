@@ -129,7 +129,8 @@ const completeRegister = async (req, res) => {
 const login = async (req, res) => {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    // ÖNEMLİ DÜZELTME: password alanını açıkça seçiyoruz.
+    const user = await User.findOne({ email }).select('+password');
 
     if (user && (await user.matchPassword(password))) {
         if (!user.isVerified) {
@@ -201,10 +202,11 @@ const resetPassword = async (req, res) => {
     // Hashlenmiş token'ı veritabanında ara
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
+    // ÖNEMLİ DÜZELTME: password alanını açıkça seçiyoruz.
     const user = await User.findOne({
         resetPasswordToken: hashedToken,
         resetPasswordExpire: { $gt: Date.now() } // Süresi dolmamış
-    });
+    }).select('+password');
 
     if (!user) {
         return res.status(400).json({ message: 'Geçersiz veya süresi dolmuş şifre sıfırlama bağlantısı.' });
