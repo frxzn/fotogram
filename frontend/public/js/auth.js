@@ -18,6 +18,7 @@ function displayMessage(elementId, message, type = 'error') {
 // Modalı açma/kapama
 function openModal() {
     authModal.style.display = 'block';
+    console.log('Modül: openModal fonksiyonu çağrıldı. Modal açılıyor.'); // Yeni eklenen satır
 }
 
 function closeModal() {
@@ -27,6 +28,7 @@ function closeModal() {
 
 // Kayıt Formu - Adım 1 (E-posta ile kayıt)
 function loadRegisterForm() {
+    console.log('Modül: loadRegisterForm fonksiyonu çağrıldı.'); // Yeni eklenen satır
     authFormContainer.innerHTML = `
         <h2>Kayıt Ol</h2>
         <form id="registerFormEmail">
@@ -73,6 +75,7 @@ function loadRegisterForm() {
 
 // Kayıt Formu - Adım 2 (Doğrulama tokeni ile kaydı tamamlama)
 function loadCompleteRegisterForm(token) {
+    console.log('Modül: loadCompleteRegisterForm fonksiyonu çağrıldı.'); // Yeni eklenen satır
     authFormContainer.innerHTML = `
         <h2>Kaydı Tamamla</h2>
         <form id="completeRegisterForm">
@@ -129,6 +132,7 @@ function loadCompleteRegisterForm(token) {
 
 // Giriş Formu
 function loadLoginForm() {
+    console.log('Modül: loadLoginForm fonksiyonu çağrıldı.'); // Yeni eklenen satır
     authFormContainer.innerHTML = `
         <h2>Giriş Yap</h2>
         <form id="loginForm">
@@ -184,6 +188,7 @@ function loadLoginForm() {
 
 // Şifremi Unuttum Formu
 function loadForgotPasswordForm() {
+    console.log('Modül: loadForgotPasswordForm fonksiyonu çağrıldı.'); // Yeni eklenen satır
     authFormContainer.innerHTML = `
         <h2>Şifremi Unuttum</h2>
         <form id="forgotPasswordForm">
@@ -230,6 +235,7 @@ function loadForgotPasswordForm() {
 
 // Şifre Sıfırlama Formu (E-postadaki linkten gelir)
 function loadResetPasswordForm(token) {
+    console.log('Modül: loadResetPasswordForm fonksiyonu çağrıldı.'); // Yeni eklenen satır
     authFormContainer.innerHTML = `
         <h2>Şifre Sıfırla</h2>
         <form id="resetPasswordForm">
@@ -294,7 +300,6 @@ window.addEventListener('load', () => {
     }
     // Eğer token yoksa, main.js'deki butonlar formu yükleyecek
 });
-
 
 // Modal kapatma butonu
 closeModalButton.addEventListener('click', closeModal);
