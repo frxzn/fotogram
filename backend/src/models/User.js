@@ -1,53 +1,56 @@
+// backend/src/models/User.js
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const bcrypt = require('bcryptjs'); // Şifreleri hashlemek için
 
-const userSchema = new Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        minlength: 3,
-        match: /^[a-zA-Z0-9_]+$/ // Kullanıcı adı sadece harf, rakam ve alt çizgi içerebilir
-    },
+const UserSchema = mongoose.Schema({
     email: {
         type: String,
-        required: true,
+        required: [true, 'Lütfen bir e-posta adresi girin.'],
         unique: true,
-        trim: true,
-        lowercase: true,
-        match: /^\S+@\S+\.\S+$/
+        match: [
+            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+            'Lütfen geçerli bir e-posta adresi girin.'
+        ]
+    },
+    username: {
+        type: String,
+        unique: true,
+        sparse: true, // username alanı boş olabilirken unique olmasını sağlar (ilk kayıt anı için)
+        minlength: [3, 'Kullanıcı adı en az 3 karakter olmalıdır.'],
+        maxlength: [20, 'Kullanıcı adı en fazla 20 karakter olmalıdır.']
     },
     password: {
         type: String,
-        required: true,
-        minlength: 6
+        minlength: [6, 'Şifre en az 6 karakter olmalıdır.'],
+        select: false // Şifre sorgularda varsayılan olarak dönmez
     },
-    isVerified: { // E-posta doğrulaması
+    isVerified: {
         type: Boolean,
-        default: false
+        default: false // E-posta doğrulanana kadar false
     },
-    verificationToken: String, // E-posta doğrulama için tek kullanımlık token
-    verificationTokenExpires: Date,
-    passwordResetToken: String, // Şifre sıfırlama için tek kullanımlık token
-    passwordResetExpires: Date,
-    isAdmin: {
-        type: Boolean,
-        default: false
-    },
-    profilePicture: {
-        type: String,
-        default: '/assets/images/default-profile.png' // Varsayılan profil fotoğrafı
-    },
-    bio: {
-        type: String,
-        maxlength: 200,
-        default: ''
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
+    registrationToken: String, // E-posta doğrulama için kullanılan geçici token
+    resetPasswordToken: String, // Şifre sıfırlama için kullanılan token
+    resetPasswordExpire: Date, // Şifre sıfırlama token'ının geçerlilik süresi
+}, {
+    timestamps: true // createdAt ve updatedAt alanlarını otomatik ekler
 });
 
-module.exports = mongoose.model('User', userSchema);
+// Şifreyi kaydetmeden önce hashle
+UserSchema.pre('save', async function(next) {
+    // Şifre değiştirilmemişse veya yeni oluşturulmuyorsa bir şey yapma
+    if (!this.isModified('password')) {
+        next();
+    }
+    // Şifreyi hashle
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+});
+
+// Girilen şifrenin hashlenmiş şifre ile eşleşip eşleşmediğini kontrol et
+UserSchema.methods.matchPassword = async function(enteredPassword) {
+    // select: false olduğu için şifreyi bu yöntemle çekmeliyiz
+    return await bcrypt.compare(enteredPassword, this.password);
+};
+
+module.exports = mongoose.model('User', UserSchema);
