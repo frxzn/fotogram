@@ -3,39 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fotogram - Dashboard</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
+    <title>Fotogram - Ana Sayfa</title>
+    <link rel="stylesheet" href="css/style.css"> </head>
 <body>
     <header>
         <div class="container">
-            <h1>Fotogram</h1>
+            <h1 class="logo">Fotogram</h1>
             <nav>
                 <ul>
-                    <li><a href="/">Anasayfa</a></li>
-                    <li><a href="#" id="logoutButton">Çıkış Yap</a></li>
-                </ul>
+                    <li><a href="#">Profil</a></li>
+                    <li><a href="#">Keşfet</a></li>
+                    <li><a href="#" id="logoutButton">Çıkış Yap</a></li> </ul>
             </nav>
         </div>
     </header>
 
-    <main>
-        <section class="dashboard-section">
-            <div class="container">
-                <h2>Hoş Geldin, Fotogram Kullanıcısı!</h2>
-                <p>Burası giriş yaptıktan sonra göreceğin ana sayfan. Henüz yapım aşamasında.</p>
-                <p>Giriş başarılı!</p>
-            </div>
-        </section>
-        </main>
-
-    <footer>
+    <main class="dashboard-content">
         <div class="container">
-            <p>&copy; 2023 Fotogram. Tüm Hakları Saklıdır.</p>
-        </div>
-    </footer>
+            <h1>Hoş Geldin, Kullanıcı!</h1>
+            <p>Bu senin Fotogram panon. Burada fotoğraflarını ve etkileşimlerini göreceksin.</p>
+            </div>
+    </main>
 
     <script>
+        // dashboard.html için özel JavaScript
         document.addEventListener('DOMContentLoaded', () => {
             // Giriş yapılmış mı kontrolü
             const token = localStorage.getItem('token');
