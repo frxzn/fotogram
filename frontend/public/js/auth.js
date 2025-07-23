@@ -1,19 +1,16 @@
 // frontend/public/js/auth.js
 
 // API URL'i ve modal elementleri
-const API_URL = 'https://fotogram-backend.onrender.com/api';
-const authModal = document.getElementById('authModal');
-const authFormContainer = document.getElementById('authFormContainer');
-
-// closeModalButton, modal açıldığında bulunmalı, bu yüzden burada querySelector ile direkt aramıyoruz.
-// loadRegisterForm veya loadLoginForm çağrıldığında modal açılacak ve buton bulunacak.
+const API_URL = 'https://fotogram-backend.onrender.com/api'; // Backend API URL'in
+const authModal = document.getElementById('authModal'); // main.html'deki modal div'i
+const authFormContainer = document.getElementById('authFormContainer'); // Modal içeriğini tutan div
 
 // Mesajları göstermek için yardımcı fonksiyon
 function displayMessage(elementId, message, type = 'error') {
     const element = document.getElementById(elementId);
     if (element) {
         element.textContent = message;
-        element.className = `message ${type}`;
+        element.className = `message ${type}`; // 'success' veya 'error' class'ı ekler
         element.style.display = 'block';
     }
 }
@@ -23,7 +20,9 @@ function openModal() {
     authModal.style.display = 'block';
     console.log('Frontend Log: Modal açıldı.');
 
-    // Modal açıldığında kapatma butonunu tekrar yakala
+    // Modal açıldığında dinamik olarak eklenen kapatma butonunu yakala
+    // Her form yüklendiğinde buton yeniden render edildiği için event listener'ı burada veya
+    // form yükleme fonksiyonunun içinde tekrar eklemek önemlidir.
     const currentCloseButton = authModal.querySelector('.close-button');
     if (currentCloseButton) {
         currentCloseButton.onclick = closeModal;
@@ -34,11 +33,13 @@ function closeModal() {
     authModal.style.display = 'none';
     authFormContainer.innerHTML = ''; // Modalı kapatırken içeriği temizle
     console.log('Frontend Log: Modal kapatıldı.');
-    // URL'deki token parametrelerini temizle (sadece modal kapatıldığında)
+
+    // URL'deki token parametrelerini temizle (sadece modal kapatıldığında ve URL'de varsa)
+    // Bu, kullanıcı modalı kapatıp yeniden açtığında eski token'ın tekrar formu tetiklemesini engeller.
     if (window.location.search) {
         const url = new URL(window.location.href);
-        url.search = '';
-        window.history.pushState({}, '', url.toString());
+        url.search = ''; // URL'deki tüm query parametrelerini sil
+        window.history.pushState({}, '', url.toString()); // URL'i temizlenmiş haliyle değiştir
         console.log('Frontend Log: URL parametreleri temizlendi.');
     }
 }
@@ -61,6 +62,10 @@ function loadRegisterForm() {
         <p>Zaten hesabın var mı? <a href="#" id="showLoginForm">Giriş Yap</a></p>
     `;
 
+    // Yeni kapatma butonu için listener ekle (innerHTML değiştiği için tekrar eklemeliyiz)
+    authModal.querySelector('.close-button').onclick = closeModal;
+
+    // Form submit olay dinleyicisi
     document.getElementById('registerFormEmail').addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('registerEmail').value;
@@ -76,6 +81,7 @@ function loadRegisterForm() {
             if (res.ok) {
                 console.log('Frontend Log: Kayıt başarılı yanıtı.');
                 displayMessage('registerEmailMessage', data.message, 'success');
+                // E-posta gönderildikten sonra mesajı göster ve formu değiştir
                 authFormContainer.innerHTML = `
                     <button class="close-button">&times;</button>
                     <h2>E-posta Gönderildi!</h2>
@@ -83,6 +89,7 @@ function loadRegisterForm() {
                 `;
                 // Yeni kapatma butonu için listener ekle
                 authModal.querySelector('.close-button').onclick = closeModal;
+
             } else {
                 console.error(`Frontend Log: Kayıt hatası. Mesaj: ${data.message || 'Bilinmeyen hata.'}`);
                 displayMessage('registerEmailMessage', data.message || 'Kayıt sırasında bir hata oluştu.');
@@ -93,13 +100,14 @@ function loadRegisterForm() {
         }
     });
 
+    // "Giriş Yap" linkine tıklama olay dinleyicisi
     document.getElementById('showLoginForm').addEventListener('click', (e) => {
         e.preventDefault();
         loadLoginForm();
     });
 }
 
-// Kaydı Tamamlama Formu (E-posta'dan gelen link ile)
+// Kaydı Tamamlama Formu (E-posta'dan gelen link ile tetiklenir)
 function loadCompleteRegisterForm(token) {
     console.log('Frontend Log: Kaydı tamamlama formu yükleniyor. Token:', token);
     openModal(); // Formu yüklerken modali aç
@@ -127,13 +135,13 @@ function loadCompleteRegisterForm(token) {
     // Yeni kapatma butonu için listener ekle
     authModal.querySelector('.close-button').onclick = closeModal;
 
-
+    // Form submit olay dinleyicisi
     document.getElementById('completeRegisterForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const username = document.getElementById('registerUsername').value;
         const password = document.getElementById('registerPassword').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
-        const registerCompleteToken = document.getElementById('registerCompleteToken').value;
+        const registerCompleteToken = document.getElementById('registerCompleteToken').value; // Hidden input'tan token'ı al
 
         if (password !== confirmPassword) {
             displayMessage('completeRegisterMessage', 'Şifreler eşleşmiyor.');
@@ -147,7 +155,7 @@ function loadCompleteRegisterForm(token) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${registerCompleteToken}`
+                    'Authorization': `Bearer ${registerCompleteToken}` // Token'ı Authorization başlığı ile gönder
                 },
                 body: JSON.stringify({ username, password })
             });
@@ -156,9 +164,10 @@ function loadCompleteRegisterForm(token) {
             if (res.ok) {
                 console.log('Frontend Log: Kayıt tamamlama başarılı.');
                 displayMessage('completeRegisterMessage', data.message || 'Kaydınız başarıyla tamamlandı. Şimdi giriş yapabilirsiniz!', 'success');
+                // Başarılı olursa login formunu yükle veya ana sayfaya yönlendir
                 setTimeout(() => {
                     closeModal();
-                    loadLoginForm();
+                    loadLoginForm(); // Giriş formuna yönlendirme
                 }, 2000);
             } else {
                 console.error(`Frontend Log: Kayıt tamamlama hatası. Mesaj: ${data.message || 'Bilinmeyen hata.'}`);
@@ -166,7 +175,7 @@ function loadCompleteRegisterForm(token) {
             }
         } catch (error) {
             console.error('Frontend Log: Kayıt tamamlama sunucusuna bağlanılamadı veya ağ hatası:', error);
-            displayMessage('completeRegisterMessage', 'Kayıt tamamlama sunucusuna bağlanılamadı.');
+            displayMessage('completeRegisterMessage', 'Kayıt tamamlama sunucusuna bağlanılamadı. Lütfen ağ bağlantınızı kontrol edin veya daha sonra tekrar deneyin.');
         }
     });
 }
@@ -195,6 +204,7 @@ function loadLoginForm() {
     // Yeni kapatma butonu için listener ekle
     authModal.querySelector('.close-button').onclick = closeModal;
 
+    // Form submit olay dinleyicisi
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value;
@@ -215,7 +225,7 @@ function loadLoginForm() {
                 window.location.href = '/dashboard.html'; // Başarılı girişte yönlendirme
             } else {
                 console.error(`Frontend Log: Giriş hatası. Mesaj: ${data.message || 'Bilinmeyen hata.'}`);
-                displayMessage('loginMessage', data.message || 'Giriş başarısız.');
+                displayMessage('loginMessage', data.message || 'Giriş başarısız. Lütfen e-posta ve şifrenizi kontrol edin.');
             }
         } catch (error) {
             console.error('Frontend Log: Sunucuya bağlanılamadı veya ağ hatası:', error);
@@ -223,11 +233,13 @@ function loadLoginForm() {
         }
     });
 
+    // "Kayıt Ol" linkine tıklama olay dinleyicisi
     document.getElementById('showRegisterForm').addEventListener('click', (e) => {
         e.preventDefault();
         loadRegisterForm();
     });
 
+    // "Şifremi Unuttum" linkine tıklama olay dinleyicisi
     document.getElementById('showForgotPasswordForm').addEventListener('click', (e) => {
         e.preventDefault();
         loadForgotPasswordForm();
@@ -254,6 +266,7 @@ function loadForgotPasswordForm() {
     // Yeni kapatma butonu için listener ekle
     authModal.querySelector('.close-button').onclick = closeModal;
 
+    // Form submit olay dinleyicisi
     document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('forgotEmail').value;
@@ -275,17 +288,18 @@ function loadForgotPasswordForm() {
             }
         } catch (error) {
             console.error('Frontend Log: Şifre sıfırlama sunucusuna bağlanılamadı veya ağ hatası:', error);
-            displayMessage('forgotPasswordMessage', 'Şifre sıfırlama sunucusuna bağlanılamadı.');
+            displayMessage('forgotPasswordMessage', 'Şifre sıfırlama sunucusuna bağlanılamadı. Lütfen ağ bağlantınızı kontrol edin veya daha sonra tekrar deneyin.');
         }
     });
 
+    // "Giriş Yap" linkine tıklama olay dinleyicisi
     document.getElementById('showLoginFormFromForgot').addEventListener('click', (e) => {
         e.preventDefault();
         loadLoginForm();
     });
 }
 
-// Şifre Sıfırlama Formu (E-posta'dan gelen link ile)
+// Şifre Sıfırlama Formu (E-posta'dan gelen link ile tetiklenir)
 function loadResetPasswordForm(token) {
     console.log('Frontend Log: Şifre sıfırlama formu yükleniyor. Token:', token);
     openModal(); // Formu yüklerken modali aç
@@ -309,7 +323,7 @@ function loadResetPasswordForm(token) {
     // Yeni kapatma butonu için listener ekle
     authModal.querySelector('.close-button').onclick = closeModal;
 
-
+    // Form submit olay dinleyicisi
     document.getElementById('resetPasswordForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const newPassword = document.getElementById('newPassword').value;
@@ -328,7 +342,7 @@ function loadResetPasswordForm(token) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${resetPasswordToken}`
+                    'Authorization': `Bearer ${resetPasswordToken}` // Token'ı Authorization başlığı ile gönder
                 },
                 body: JSON.stringify({ password: newPassword })
             });
@@ -337,9 +351,10 @@ function loadResetPasswordForm(token) {
             if (res.ok) {
                 console.log('Frontend Log: Şifre sıfırlama başarılı.');
                 displayMessage('resetPasswordMessage', data.message || 'Şifreniz başarıyla sıfırlandı. Şimdi giriş yapabilirsiniz!', 'success');
+                // Başarılı olursa login formunu yükle
                 setTimeout(() => {
                     closeModal();
-                    loadLoginForm();
+                    loadLoginForm(); // Giriş formuna yönlendirme
                 }, 2000);
             } else {
                 console.error(`Frontend Log: Şifre sıfırlama hatası. Mesaj: ${data.message || 'Bilinmeyen hata.'}`);
@@ -347,13 +362,17 @@ function loadResetPasswordForm(token) {
             }
         } catch (error) {
             console.error('Frontend Log: Şifre sıfırlama sunucusuna bağlanılamadı veya ağ hatası:', error);
-            displayMessage('resetPasswordMessage', 'Şifre sıfırlama sunucusuna bağlanılamadı.');
+            displayMessage('resetPasswordMessage', 'Şifre sıfırlama sunucusuna bağlanılamadı. Lütfen ağ bağlantınızı kontrol edin veya daha sonra tekrar deneyin.');
         }
     });
 }
 
+// Global olarak erişilebilir hale getir
+window.loadRegisterForm = loadRegisterForm;
+window.loadLoginForm = loadLoginForm;
 
-// URL'deki token'ı kontrol et ve ilgili formu yükle
+
+// Sayfa yüklendiğinde URL'deki token'ı kontrol et ve ilgili formu yükle
 window.addEventListener('load', () => {
     console.log('Frontend Log: Sayfa yüklendi, URL parametreleri kontrol ediliyor.');
     const params = new URLSearchParams(window.location.search);
@@ -364,15 +383,15 @@ window.addEventListener('load', () => {
     console.log('Frontend Log: resetToken değeri:', resetToken);
 
     if (registerToken) {
-        console.log('Frontend Log: registerToken bulundu. Modül açılıyor ve kayıt tamamlama formu yükleniyor.');
-        loadCompleteRegisterForm(registerToken); // openModal zaten loadCompleteRegisterForm içinde çağrılıyor
+        console.log('Frontend Log: registerToken bulundu. Kayıt tamamlama formu yükleniyor.');
+        loadCompleteRegisterForm(registerToken);
     } else if (resetToken) {
-        console.log('Frontend Log: resetToken bulundu. Modül açılıyor ve şifre sıfırlama formu yükleniyor.');
-        loadResetPasswordForm(resetToken); // openModal zaten loadResetPasswordForm içinde çağrılıyor
+        console.log('Frontend Log: resetToken bulundu. Şifre sıfırlama formu yükleniyor.');
+        loadResetPasswordForm(resetToken);
     } else {
         console.log('Frontend Log: URL\'de registerToken veya resetToken bulunamadı.');
     }
-    // Eğer token yoksa, main.js'deki butonlar formu yükleyecek
+    // Eğer token yoksa, main.js'deki butonlar formu yükleyecek (bu kısım main.js'de olmalı)
 });
 
 // Modala dışına tıklayınca kapatma
@@ -381,3 +400,7 @@ window.addEventListener('click', (event) => {
         closeModal();
     }
 });
+
+// `main.js` içinde bu fonksiyonlar çağrılabilir
+// document.getElementById('registerButton').addEventListener('click', loadRegisterForm);
+// document.getElementById('loginButton').addEventListener('click', loadLoginForm);
