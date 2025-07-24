@@ -1,14 +1,12 @@
 // backend/src/controllers/authController.js
 
 const User = require('../models/User'); // User modelini import et
-const jwt = require('jsonwebtoken');   // npm install jsonwebtoken paketini kurduğundan emin ol
-const sendEmail = require('../utils/sendEmail'); // Mail gönderme yardımcı fonksiyonu (yolunu kontrol et!)
-const crypto = require('crypto'); // Node.js'in dahili modülü, npm install gerekmez
+const jwt = require('jsonwebtoken');   // jsonwebtoken paketini kurduğundan emin ol
+const sendEmail = require('../utils/sendEmail'); // Mail gönderme yardımcı fonksiyonu
+const crypto = require('crypto'); // Node.js'in dahili modülü
 
 // JWT Token Oluşturma Fonksiyonu
-// Bu fonksiyon, kullanıcı kimliği (id) için bir JSON Web Token oluşturur.
 const generateToken = (id) => {
-    // JWT_SECRET ortam değişkeni Render'da ayarlı olmalı (örn: Render Dashboard > Services > fotogram-backend > Environment)
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: '1h', // Token'ın geçerlilik süresi (örnek: 1 saat)
     });
@@ -16,12 +14,12 @@ const generateToken = (id) => {
 
 // @desc    Yeni kullanıcı kaydetme işlemi
 // @route   POST /api/auth/register
-// @access  Public (Herkes erişebilir)
+// @access  Public
 const registerUser = async (req, res) => {
     const { username, email, password } = req.body;
 
     // Alanların dolu olup olmadığını kontrol et
-    if (!username || !email || !password) { // Tüm alanların boş OLMADIĞINI kontrol ediyoruz
+    if (!username || !email || !password) { // Şifrenin dolu olduğundan emin oluyoruz
         return res.status(400).json({ message: 'Lütfen tüm alanları doldurun.' });
     }
 
@@ -50,7 +48,7 @@ const registerUser = async (req, res) => {
                 // const verificationLink = `${process.env.FRONTEND_URL || 'https://fotogram-app.onrender.com'}/verify-email?token=${verificationToken}`;
 
                 // Şimdilik test için varsayılan bir link kullanıyorum, bu link bir yere gitmeyecek!
-                const verificationLink = `${process.env.FRONTEND_URL || 'https://fotogram-app.onrender.com'}/verify-email?token=GEÇİCİ_AKTİVASYON_TOKENİ`; // BU KISMI GÜNCELLE!
+                const verificationLink = `${process.env.FRONTEND_URL || 'https://fotogram-app.onrender.com'}/verify-email?token=GEÇİCİ_AKTİVASYON_TOKENİ`;
 
 
                 const registrationMailHtml = `
@@ -87,20 +85,17 @@ const registerUser = async (req, res) => {
 
                 await sendEmail({
                     email: user.email,
-                    subject: 'Fotogram Hesabınızı Doğrulayın', // Konu daha uygun
-                    message: 'Kaydı tamamlamak için lütfen aşağıdaki butona tıklayın.', // Düz metin versiyonu
-                    html: registrationMailHtml, // Kendi özel HTML'imizi gönderiyoruz
+                    subject: 'Fotogram Hesabınızı Doğrulayın',
+                    message: 'Kaydı tamamlamak için lütfen aşağıdaki butona tıklayın.',
+                    html: registrationMailHtml,
                 });
                 console.log(`Kayıt doğrulama maili ${user.email} adresine gönderildi.`);
             } catch (mailError) {
                 console.error(`Kayıt doğrulama maili gönderme hatası (${user.email}):`, mailError);
-                // Mail gönderme hatası, kayıt işlemini engellememeli, sadece loglanmalı
             }
 
-            // Başarılı yanıt
             res.status(201).json({
                 message: 'Kayıt başarılı! Hesabınızı doğrulamak için lütfen e-postanızı kontrol edin.'
-                // Kayıt sırasında token göndermiyoruz, kullanıcı giriş yapmalı
             });
         } else {
             res.status(400).json({ message: 'Kullanıcı oluşturulamadı. Geçersiz kullanıcı verileri.' });
@@ -122,26 +117,18 @@ const loginUser = async (req, res) => {
     }
 
     try {
-        // Kullanıcıyı e-posta ile bul ve şifreyi de çek
-        const user = await User.findOne({ email }).select('+password'); // Şifreyi de çek!
+        const user = await User.findOne({ email }).select('+password');
 
         if (!user) {
             return res.status(401).json({ message: 'E-posta veya şifre hatalı.' });
         }
 
-        // Kullanıcı email doğrulaması gerekiyorsa burada kontrol edebilirsin
-        // if (!user.isVerified) {
-        //     return res.status(401).json({ message: 'Lütfen e-posta adresinizi doğrulayın.' });
-        // }
-
-
-        // Girilen şifreyi hashlenmiş şifre ile karşılaştır
         const isMatch = await user.matchPassword(password);
 
         if (user && isMatch) {
             res.json({
                 message: 'Giriş Başarılı!',
-                token: generateToken(user._id), // Token oluştur ve gönder
+                token: generateToken(user._id),
                 user: {
                     id: user._id,
                     username: user.username,
@@ -150,7 +137,6 @@ const loginUser = async (req, res) => {
                 },
             });
         } else {
-            // Kullanıcı bulundu ama şifre eşleşmedi
             res.status(401).json({ message: 'E-posta veya şifre hatalı.' });
         }
     } catch (error) {
@@ -173,25 +159,17 @@ const forgotPassword = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            // Güvenlik nedeniyle, kullanıcının var olup olmadığı bilgisini ifşa etmiyoruz.
-            // Her durumda başarılı yanıt döndürüp, varsa mail göndermiş gibi yapıyoruz.
             return res.status(200).json({ message: 'Şifre sıfırlama bağlantısı e-posta adresinize gönderildi (varsa).' });
         }
 
-        // Şifre sıfırlama token'ı oluştur
         const resetToken = crypto.randomBytes(32).toString('hex');
-        // Token'ı hashle ve kullanıcı modeline kaydet (gerçek token'ı kaydetmiyoruz)
         user.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-        // Token'ın geçerlilik süresini ayarla (10 dakika)
         user.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 dakika
 
-        await user.save({ validateBeforeSave: false }); // Validasyonları atla, sadece bu alanları kaydet
+        await user.save({ validateBeforeSave: false });
 
-        // Şifre sıfırlama linki
-        // Bu link frontend'de reset-password sayfan olmalı
         const resetURL = `${process.env.FRONTEND_URL || 'https://fotogram-app.onrender.com'}/reset-password?token=${resetToken}`;
 
-        // Mesaj artık daha spesifik, genel bilgilendirme sendEmail.js'deki taslakta
         const message = `Şifreni sıfırlamak için aşağıdaki butona tıklayabilirsin. Bu link 10 dakika içinde geçerliliğini yitirecektir. Eğer bu isteği sen yapmadıysan, lütfen bu e-postayı dikkate alma.`;
 
         try {
@@ -207,10 +185,9 @@ const forgotPassword = async (req, res) => {
 
             res.status(200).json({ message: 'Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.' });
         } catch (emailError) {
-            // Mail gönderme hatası olursa, token'ı ve süresini temizle
             user.passwordResetToken = undefined;
             user.passwordResetExpires = undefined;
-            await user.save({ validateBeforeSave: false }); // Tekrar kaydet
+            await user.save({ validateBeforeSave: false });
 
             console.error('Şifre sıfırlama maili gönderme hatası:', emailError);
             return res.status(500).json({ message: 'E-posta gönderilirken bir hata oluştu. Lütfen tekrar deneyin.' });
@@ -226,7 +203,6 @@ const forgotPassword = async (req, res) => {
 // @route   PUT /api/auth/reset-password/:token
 // @access  Public
 const resetPassword = async (req, res) => {
-    // URL'den gelen token'ı hashle (çünkü veritabanında hashlenmiş hali var)
     const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
     const { password, confirmPassword } = req.body;
 
@@ -245,20 +221,18 @@ const resetPassword = async (req, res) => {
     try {
         const user = await User.findOne({
             passwordResetToken: hashedToken,
-            passwordResetExpires: { $gt: Date.now() }, // Token'ın geçerlilik süresini kontrol et
+            passwordResetExpires: { $gt: Date.now() },
         });
 
         if (!user) {
             return res.status(400).json({ message: 'Geçersiz veya süresi dolmuş şifre sıfırlama bağlantısı.' });
         }
 
-        // Yeni şifreyi ata ve hashleme pre-save hook'u sayesinde otomatik hashlenecek
         user.password = password;
-        // Şifre sıfırlama token ve süre alanlarını temizle
         user.passwordResetToken = undefined;
         user.passwordResetExpires = undefined;
 
-        await user.save(); // Şifreyi kaydet (bu pre-save hook'u tetikler)
+        await user.save();
 
         res.status(200).json({ message: 'Şifreniz başarıyla sıfırlandı. Şimdi yeni şifrenizle giriş yapabilirsiniz.' });
 
