@@ -43,17 +43,11 @@ app.use(express.urlencoded({ extended: true })); // URL-encoded istek gövdeleri
 console.log('--- UYGULAMA BAŞLANGICI: Middlewareler (JSON, URL-encoded) eklendi ---');
 
 
-// CORS Ayarları
-// FRONTEND_URL ortam değişkeninin doğru ayarlandığından emin olun (örn: https://your-frontend-app.onrender.com)
-const corsOptions = {
-    origin: process.env.FRONTEND_URL, // Sadece bu origin'den gelen isteklere izin ver
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // İzin verilen HTTP metotları
-    credentials: true, // Çerezler, yetkilendirme başlıkları vb. gönderilmesine izin ver
-    allowedHeaders: ['Content-Type', 'Authorization'] // İzin verilen başlıklar
-};
-
-app.use(cors(corsOptions)); // CORS middleware'ini belirtilen seçeneklerle kullan
-console.log(`--- UYGULAMA BAŞLANGICI: CORS middleware eklendi (Origin: ${process.env.FRONTEND_URL}) ---`);
+// CORS Ayarları (HATA AYIKLAMA AMAÇLI - GEÇİCİ OLARAK TÜM ORIGINLERE AÇIK)
+// Bu ayar, tüm originlerden gelen isteklere izin verir ve güvenlik riski taşır.
+// Sadece sorunu tespit etmek için kullanın. Sorun çözüldüğünde eski spesifik haline döneceğiz.
+app.use(cors()); 
+console.log(`--- UYGULAMA BAŞLANGICI: CORS middleware eklendi (Tüm originlere açık - HATA AYIKLAMA) ---`);
 
 
 // API Rotaları
