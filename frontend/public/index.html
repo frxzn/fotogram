@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fotogram - Fotoğraflarını Paylaş!</title>
-    <link rel="stylesheet" href="css/style.css"> </head>
+    <link rel="stylesheet" href="css/style.css"> 
+    </head>
 <body>
     <header>
         <div class="container">
             <h1 class="logo">Fotogram</h1>
             <nav>
                 <ul>
-                    <li><a href="#" id="registerButton">Kayıt Ol</a></li>
-                    <li><a href="#" id="loginButton">Giriş Yap</a></li>
-                </ul>
+                    <li><a href="#" id="openAuthModalButton">Giriş Yap / Kayıt Ol</a></li> 
+                    </ul>
             </nav>
         </div>
     </header>
@@ -23,37 +23,55 @@
             <h1>Anılarını Paylaş</h1>
             <p>Fotogram ile fotoğraf ve videolarını kolayca paylaş, arkadaşlarınla etkileşimde kal.</p>
             <div class="cta-buttons">
-                <button id="registerButtonMain" class="btn primary">Şimdi Kayıt Ol</button>
-                <button id="loginButtonMain" class="btn secondary">Giriş Yap</button>
+                <button id="openAuthModalButtonMain" class="btn primary">Şimdi Kayıt Ol</button>
+                <button id="openAuthModalButtonSecondary" class="btn secondary">Giriş Yap</button>
             </div>
         </div>
     </main>
 
-    <div id="authModal" class="modal">
-        <div class="modal-content">
+    <div id="authModal" class="auth-modal">
+        <div class="auth-modal-content">
             <span class="close-button">&times;</span>
-            <h2 id="modalTitle">Kayıt Ol</h2>
+            <h2 id="authTitle">Giriş Yap</h2>
             <form id="authForm">
-                <div class="form-group" id="usernameGroup">
+                <div class="input-group" id="usernameGroup" style="display: none;">
                     <label for="username">Kullanıcı Adı</label>
-                    <input type="text" id="username" name="username" required>
+                    <input type="text" id="username" name="username">
                 </div>
-                <div class="form-group" id="emailGroup">
+                <div class="input-group">
                     <label for="email">E-posta</label>
                     <input type="email" id="email" name="email" required>
                 </div>
-                <div class="form-group" id="passwordGroup">
+                <div class="input-group">
                     <label for="password">Şifre</label>
                     <input type="password" id="password" name="password" required>
                 </div>
-                <div class="form-group" id="confirmPasswordGroup">
+                <div class="input-group" id="confirmPasswordGroup" style="display: none;">
                     <label for="confirmPassword">Şifreyi Onayla</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <input type="password" id="confirmPassword" name="confirmPassword">
                 </div>
-                <p id="authMessage" class="message"></p>
-                <button type="submit" id="submitButton" class="btn primary">Kayıt Ol</button>
-                <p id="toggleAuthMode" class="toggle-mode">Zaten hesabın var mı? <a href="#" id="toggleLogin">Giriş Yap</a></p>
-                <p id="forgotPasswordLink" class="forgot-password" style="display: none;"><a href="#">Şifremi Unuttum?</a></p>
+                <div id="message" class="message" style="display: none;"></div>
+                <button type="submit" id="submitButton" class="btn primary">Giriş Yap</button>
+                <div class="toggle-links" id="toggleLinks">
+                    <a href="#" id="showRegister">Kayıt Ol</a>
+                    <a href="#" id="showLogin" style="display: none;">Giriş Yap</a>
+                    <a href="#" id="forgotPasswordLink">Şifremi Unuttum?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="forgotPasswordModal" class="auth-modal">
+        <div class="auth-modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="forgotPasswordModalTitle">Şifremi Unuttum</h2>
+            <form id="forgotPasswordForm">
+                <div class="input-group">
+                    <label for="forgotPasswordEmail">E-posta</label>
+                    <input type="email" id="forgotPasswordEmail" required>
+                </div>
+                <button type="submit" id="forgotPasswordSubmitButton" class="btn primary">Şifre Sıfırlama Bağlantısı Gönder</button>
+                <div id="forgotPasswordMessage" class="message" style="display: none;"></div>
             </form>
         </div>
     </div>
@@ -66,6 +84,6 @@
     </footer>
 
     <script src="js/auth.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/main.js"></script> 
 </body>
 </html>
