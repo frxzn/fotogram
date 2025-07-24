@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-posta Doğrulama - Fotogram</title>
+    <!-- Genel CSS dosyanı buraya dahil et -->
     <link rel="stylesheet" href="css/style.css"> 
+    <!-- Kimlik doğrulama modalı ve mesaj stillerini içeriyorsa, onu da dahil et -->
     <link rel="stylesheet" href="css/auth.css"> 
     <style>
         /* Bu stil bloğu, verify-email.html sayfasına özel düzenlemeler içindir. */
@@ -13,7 +15,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #121212; /* Genel arkaplan rengi */
+            background-color: #121212; /* Genel arkaplan rengi, style.css'den de gelebilir */
             color: #e0e0e0; /* Genel metin rengi */
             font-family: 'Roboto', sans-serif; /* Yazı tipi */
             margin: 0;
@@ -93,13 +95,16 @@
 <body>
     <div class="container">
         <h1>E-posta Doğrulanıyor...</h1>
+        <!-- Doğrulama durumu mesajı burada görüntülenecek -->
         <p id="statusMessage" class="loading">Hesabınız doğrulanıyor, lütfen bekleyin...</p>
+        <!-- Hata durumunda veya otomatik yönlendirme olmadığında gösterilecek buton -->
         <a href="/index.html" class="login-link" style="display: none;" id="loginRedirectLink">Giriş Sayfasına Git</a>
     </div>
 
     <script>
         // Backend API'nizin temel URL'si. Burayı Render'daki backend URL'nizle DEĞİŞTİRMENİZ GEREKİYOR!
-        // Örneğin: 'https://senin-fotogram-backend-uygulaman.onrender.com'
+        // Örn: 'https://senin-backend-uygulaman.onrender.com'
+        // Lütfen Render Dashboard'dan kopyaladığınız URL'i buraya yapıştırın.
         const API_BASE_URL = 'https://fotogram-backend.onrender.com'; 
         
         const statusMessageElement = document.getElementById('statusMessage');
@@ -132,10 +137,11 @@
             console.log('Doğrulama tokenı alındı:', token.substring(0, 10) + '...'); // Tokenın tamamını loglama güvenlik için iyi değil
 
             try {
-                console.log(`Backend'e istek gönderiliyor: ${API_BASE_URL}/api/auth/verify-email?token=${token}`);
+                // Backend'e istek gönderiliyor. Bu URL'in doğru olduğundan emin olun!
+                const requestUrl = `${API_BASE_URL}/api/auth/verify-email?token=${token}`;
+                console.log(`Backend'e istek gönderiliyor: ${requestUrl}`);
                 
-                // Backend'e doğrulama isteğini gönder
-                const response = await fetch(`${API_BASE_URL}/api/auth/verify-email?token=${token}`, {
+                const response = await fetch(requestUrl, {
                     method: 'GET', // GET isteği olarak gönderiyoruz
                     headers: {
                         'Content-Type': 'application/json'
