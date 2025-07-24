@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Fotogram</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel-stylesheet">
     <link rel="stylesheet" href="css/style.css"> 
     <link rel="stylesheet" href="css/dashboard.css"> 
 </head>
@@ -79,42 +79,50 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // 1. Yetkisiz erişim kontrolü (İlk olarak bu kontrol yapılmalı)
-        const loggedInUsername = localStorage.getItem('loggedInUsername');
-        console.log('Dashboard yüklendi. localStorage.loggedInUsername degeri:', loggedInUsername); // DEBUG MESAJI
+        console.log('Dashboard script yüklendi ve DOM hazır.');
 
-        if (!loggedInUsername) {
-            console.warn('Giris yapmamis kullanici tespit edildi, index.html e yonlendiriliyor.');
-            window.location.href = '/index.html'; // Giriş yapmamışsa ana sayfaya yönlendir
-            return; // Yönlendirme yapıldığı için daha fazla kod çalıştırma
-        }
+        // Yetkisiz erişim kontrolünü bir gecikme ile yapalım
+        // Bu, auth.js'in localStorage'ı güncellemesi için ek süre tanır.
+        setTimeout(() => {
+            const loggedInUsername = localStorage.getItem('loggedInUsername');
+            console.log('Gecikme sonrası localStorage.loggedInUsername değeri:', loggedInUsername);
 
-        // 2. Kullanıcı adını yansıtma
-        const usernameDisplayElement = document.getElementById('usernameDisplay'); 
-        if (usernameDisplayElement) {
-            usernameDisplayElement.textContent = `Hoş Geldin, ${loggedInUsername}!`;
-            console.log(`Kullanici adi guncellendi: Hoş Geldin, ${loggedInUsername}!`); 
-        } else {
-            console.error("'usernameDisplay' ID'li element bulunamadi. Lütfen dashboard.html'i kontrol edin.");
-        }
+            // Kullanıcı adı yoksa, boşsa veya "null"/"undefined" stringi olarak kaydedilmişse yönlendir
+            if (!loggedInUsername || loggedInUsername === 'null' || loggedInUsername === 'undefined' || loggedInUsername.trim() === '') {
+                console.warn('Giriş yapmamış veya geçersiz kullanıcı tespit edildi. index.html e yönlendiriliyor.');
+                window.location.href = '/index.html';
+                return; // Yönlendirme yapıldığı için daha fazla kod çalıştırma
+            }
 
-        // 3. Çıkış Yap butonu olay dinleyicisi
-        const logoutButton = document.getElementById('logoutButton');
-        if (logoutButton) {
-            logoutButton.addEventListener('click', (e) => {
-                e.preventDefault(); // Varsayılan link davranışını engelle
-                console.log('Çıkış yap butonuna basildi. localStorage temizleniyor...'); 
-                localStorage.removeItem('loggedInUsername'); // localStorage'dan kullanıcı adını sil
-                // Eğer oturum için başka bir token (JWT gibi) saklıyorsan, onu da silmelisin:
-                // localStorage.removeItem('jwtToken'); 
+            // Kullanıcı adını yansıtma
+            const usernameDisplayElement = document.getElementById('usernameDisplay'); 
+            if (usernameDisplayElement) {
+                usernameDisplayElement.textContent = `Hoş Geldin, ${loggedInUsername}!`;
+                console.log(`Kullanıcı adı güncellendi: Hoş Geldin, ${loggedInUsername}!`); 
+            } else {
+                console.error("'usernameDisplay' ID'li element bulunamadı. Lütfen dashboard.html'i kontrol edin.");
+            }
 
-                // Kısa bir gecikme sonrası index.html'e yönlendir
-                setTimeout(() => {
-                    console.log('index.html e yonlendiriliyor. localStorage.loggedInUsername simdi:', localStorage.getItem('loggedInUsername')); 
-                    window.location.href = '/index.html'; 
-                }, 50); // Tarayıcının localStorage'ı işlemesi için kısa bir gecikme
-            });
-        }
+            // Çıkış Yap butonu olay dinleyicisi
+            const logoutButton = document.getElementById('logoutButton');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', (e) => {
+                    e.preventDefault(); 
+                    console.log('Çıkış yap butonuna basıldı. localStorage temizleniyor...'); 
+                    localStorage.removeItem('loggedInUsername');
+                    // Eğer oturum için başka bir token (JWT gibi) saklıyorsan, onu da silmelisin:
+                    // localStorage.removeItem('jwtToken'); 
+
+                    setTimeout(() => {
+                        console.log('index.html e yönlendiriliyor. localStorage.loggedInUsername şimdi:', localStorage.getItem('loggedInUsername')); 
+                        window.location.href = '/index.html'; 
+                    }, 50); 
+                });
+            } else {
+                console.warn("'logoutButton' ID'li element bulunamadı. Lütfen dashboard.html'i kontrol edin.");
+            }
+
+        }, 100); // 100 milisaniye gecikme ekledik. Bu süreyi duruma göre artırabiliriz.
     });
 </script>
 </body>
