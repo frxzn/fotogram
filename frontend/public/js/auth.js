@@ -7,7 +7,6 @@ const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Örn: 'https://
 // DOM elementleri
 const authModal = document.getElementById('authModal');
 const authForm = document.getElementById('authForm');
-const closeButtons = document.querySelectorAll('.close-button'); // Tüm kapatma butonları
 const showRegisterLink = document.getElementById('showRegister');
 const showLoginLink = document.getElementById('showLogin');
 const authTitle = document.getElementById('authTitle');
@@ -110,6 +109,31 @@ function updateFormMode() {
 
 // Olay dinleyicileri (Null kontrolü ile daha güvenli)
 document.addEventListener('DOMContentLoaded', () => {
+   // SADECE AUTH MODAL İÇİN KAPATMA BUTONU VE ARKA PLAN TIKLAMASI
+const authModalCloseButton = document.querySelector('#authModal .close-button');
+if (authModalCloseButton) {
+    authModalCloseButton.addEventListener('click', closeModal);
+}
+
+authModal?.addEventListener('click', (e) => {
+    if (e.target === authModal) {
+        closeModal();
+    }
+});
+
+// SADECE FORGOT PASSWORD MODAL İÇİN KAPATMA BUTONU VE ARKA PLAN TIKLAMASI
+const forgotPasswordModalCloseButton = document.querySelector('#forgotPasswordModal .close-button');
+if (forgotPasswordModalCloseButton) {
+    forgotPasswordModalCloseButton.addEventListener('click', closeForgotPasswordModal);
+}
+
+forgotPasswordModal?.addEventListener('click', (e) => {
+    if (e.target === forgotPasswordModal) {
+        closeForgotPasswordModal();
+    }
+});
+    
+    
     // Auth Modal Butonları (Ana sayfadaki)
     openAuthModalButtonMain?.addEventListener('click', () => {
         openModal('register'); // "Şimdi Kayıt Ol" butonu kayıt modunda açsın
@@ -119,9 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Auth Modal içindeki butonlar
-    closeButtons.forEach(button => {
-        button?.addEventListener('click', closeModal); // Tüm kapatma butonlarına ekle
-    });
+
 
     authModal?.addEventListener('click', (e) => {
         if (e.target === authModal) {
