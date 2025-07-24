@@ -1,0 +1,115 @@
+/* frontend/public/css/settings.css */
+
+.settings-content {
+    padding: 40px 0;
+}
+
+.settings-content h2 {
+    font-size: 2.5em;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.settings-section {
+    background-color: var(--secondary-background);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 40px;
+}
+
+.settings-section h3 {
+    font-size: 1.8em;
+    color: var(--text-color-light);
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+.settings-form .form-group {
+    margin-bottom: 20px;
+}
+
+.settings-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+    color: var(--text-color-secondary);
+}
+
+.settings-form input[type="password"],
+.settings-form input[type="email"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--background-color);
+    color: var(--text-color-light);
+    font-size: 1em;
+    box-sizing: border-box; /* Padding'in genişliğe dahil olmasını sağlar */
+}
+
+.settings-form input[type="password"]:focus,
+.settings-form input[type="email"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.3);
+}
+
+.settings-form button.btn {
+    padding: 12px 30px;
+    font-size: 1.1em;
+    border-radius: var(--border-radius);
+    width: auto;
+    display: block;
+    margin-top: 25px;
+}
+
+.settings-form .message {
+    margin-top: 15px;
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+    font-size: 0.95em;
+    display: none; /* Varsayılan olarak gizli */
+}
+
+.settings-form .message.error {
+    background-color: #ffe0e0; /* Açık kırmızı */
+    color: #cc0000; /* Koyu kırmızı */
+    border: 1px solid #cc0000;
+}
+
+.settings-form .message.success {
+    background-color: #e0ffe0; /* Açık yeşil */
+    color: #008000; /* Koyu yeşil */
+    border: 1px solid #008000;
+}
+
+/* Duyarlı Tasarım */
+@media (max-width: 768px) {
+    .settings-content h2 {
+        font-size: 2em;
+    }
+    .settings-section {
+        padding: 20px;
+    }
+    .settings-section h3 {
+        font-size: 1.5em;
+    }
+    .settings-form button.btn {
+        width: 100%; /* Mobil cihazlarda butonlar tam genişlik */
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-content {
+        padding: 20px 0;
+    }
+    .settings-content h2 {
+        font-size: 1.8em;
+    }
+    .settings-section h3 {
+        font-size: 1.3em;
+    }
+}
