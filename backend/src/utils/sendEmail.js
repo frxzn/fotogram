@@ -1,23 +1,21 @@
 // backend/src/utils/sendEmail.js
 
-const nodemailer = require('nodemailer'); // npm install nodemailer paketini kurduğundan emin ol
+const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
     const transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
-        port: parseInt(process.env.EMAIL_PORT, 10), // Portu sayıya çevir
-        secure: process.env.EMAIL_PORT == 465 ? true : false, // Port 465 ise true, değilse false
+        port: parseInt(process.env.EMAIL_PORT, 10),
+        secure: process.env.EMAIL_PORT == 465 ? true : false,
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
         },
         tls: {
-            rejectUnauthorized: false // Sertifika doğrulamasını atla (Üretimde 'true' olması önerilir!)
+            rejectUnauthorized: false
         }
     });
 
-    // Genel amaçlı varsayılan HTML Mail Taslağı (örneğin hoş geldin veya basit bilgilendirme için)
-    // Bu taslak, options.html gönderilmediğinde kullanılır.
     const defaultGeneralHtmlTemplate = `
         <div style="font-family: 'Roboto', sans-serif; line-height: 1.6; color: #E0E0E0; background-color: #000000; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);">
             <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #333333;">
@@ -54,11 +52,10 @@ const sendEmail = async (options) => {
     `;
 
     const mailOptions = {
-        from: `Fotogram Destek <${process.env.EMAIL_USER}>`, // FROM_NAME kullanmıyorsan, buraya sabit bir string yazabilirsin.
+        from: `Fotogram Destek <${process.env.EMAIL_USER}>`,
         to: options.email,
         subject: options.subject,
-        text: options.message, // Düz metin olarak da mesajı gönder.
-        // Eğer options.html varsa onu kullan (bu, authController'dan özel HTML gelirse), yoksa genel taslağı kullan.
+        text: options.message,
         html: options.html || defaultGeneralHtmlTemplate,
     };
 
@@ -67,14 +64,13 @@ const sendEmail = async (options) => {
         console.log(`E-posta başarıyla gönderildi: ${options.email}`);
     } catch (error) {
         console.error('E-posta gönderirken hata oluştu:', error);
-        // Daha detaylı hata loglaması
         if (error.response) {
             console.error('SMTP Sunucu Yanıtı (Response):', error.response);
             if (error.response.body) {
                 console.error('SMTP Sunucu Yanıtı (Body):', error.response.body);
             }
         } else if (error.code) {
-            console.error('Nodemailer Hata Kodu:', error.code); // Örn: 'EENVELOPE', 'ECONNREFUSED'
+            console.error('Nodemailer Hata Kodu:', error.code);
         }
         throw new Error('E-posta gönderilemedi. Lütfen sunucu loglarını ve SMTP ayarlarınızı kontrol edin.');
     }
