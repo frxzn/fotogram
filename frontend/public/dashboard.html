@@ -6,7 +6,8 @@
     <title>Dashboard - Fotogram</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/dashboard.css"> </head>
+    <link rel="stylesheet" href="css/dashboard.css"> 
+</head>
 <body>
 
 <header>
@@ -28,7 +29,7 @@
 
 <main class="dashboard-content">
     <div class="container">
-        <h2>Hoş Geldin, [Kullanıcı Adı]!</h2> 
+        <h2 id="usernameDisplay">Hoş Geldin, [Kullanıcı Adı]!</h2> 
         <p>En son paylaşımları ve arkadaş etkinliklerini burada görebilirsin.</p>
 
         <section class="feed">
@@ -77,32 +78,41 @@
 </footer>
 
 <script src="js/main.js"></script>
-<script src="js/auth.js"></script>
+<script src="js/auth.js"></script> 
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const usernameDisplay = document.querySelector('.dashboard-content h2');
+        // Kullanıcı adını gösterecek h2 elementini doğru ID ile seçelim
+        const usernameDisplayElement = document.getElementById('usernameDisplay'); 
         const loggedInUsername = localStorage.getItem('loggedInUsername');
 
         console.log('Dashboard yüklendi. localStorage.loggedInUsername degeri:', loggedInUsername); // DEBUG MESAJI
 
-        if (loggedInUsername) {
-            usernameDisplay.textContent = `Hoş Geldin, ${loggedInUsername}!`;
-        } else {
-            console.warn('loggedInUsername bulunamadi, index.html e yonlendiriliyor.'); 
-            window.location.href = '/index.html'; 
+        if (loggedInUsername && usernameDisplayElement) {
+            usernameDisplayElement.textContent = `Hoş Geldin, ${loggedInUsername}!`;
+        } 
+        // Burada, loggedInUsername yoksa index.html'e yönlendirme bloğunu kaldırdık.
+        // Bu kontrolü zaten index.html ve main.js yapacaktır. 
+        // Bu sayede döngüye düşme riskini ortadan kaldırdık.
+        else {
+            console.warn('loggedInUsername bulunamadi veya usernameDisplayElement yok. Kullanici adi gosterilemiyor.'); 
+            // Kullanıcı yoksa, main.js zaten index.html'e yönlendireceği için burada tekrar yönlendirme yapmıyoruz.
+            // Sadece log mesajı bırakıyoruz.
         }
 
+        // Çıkış Yap butonu olay dinleyicisi
         const logoutButton = document.getElementById('logoutButton');
         if (logoutButton) {
             logoutButton.addEventListener('click', (e) => {
-                e.preventDefault();
+                e.preventDefault(); // Varsayılan link davranışını engelle
                 console.log('Çıkış yap butonuna basildi. localStorage temizleniyor...'); 
-                localStorage.removeItem('loggedInUsername');
+                localStorage.removeItem('loggedInUsername'); // localStorage'dan kullanıcı adını sil
 
+                // Kısa bir gecikme sonrası index.html'e yönlendir
                 setTimeout(() => {
                     console.log('index.html e yonlendiriliyor. localStorage.loggedInUsername simdi:', localStorage.getItem('loggedInUsername')); 
                     window.location.href = '/index.html'; 
-                }, 50); 
+                }, 50); // Tarayıcının localStorage'ı işlemesi için kısa bir gecikme
             });
         }
     });
