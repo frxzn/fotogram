@@ -1,89 +1,45 @@
 // backend/src/app.js
 
-// Ortam değişkenlerini en başta yükle
-require('dotenv').config(); 
-console.log('--- UYGULAMA BAŞLANGICI: Ortam değişkenleri yüklendi ---');
-
 const express = require('express');
-const mongoose = require('mongoose');
-const path = require('path'); 
-const cors = require('cors'); 
-
-console.log('--- UYGULAMA BAŞLANGICI: Gerekli modüller yüklendi ---');
+const morgan = require('morgan');
+const cors = require('cors');
+const path = require('path'); // Path modülünü ekle
+const authRouter = require('./routes/authRoutes'); // Auth rotalarını içe aktar
+const postRouter = require('./routes/postRoutes'); // YENİ: Post rotalarını içe aktar
 
 const app = express();
-console.log('--- UYGULAMA BAŞLANGICI: Express uygulaması oluşturuldu ---');
 
-// --- YENİ EKLENEN KISIM: PROXY'LERE GÜVEN ---
-// Render gibi bir proxy/load balancer arkasında çalışırken bu önemlidir.
-// '1' değeri, ilk proxy'ye güvenileceği anlamına gelir. 'true' da kullanılabilir.
-app.set('trust proxy', 1); 
-console.log('--- UYGULAMA BAŞLANGICI: Express proxy trust ayarı yapıldı ---');
+// CORS Ayarları (Geliştirme için geniş, production için daha kısıtlı olmalı)
+app.use(cors({
+    origin: process.env.FRONTEND_URL, // Frontend URL'niz
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
 
-
-// MongoDB Veritabanı Bağlantısı
-const connectDB = async () => {
-    console.log('--- VERİTABANI: Bağlantı denemesi başlıyor ---');
-    try {
-        await mongoose.connect(process.env.MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-        console.log('--- VERİTABANI: MongoDB başarıyla bağlandı! ---');
-    } catch (err) {
-        console.error('--- VERİTABANI HATASI: MongoDB bağlantı hatası: ---', err.message);
-        if (!process.env.MONGO_URI) {
-            console.error('--- VERİTABANI HATASI: MONGO_URI ortam değişkeni tanımlı değil veya boş! ---');
-        }
-        process.exit(1); 
-    }
-};
-
-connectDB(); 
-console.log('--- UYGULAMA BAŞLANGICI: connectDB fonksiyonu çağrıldı ---');
-
-
-// Middleware'ler
-app.use(express.json()); 
-app.use(express.urlencoded({ extended: true }));
-console.log('--- UYGULAMA BAŞLANGICI: Middlewareler (JSON, URL-encoded) eklendi ---');
-
-// --- GENEL İSTEK LOGLAYICI ---
-app.use((req, res, next) => {
-    console.log(`--- İSTEK GELDİ --- Metot: ${req.method}, Yol: ${req.originalUrl}, IP: ${req.ip}`);
-    next(); 
-});
-console.log('--- UYGULAMA BAŞLANGICI: Genel İstek Loglayıcı middleware eklendi ---');
-
-
-// CORS Ayarları (HATA AYIKLAMA AMAÇLI - TÜM ORIGINLERE AÇIK)
-app.use(cors()); 
-console.log(`--- UYGULAMA BAŞLANGICI: CORS middleware eklendi (Tüm originlere açık - HATA AYIKLAMA) ---`);
-
-
-// API Rotaları
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/photos', require('./routes/photoRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes'));
-console.log('--- UYGULAMA BAŞLANGICI: API Rotaları yüklendi ---');
-
-// Frontend dosyalarını servis etme kısmı DEVRE DIŞI BIRAKILDI
-/*
-if (process.env.NODE_ENV === 'production' || process.env.SERVE_FRONTEND) {
-    app.use(express.static(path.join(__dirname, '../../frontend/public')));
-
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../../frontend/public', 'index.html'));
-    });
-    console.log('--- UYGULAMA BAŞLANGICI: Frontend statik dosya sunumu aktif ---');
+// HTTP istek logları (Sadece geliştirme modunda)
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
 }
-*/
 
-// Sunucuyu Render'ın atadığı port üzerinde dinlemeye başla
-const PORT = process.env.PORT || 5000; 
-app.listen(PORT, () => {
-    console.log(`--- SUNUCU BAŞLATILIYOR: Sunucu ${PORT} portunda çalışıyor. ---`);
+// Body Parser: Gelen JSON verilerini okur
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// Statik dosyaları sunmak için (Resimler, vb.)
+// 'public' klasörü uygulamanın kök dizininde olmalı
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Rotalar
+app.use('/api/auth', authRouter);
+app.use('/api/posts', postRouter); // YENİ: Post rotalarını kullan
+
+// Tanımsız rotalar için 404 hatası
+app.all('*', (req, res, next) => {
+    res.status(404).json({
+        status: 'fail',
+        message: `Bu sunucuda ${req.originalUrl} yolu bulunamadı!`
+    });
 });
 
-console.log('--- UYGULAMA BAŞLANGICI: App.listen çağrısı yapıldı ---');
+module.exports = app;
