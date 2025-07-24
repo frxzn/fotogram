@@ -1,30 +1,18 @@
-// backend/src/routes/authRoutes.js - GÜNCEL VE SON VERSİYON
+// backend/src/routes/authRoutes.js
 
 const express = require('express');
-const {
-    registerUser, 
-    loginUser,    
-    forgotPassword,
-    resetPassword,
-    verifyEmail   
-} = require('../controllers/authController'); 
+const authController = require('../controllers/authController'); // authController'ı içe aktar
 
 const router = express.Router();
 
-// POST isteği ile /api/auth/register adresine gelen isteği registerUser fonksiyonuna yönlendir
-router.post('/register', registerUser);
+router.post('/register', authController.registerUser);
+router.post('/login', authController.loginUser);
+router.get('/verify-email', authController.verifyEmail); // Doğrulama token'ı URL query'sinde geleceği için GET
+router.post('/forgot-password', authController.forgotPassword);
+router.put('/reset-password/:token', authController.resetPassword);
 
-// POST isteği ile /api/auth/login adresine gelen isteği loginUser fonksiyonuna yönlendir
-router.post('/login', loginUser);
-
-// POST isteği ile /api/auth/forgot-password adresine gelen isteği forgotPassword fonksiyonuna yönlendir
-router.post('/forgot-password', forgotPassword);
-
-// PUT isteği ile /api/auth/reset-password/:token adresine gelen isteği resetPassword fonksiyonuna yönlendir
-router.put('/reset-password/:token', resetPassword);
-
-// GET isteği ile /api/auth/verify-email adresine gelen isteği verifyEmail fonksiyonuna yönlendir
-// Token artık bir yol parametresi değil, sorgu parametresi olarak bekleniyor (örn: ?token=XYZ)
-router.get('/verify-email', verifyEmail); 
+// KORUNAN ROTALAR: Giriş yapmış kullanıcılar için
+// authController.protect middleware'ini kullanarak bu rotayı koruyoruz
+router.patch('/update-password', authController.protect, authController.updatePassword);
 
 module.exports = router;
