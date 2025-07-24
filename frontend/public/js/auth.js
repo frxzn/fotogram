@@ -2,7 +2,7 @@
 
 // BURADAKİ URL'Yİ KENDİ BACKEND URL'N İ İLE DEĞİŞTİR!!!
 // Lütfen buraya Render dashboard'ındaki "fotogram-backend" servisinin Public URL'sini yapıştır.
-const API_BASE_URL = 'SENİN_BACKEND_URL_BURAYA'; // Örn: 'https://fotogram-backend-abcdef.onrender.com'
+const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Örn: 'https://fotogram-backend-abcdef.onrender.com'
 
 // DOM elementleri
 const authModal = document.getElementById('authModal');
