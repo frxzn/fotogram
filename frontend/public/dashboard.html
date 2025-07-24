@@ -3,54 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fotogram - Ana Sayfa</title>
-    <link rel="stylesheet" href="css/style.css"> </head>
+    <title>Fotogram</title>
+    <link rel="stylesheet" href="css/style.css">
+    </head>
 <body>
     <header>
-        <div class="container">
-            <h1 class="logo">Fotogram</h1>
-            <nav>
-                <ul>
-                    <li><a href="#">Profil</a></li>
-                    <li><a href="#">Keşfet</a></li>
-                    <li><a href="#" id="logoutButton">Çıkış Yap</a></li> </ul>
-            </nav>
-        </div>
-    </header>
+        </header>
 
-    <main class="dashboard-content">
-        <div class="container">
-            <h1>Hoş Geldin, Kullanıcı!</h1>
-            <p>Bu senin Fotogram panon. Burada fotoğraflarını ve etkileşimlerini göreceksin.</p>
-            </div>
+    <main>
+        <button id="openAuthModalButton">Giriş Yap / Kayıt Ol</button>
     </main>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Fotogram. Tüm Hakları Saklıdır.</p>
-            <p>Turan Software</p>
+    <div id="authModal" class="auth-modal">
+        <div class="auth-modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="authTitle">Giriş Yap</h2>
+            <form id="authForm">
+                <div class="input-group" id="usernameGroup" style="display: none;">
+                    <label for="username">Kullanıcı Adı</label>
+                    <input type="text" id="username">
+                </div>
+                <div class="input-group">
+                    <label for="email">E-posta</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Şifre</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div class="input-group" id="confirmPasswordGroup" style="display: none;">
+                    <label for="confirmPassword">Şifre Tekrar</label>
+                    <input type="password" id="confirmPassword">
+                </div>
+                <button type="submit" id="submitButton">Giriş Yap</button>
+                <div id="message" class="message" style="display: none;"></div>
+                <div class="toggle-links" id="toggleLinks">
+                    <a href="#" id="showRegister">Kayıt Ol</a>
+                    <a href="#" id="showLogin" style="display: none;">Giriş Yap</a>
+                    <a href="#" id="forgotPasswordLink">Şifremi Unuttum?</a>
+                </div>
+            </form>
         </div>
-    </footer>
+    </div>
 
-    <script>
-        // dashboard.html için özel JavaScript
-        document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                // Eğer token yoksa ana sayfaya yönlendir
-                window.location.href = '/';
-            }
+    <div id="forgotPasswordModal" class="auth-modal">
+        <div class="auth-modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="forgotPasswordModalTitle">Şifremi Unuttum</h2>
+            <form id="forgotPasswordForm">
+                <div class="input-group">
+                    <label for="forgotPasswordEmail">E-posta</label>
+                    <input type="email" id="forgotPasswordEmail" required>
+                </div>
+                <button type="submit" id="forgotPasswordSubmitButton">Şifre Sıfırlama Bağlantısı Gönder</button>
+                <div id="forgotPasswordMessage" class="message" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
 
-            // Çıkış yapma butonu için JavaScript
-            const logoutButton = document.getElementById('logoutButton');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    localStorage.removeItem('token'); // Token'ı Local Storage'dan sil
-                    window.location.href = '/'; // Ana sayfaya yönlendir
-                });
-            }
-        });
-    </script>
-</body>
+
+    <footer>
+        </footer>
+
+    <script src="js/auth.js"></script>
+    </body>
 </html>
