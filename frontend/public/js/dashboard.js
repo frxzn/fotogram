@@ -1,40 +1,48 @@
-// frontend/public/js/dashboard.js - KULLANICI ADI VE YETKİSİZ ERİŞİM FİX
+// frontend/public/js/dashboard.js - YENİ VE GÜNCEL KONTROLCÜ
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. localStorage'dan kullanıcı adını çek
+    console.log('dashboard.js yüklendi.');
+
+    // 1. Yetkilendirme Kontrolü (Sayfa Yüklendiğinde İlk Yapılacak İşlem)
     const loggedInUsername = localStorage.getItem('loggedInUsername');
-    console.log('dashboard.js: localStorage.loggedInUsername değeri:', loggedInUsername); // DEBUG LOG
+    console.log('dashboard.js: localStorage.loggedInUsername değeri:', loggedInUsername);
 
-    // 2. Yetkisiz erişim kontrolü: Eğer kullanıcı adı yoksa, ana sayfaya yönlendir
     if (!loggedInUsername) {
-        console.warn('dashboard.js: Kullanici giris yapmamis veya localStorage.loggedInUsername degeri bos. Ana sayfaya yonlendiriliyor.');
+        // Eğer kullanıcı adı localStorage'da yoksa veya boşsa, giriş yapmamış demektir.
+        console.warn('dashboard.js: Kullanici giris yapmamis veya localStorage.loggedInUsername degeri bos. index.html e yonlendiriliyor.');
         window.location.href = '/index.html'; 
-        return; // Yönlendirme yapıldıktan sonra kodun devam etmesini engelle
+        return; // Yönlendirme yapıldığı için kodun geri kalanını çalıştırma
     }
 
-    // 3. Kullanıcı adını göstereceğimiz HTML elementini seç
-    // Bu ID'nin dashboard.html dosyasındaki HTML elementinin ID'si ile aynı olduğundan emin ol!
-    const welcomeMessageElement = document.getElementById('welcomeMessage'); 
-
-    // 4. Eğer kullanıcı adı varsa ve HTML elementi mevcutsa, karşılama mesajını güncelle
-    if (loggedInUsername && welcomeMessageElement) {
-        welcomeMessageElement.textContent = `Hoş Geldin, ${loggedInUsername}!`;
-        console.log(`dashboard.js: Karşılama mesajı güncellendi: Hoş Geldin, ${loggedInUsername}!`); // DEBUG LOG
-    } else if (!welcomeMessageElement) {
-        console.error("dashboard.js: 'welcomeMessage' ID'li element bulunamadı. Lütfen dashboard.html'i kontrol edin.");
+    // 2. Kullanıcı Adını Yansıtma (Sadece Kullanıcı Giriş Yapmışsa Çalışacak)
+    const usernameDisplayElement = document.getElementById('usernameDisplay'); // dashboard.html'deki h2 elementinin ID'si
+    if (usernameDisplayElement) {
+        usernameDisplayElement.textContent = `Hoş Geldin, ${loggedInUsername}!`;
+        console.log(`dashboard.js: Karşılama mesajı güncellendi: Hoş Geldin, ${loggedInUsername}!`);
+    } else {
+        console.error("dashboard.js: 'usernameDisplay' ID'li element dashboard.html'de bulunamadı. Lütfen kontrol edin.");
     }
 
-    // 5. Logout butonuna tıklama olayını dinle
-    const logoutButton = document.getElementById('logoutButton'); 
+    // 3. Çıkış Yap Butonu İşlevselliği
+    const logoutButton = document.getElementById('logoutButton'); // dashboard.html'deki çıkış yap butonunun ID'si
     if (logoutButton) {
-        logoutButton.addEventListener('click', () => {
+        logoutButton.addEventListener('click', (e) => {
+            e.preventDefault(); // Linkin varsayılan davranışını engelle
+            console.log('dashboard.js: Çıkış yap butonuna basildi. localStorage temizleniyor...');
             localStorage.removeItem('loggedInUsername'); // Kullanıcı adını localStorage'dan sil
-            // Eğer JWT token da saklıyorsan, onu da silmelisin:
+            // Eğer bir JWT token da saklıyorsan, onu da silmelisin:
             // localStorage.removeItem('jwtToken'); 
-            console.log('dashboard.js: Kullanici cikis yapti, ana sayfaya yonlendiriliyor.');
-            window.location.href = '/index.html'; // Ana sayfaya yönlendir
+
+            // Kısa bir gecikme sonrası index.html'e yönlendir (localStorage'ın güncellenmesi için)
+            setTimeout(() => {
+                console.log('dashboard.js: index.html e yonlendiriliyor. localStorage.loggedInUsername şimdi:', localStorage.getItem('loggedInUsername'));
+                window.location.href = '/index.html';
+            }, 50); 
         });
     } else {
-        console.warn("dashboard.js: 'logoutButton' elementi bulunamadı. Lütfen dashboard.html'i kontrol edin.");
+        console.warn("dashboard.js: 'logoutButton' ID'li element dashboard.html'de bulunamadı. Lütfen kontrol edin.");
     }
+
+    // Buraya gelecekte dashboard'a özgü diğer JS kodları eklenecek
+    // Örneğin, fotoğraf yükleme, feed'i dinamik olarak doldurma, vs.
 });
