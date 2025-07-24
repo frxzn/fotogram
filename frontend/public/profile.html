@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - Fotogram</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css"> 
+    <link rel="stylesheet" href="css/dashboard.css"> <link rel="stylesheet" href="css/profile.css"> </head>
+<body>
+
+<header>
+    <div class="container">
+        <a href="/dashboard.html" class="logo-link">
+            <img src="assets/fotogramlogo.png" alt="Fotogram Logo" class="logo-img">
+        </a>
+        <nav>
+            <ul>
+                <li><a href="/dashboard.html">Anasayfa</a></li>
+                <li><a href="/settings.html">Ayarlar</a></li>
+                <li><a href="#" id="logoutButton">Çıkış Yap</a></li> 
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="separator"></div>
+
+<main class="profile-content">
+    <div class="container">
+        <div class="profile-header">
+            <img src="https://via.placeholder.com/150x150?text=Profil" alt="Profil Fotoğrafı" class="profile-avatar">
+            <h2 id="profileUsername">Hoş Geldin, [Kullanıcı Adı]!</h2> 
+            <p id="profileEmail">E-posta: [Kullanıcı E-posta]</p>
+            <button class="btn primary" id="editProfileButton">Profili Düzenle</button>
+        </div>
+
+        <div class="separator"></div>
+
+        <section class="user-posts">
+            <h3>Paylaşımlarım</h3>
+            <div class="post-grid">
+                <div class="post-card">
+                    <img src="https://via.placeholder.com/300x200?text=Paylasim+1" alt="Gönderi 1">
+                    <p class="post-caption">Benim ilk paylaşımım!</p>
+                </div>
+                <div class="post-card">
+                    <img src="https://via.placeholder.com/300x200?text=Paylasim+2" alt="Gönderi 2">
+                    <p class="post-caption">Harika bir gün!</p>
+                </div>
+                </div>
+        </section>
+    </div>
+</main>
+
+<div class="separator"></div>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Fotogram. Tüm Hakları Saklıdır.</p>
+        <p>Turan Software</p>
+    </div>
+</footer>
+
+<script src="js/profile.js"></script>
+
+</body>
+</html>
