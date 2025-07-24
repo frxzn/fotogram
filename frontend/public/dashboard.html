@@ -5,64 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Fotogram</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/dashboard.css"> 
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 
 <header>
-        <div class="container">
-            <a href="/dashboard.html" class="logo-link">
-                <img src="assets/fotogramlogo.png" alt="Fotogram Logo" class="logo-img">
-            </a>
-            <nav>
-                <ul>
-                    <li><a href="/profile.html">Profil</a></li> 
-                    <li><a href="/settings.html">Ayarlar</a></li>
-                    <li><a href="#" id="logoutButton">Çıkış Yap</a></li> 
-                </ul>
-            </nav>
-        </div>
+    <div class="container">
+        <a href="/dashboard.html" class="logo-link">
+            <img src="assets/fotogramlogo.png" alt="Fotogram Logo" class="logo-img">
+        </a>
+        <nav>
+            <ul>
+                <li><a href="/dashboard.html">Anasayfa</a></li>
+                <li><a href="/profile.html">Profil</a></li>
+                <li><a href="/settings.html">Ayarlar</a></li> <li><a href="#" id="logoutButton">Çıkış Yap</a></li>
+            </ul>
+        </nav>
+    </div>
 </header>
 
 <div class="separator"></div>
 
 <main class="dashboard-content">
     <div class="container">
-        <h2 id="usernameDisplay">Hoş Geldin, [Kullanıcı Adı]!</h2> 
-        <p>En son paylaşımları ve arkadaş etkinliklerini burada görebilirsin.</p>
-
-        <section class="feed">
-            <h3>Paylaşımlar</h3>
-            <div class="post-grid">
-                <div class="post-card">
-                    <img src="https://via.placeholder.com/300x200?text=Foto+1" alt="Gönderi 1">
-                    <p class="post-caption">Güzel bir manzara!</p>
+        <section class="create-post-section">
+            <h2>Yeni Gönderi Oluştur</h2>
+            <form id="createPostForm" class="post-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="postPhoto">Fotoğraf Seç:</label>
+                    <input type="file" id="postPhoto" name="photo" accept="image/*" required>
                 </div>
-                <div class="post-card">
-                    <img src="https://via.placeholder.com/300x200?text=Foto+2" alt="Gönderi 2">
-                    <p class="post-caption">Yeni maceralar.</p>
+                <div class="form-group">
+                    <label for="postCaption">Açıklama (İsteğe Bağlı):</label>
+                    <textarea id="postCaption" name="caption" rows="3" placeholder="Ne düşünüyorsun?"></textarea>
                 </div>
-                <div class="post-card">
-                    <img src="https://via.placeholder.com/300x200?text=Foto+3" alt="Gönderi 3">
-                    <p class="post-caption">Keyifli bir gün.</p>
-                </div>
-            </div>
+                <button type="submit" class="btn primary">Gönderiyi Paylaş</button>
+                <div id="postMessage" class="message" style="display:none;"></div>
+            </form>
         </section>
 
-        <section class="suggestions">
-            <h3>Takip Edebileceğin Kişiler</h3>
-            <div class="suggestion-list">
-                <div class="suggestion-card">
-                    <img src="https://via.placeholder.com/50x50?text=U1" alt="Kullanıcı 1">
-                    <span>Kullanıcı_1</span>
-                    <button class="btn secondary">Takip Et</button>
-                </div>
-                <div class="suggestion-card">
-                    <img src="https://via.placeholder.com/50x50?text=U2" alt="Kullanıcı 2">
-                    <span>Kullanıcı_2</span>
-                    <button class="btn secondary">Takip Et</button>
-                </div>
+        <div class="separator"></div>
+
+        <section class="post-feed">
+            <h2>Gönderiler</h2>
+            <div id="postsContainer" class="posts-grid">
+                <p id="loadingMessage">Gönderiler yükleniyor...</p>
+                <p id="noPostsMessage" style="display:none;">Henüz hiç gönderi yok. İlk gönderini sen paylaş!</p>
             </div>
         </section>
     </div>
@@ -77,55 +66,7 @@
     </div>
 </footer>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Yetkisiz erişim kontrolünü 500ms gecikme ile yapalım (auth.js'deki 1000ms'ten kısa olsun)
-        setTimeout(() => {
-            // localStorage'dan 'user' objesini JSON string olarak al
-            const userString = localStorage.getItem('user');
-            let loggedInUsername = null;
+<script src="js/dashboard.js"></script>
 
-            if (userString) {
-                try {
-                    const user = JSON.parse(userString);
-                    // 'user' objesi içinde 'username' veya 'email' anahtarı olup olmadığını kontrol et
-                    if (user && user.username) {
-                        loggedInUsername = user.username;
-                    } else if (user && user.email) { // Eğer backend sadece email gönderiyorsa
-                        loggedInUsername = user.email;
-                    }
-                } catch (e) {
-                    console.error("localStorage'daki 'user' verisi JSON olarak ayrıştırılamadı:", e);
-                }
-            }
-            
-            // Kullanıcı adı yoksa, boşsa veya "null"/"undefined" stringi olarak kaydedilmişse yönlendir
-            if (!loggedInUsername || String(loggedInUsername).trim() === '' || loggedInUsername === 'null' || loggedInUsername === 'undefined') {
-                window.location.href = '/index.html';
-                return; // Yönlendirme yapıldığı için daha fazla kod çalıştırma
-            }
-
-            // Kullanıcı adını yansıtma
-            const usernameDisplayElement = document.getElementById('usernameDisplay'); 
-            if (usernameDisplayElement) {
-                usernameDisplayElement.textContent = `Hoş Geldin, ${loggedInUsername}!`;
-            } 
-
-            // Çıkış Yap butonu olay dinleyicisi
-            const logoutButton = document.getElementById('logoutButton');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', (e) => {
-                    e.preventDefault(); 
-                    localStorage.removeItem('token'); // Token'ı sil
-                    localStorage.removeItem('user'); // Kullanıcı objesini sil
-                    
-                    setTimeout(() => {
-                        window.location.href = '/index.html'; 
-                    }, 50); 
-                });
-            }
-        }, 500); // 500 milisaniye gecikme
-    });
-</script>
 </body>
 </html>
