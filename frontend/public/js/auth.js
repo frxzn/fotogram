@@ -1,12 +1,13 @@
 // frontend/public/js/auth.js
 
-// BURADAKİ URL'Yİ KENDİ BACKEND URL'N İLE DEĞİŞTİR!!!
+// BURADAKİ URL'Yİ KENDİ BACKEND URL'N İ İLE DEĞİŞTİR!!!
 // Lütfen buraya Render dashboard'undaki "fotogram-backend" servisinin Public URL'sini yapıştır.
 const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Örn: 'https://fotogram-backend-abcdef.onrender.com' veya 'https://fotogram-backend-04a11b61b369.herokuapp.com'
 
 // DOM elementleri
 const authModal = document.getElementById('authModal');
 const authForm = document.getElementById('authForm');
+// closeButtons değişkeni artık kullanılmıyor, çünkü butonlar spesifik olarak hedefleniyor
 const showRegisterLink = document.getElementById('showRegister');
 const showLoginLink = document.getElementById('showLogin');
 const authTitle = document.getElementById('authTitle');
@@ -63,7 +64,8 @@ function closeModal() {
         authForm?.reset();
     }
     // Auth modal kapatılırken şifremi unuttum modalı da kapansın
-    closeForgotPasswordModal();
+    // Bu satırın burada kalması doğru çünkü ana modal kapanırken bağlı modalı da kapatmak isteriz.
+    closeForgotPasswordModal(); 
 }
 
 function openForgotPasswordModal() {
@@ -72,7 +74,7 @@ function openForgotPasswordModal() {
     }
     clearMessage(forgotPasswordMessage); // Şifremi unuttum modalındaki mesajı temizle
     forgotPasswordForm?.reset(); // Şifremi unuttum formunu sıfırla
-    closeModal(); // Ana auth modal açıksa kapat
+    closeModal(); // Ana auth modal açıksa kapat (önce ana modal kapanır, sonra şifre unuttum açılır)
 }
 
 function closeForgotPasswordModal() {
@@ -109,31 +111,6 @@ function updateFormMode() {
 
 // Olay dinleyicileri (Null kontrolü ile daha güvenli)
 document.addEventListener('DOMContentLoaded', () => {
-   // SADECE AUTH MODAL İÇİN KAPATMA BUTONU VE ARKA PLAN TIKLAMASI
-const authModalCloseButton = document.querySelector('#authModal .close-button');
-if (authModalCloseButton) {
-    authModalCloseButton.addEventListener('click', closeModal);
-}
-
-authModal?.addEventListener('click', (e) => {
-    if (e.target === authModal) {
-        closeModal();
-    }
-});
-
-// SADECE FORGOT PASSWORD MODAL İÇİN KAPATMA BUTONU VE ARKA PLAN TIKLAMASI
-const forgotPasswordModalCloseButton = document.querySelector('#forgotPasswordModal .close-button');
-if (forgotPasswordModalCloseButton) {
-    forgotPasswordModalCloseButton.addEventListener('click', closeForgotPasswordModal);
-}
-
-forgotPasswordModal?.addEventListener('click', (e) => {
-    if (e.target === forgotPasswordModal) {
-        closeForgotPasswordModal();
-    }
-});
-    
-    
     // Auth Modal Butonları (Ana sayfadaki)
     openAuthModalButtonMain?.addEventListener('click', () => {
         openModal('register'); // "Şimdi Kayıt Ol" butonu kayıt modunda açsın
@@ -142,12 +119,27 @@ forgotPasswordModal?.addEventListener('click', (e) => {
         openModal('login'); // "Giriş Yap" butonu giriş modunda açsın
     });
 
-    // Auth Modal içindeki butonlar
-
-
+    // SADECE AUTH MODAL İÇİN KAPATMA BUTONU VE ARKA PLAN TIKLAMASI
+    const authModalCloseButton = document.querySelector('#authModal .close-button');
+    if (authModalCloseButton) {
+        authModalCloseButton.addEventListener('click', closeModal);
+    }
+    
     authModal?.addEventListener('click', (e) => {
         if (e.target === authModal) {
             closeModal();
+        }
+    });
+
+    // SADECE FORGOT PASSWORD MODAL İÇİN KAPATMA BUTONU VE ARKA PLAN TIKLAMASI
+    const forgotPasswordModalCloseButton = document.querySelector('#forgotPasswordModal .close-button');
+    if (forgotPasswordModalCloseButton) {
+        forgotPasswordModalCloseButton.addEventListener('click', closeForgotPasswordModal);
+    }
+
+    forgotPasswordModal?.addEventListener('click', (e) => {
+        if (e.target === forgotPasswordModal) {
+            closeForgotPasswordModal();
         }
     });
 
@@ -166,13 +158,6 @@ forgotPasswordModal?.addEventListener('click', (e) => {
     forgotPasswordLink?.addEventListener('click', (e) => {
         e.preventDefault();
         openForgotPasswordModal();
-    });
-
-    // Şifremi Unuttum modalı dışına tıklama olayı
-    forgotPasswordModal?.addEventListener('click', (e) => {
-        if (e.target === forgotPasswordModal) {
-            closeForgotPasswordModal();
-        }
     });
 
     // Form modunu başlangıçta ayarla
@@ -204,7 +189,7 @@ authForm?.addEventListener('submit', async (e) => {
         }
         // Şifre eşleşme kontrolü
         if (password !== confirmPassword) {
-            showMessage('Şifreler eşleşmiyor!', 'error'); // Hata mesajı düzeltildi
+            showMessage('Şifreler eşleşmiyor!', 'error'); 
             return;
         }
         // Şifre uzunluk kontrolü
@@ -212,7 +197,7 @@ authForm?.addEventListener('submit', async (e) => {
             showMessage('Şifre en az 6 karakter olmalıdır.', 'error');
             return;
         }
-
+        
         requestBody = { username, email, password }; // confirmPassword backend'e gönderilmez
         apiUrl = `${API_BASE_URL}/api/auth/register`;
         successMessage = 'Kayıt başarılı! Hesabınızı doğrulamak için lütfen e-postanızı kontrol edin.';
@@ -252,7 +237,7 @@ authForm?.addEventListener('submit', async (e) => {
             const usernameToSet = email.split('@')[0]; // E-postadan kullanıcı adını türet
             localStorage.setItem('loggedInUsername', usernameToSet); // KRİTİK: Bu anahtar index.html ve dashboard.html tarafından okunur
             console.log('Login successful. localStorage.loggedInUsername ayarlandi:', usernameToSet); // DEBUG MESAJI
-
+            
             // 50ms sonra dashboard'a yönlendir (Render'ın önbellek/yükleme zamanlamasına yardımcı olabilir)
             setTimeout(() => {
                 window.location.href = '/dashboard.html'; 
@@ -292,7 +277,7 @@ forgotPasswordForm?.addEventListener('submit', async (e) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ email })
-            });
+        });
 
         console.log('Şifre sıfırlama API Yanıtı Geldi. Durum Kodu:', response.status); // DEBUG MESAJI
         const data = await response.json();
