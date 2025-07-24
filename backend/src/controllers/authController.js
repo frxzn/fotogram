@@ -21,7 +21,7 @@ const registerUser = async (req, res) => {
     const { username, email, password } = req.body;
 
     // Alanların dolu olup olmadığını kontrol et
-    if (!username || !email || !!password) { // Şifrenin dolu olduğundan emin oluyoruz
+    if (!username || !email || !password) { // Tüm alanların boş OLMADIĞINI kontrol ediyoruz
         return res.status(400).json({ message: 'Lütfen tüm alanları doldurun.' });
     }
 
