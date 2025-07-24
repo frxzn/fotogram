@@ -1,14 +1,15 @@
+// backend/src/app.js
+
+// Ortam değişkenlerini en başta yükle
+require('dotenv').config(); 
+console.log('--- UYGULAMA BAŞLANGICI: Ortam değişkenleri yüklendi ---');
+
 const express = require('express');
-const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const path = require('path');
-const cors = require('cors');
+const path = require('path'); // Frontend statik dosya sunumu için gerekli olabilir, şimdilik dursun
+const cors = require('cors'); // CORS middleware'i
 
 console.log('--- UYGULAMA BAŞLANGICI: Gerekli modüller yüklendi ---');
-
-// .env dosyasındaki ortam değişkenlerini yükle
-dotenv.config({ path: './.env' });
-console.log('--- UYGULAMA BAŞLANGICI: Ortam değişkenleri yüklendi ---');
 
 const app = express();
 console.log('--- UYGULAMA BAŞLANGICI: Express uygulaması oluşturuldu ---');
@@ -28,39 +29,50 @@ const connectDB = async () => {
         if (!process.env.MONGO_URI) {
             console.error('--- VERİTABANI HATASI: MONGO_URI ortam değişkeni tanımlı değil veya boş! ---');
         }
-        process.exit(1);
+        process.exit(1); // Uygulamadan çık
     }
 };
 
-connectDB();
+connectDB(); // Veritabanı bağlantısını başlat
 console.log('--- UYGULAMA BAŞLANGICI: connectDB fonksiyonu çağrıldı ---');
 
 
 // Middleware'ler
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // JSON istek gövdelerini ayrıştırmak için
+app.use(express.urlencoded({ extended: true })); // URL-encoded istek gövdelerini ayrıştırmak için
 console.log('--- UYGULAMA BAŞLANGICI: Middlewareler (JSON, URL-encoded) eklendi ---');
 
 
 // CORS Ayarları
-app.use(cors()); // Güvenlik riski taşıdığından, üretimde daha spesifik hale getirilmelidir.
-console.log('--- UYGULAMA BAŞLANGICI: CORS middleware eklendi (Tüm originlere açık) ---');
+// FRONTEND_URL ortam değişkeninin doğru ayarlandığından emin olun (örn: https://your-frontend-app.onrender.com)
+const corsOptions = {
+    origin: process.env.FRONTEND_URL, // Sadece bu origin'den gelen isteklere izin ver
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // İzin verilen HTTP metotları
+    credentials: true, // Çerezler, yetkilendirme başlıkları vb. gönderilmesine izin ver
+    allowedHeaders: ['Content-Type', 'Authorization'] // İzin verilen başlıklar
+};
+
+app.use(cors(corsOptions)); // CORS middleware'ini belirtilen seçeneklerle kullan
+console.log(`--- UYGULAMA BAŞLANGICI: CORS middleware eklendi (Origin: ${process.env.FRONTEND_URL}) ---`);
 
 
 // API Rotaları
+// authRoutes, userRoutes, photoRoutes, adminRoutes dosyalarını dahil et
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/photos', require('./routes/photoRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 console.log('--- UYGULAMA BAŞLANGICI: API Rotaları yüklendi ---');
 
-// --- DİKKAT: BU KISIM ARTIK YORUM SATIRI VEYA SİLİNMİŞ OLMALIDIR ---
-// Frontend dosyalarını servis etme kısmı DEVRE DIŞI BIRAKILDI
-// Çünkü frontend ayrı bir Render servisi olarak yayınlanıyor (fotogram-app).
+// --- DİKKAT: Frontend dosyalarını servis etme kısmı DEVRE DIŞI BIRAKILDI ---
+// Çünkü frontend ayrı bir Render servisi olarak yayınlanıyor (örn: fotogram-app).
+// Eğer frontend'i bu backend servisi üzerinden sunacaksanız, aşağıdaki kısmı aktif edin.
 /*
 if (process.env.NODE_ENV === 'production' || process.env.SERVE_FRONTEND) {
+    // Frontend'in public klasörüne giden yolu ayarla
     app.use(express.static(path.join(__dirname, '../../frontend/public')));
 
+    // Tüm diğer GET isteklerini index.html'e yönlendir (SPA için)
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, '../../frontend/public', 'index.html'));
     });
@@ -68,10 +80,10 @@ if (process.env.NODE_ENV === 'production' || process.env.SERVE_FRONTEND) {
 }
 */
 
-
 // Sunucuyu Render'ın atadığı port üzerinde dinlemeye başla
-app.listen(process.env.PORT, () => {
-    console.log(`--- SUNUCU BAŞLATILIYOR: Sunucu ${process.env.PORT} portunda çalışıyor. ---`);
+const PORT = process.env.PORT || 5000; // Varsayılan olarak 5000 portunu kullan
+app.listen(PORT, () => {
+    console.log(`--- SUNUCU BAŞLATILIYOR: Sunucu ${PORT} portunda çalışıyor. ---`);
 });
 
 console.log('--- UYGULAMA BAŞLANGICI: App.listen çağrısı yapıldı ---');
