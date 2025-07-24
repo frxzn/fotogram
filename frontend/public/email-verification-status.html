@@ -15,7 +15,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #121212; /* Genel arkaplan rengi */
+            background-color: #121212; /* Genel arkaplan rengi, style.css'den de gelebilir */
             color: #e0e0e0; /* Genel metin rengi */
             font-family: 'Roboto', sans-serif; /* Yazı tipi */
             margin: 0;
@@ -104,8 +104,8 @@
     <script>
         // Backend API'nizin temel URL'si. Burayı Render'daki backend URL'nizle DEĞİŞTİRMENİZ GEREKİYOR!
         // Örn: 'https://senin-backend-uygulaman.onrender.com'
-        // Lütfen Render Dashboard'dan kopyaladığınız URL'i buraya yapıştırın.
-        const API_BASE_URL = 'https://fotogram-backend.onrender.com'; 
+        // Lütfen Render Dashboard'dan KOPYALADIĞINIZ URL'i buraya yapıştırın.
+        const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // BURAYI KONTROL ET VE GÜNCELLE!
         
         const statusMessageElement = document.getElementById('statusMessage');
         const loginRedirectLink = document.getElementById('loginRedirectLink');
@@ -141,12 +141,8 @@
                 const requestUrl = `${API_BASE_URL}/api/auth/verify-email?token=${token}`;
                 console.log(`Backend'e istek gönderiliyor: ${requestUrl}`);
                 
-                const response = await fetch(requestUrl, {
-                    method: 'GET', // GET isteği olarak gönderiyoruz
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
+                // Fetch isteğini daha basit hale getirdik, GET için Content-Type gereksizdir.
+                const response = await fetch(requestUrl); 
 
                 // Yanıtı JSON olarak ayrıştır
                 const data = await response.json();
