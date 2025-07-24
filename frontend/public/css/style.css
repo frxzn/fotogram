@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif; /* Yazı tipi Inter olarak değiştirildi */
+    font-family: 'Inter', sans-serif; /* Yazı tipi Inter olarak ayarlandı */
     background-color: #000000; /* Tam siyah arka plan */
     color: #e0e0e0; /* Açık gri metin */
     line-height: 1.6;
@@ -31,42 +31,51 @@ header {
 
 header .container {
     display: flex;
-    justify-content: space-between; /* Logo ve sloganı sola, nav'ı sağa hizala */
+    justify-content: space-between; /* Logo sola, nav sağa (nav boş olsa da) */
     align-items: center;
 }
 
-.header-left {
-    display: flex;
+/* Logo Resim Stili */
+.logo-link {
+    display: flex; /* Resmin etrafındaki boşluğu kontrol etmek için */
     align-items: center;
-    flex-wrap: wrap; /* Küçük ekranlarda alt alta geçebilir */
-}
-
-.logo {
-    /* Bu stil artık img etiketine uygulanmayacak, sadece h1 için */
-    font-size: 2.5em; /* Daha büyük logo */
-    font-weight: bold; /* Kalın font */
-    color: #ffffff;
-    letter-spacing: -1px;
-    margin: 0; /* Varsayılan marginleri sıfırla */
+    text-decoration: none; /* Link alt çizgisini kaldır */
 }
 
 .logo-img {
-    height: 40px; /* Logo yüksekliği */
-    margin-right: 15px; /* Logo ile slogan arasına boşluk */
-    vertical-align: middle; /* Dikey hizalama */
-}
-
-.slogan {
-    font-size: 1.1em;
-    font-style: italic;
-    color: #ccc;
-    margin: 0; /* Varsayılan marginleri sıfırla */
+    height: 60px; /* Logo yüksekliği - Daha büyük yapıldı */
+    width: auto; /* Oranını koru */
+    display: block; /* Fazla boşlukları engelle */
 }
 
 header nav {
-    display: none; /* Navigasyonu tamamen gizle */
+    /* Navigasyon menüsü boş kalacağı için gizlenmesine gerek yok,
+       ancak responsive tasarımlarda tekrar açılabilir.
+       Şimdilik display: flex kalabilir, içeriği boş olduğu için görünmez. */
+    display: flex; 
 }
 
+header nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+header nav ul li {
+    margin-left: 25px;
+}
+
+header nav ul li a {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+header nav ul li a:hover {
+    color: #ffffff;
+}
 
 /* Ayırıcı Çizgi */
 .separator {
@@ -85,7 +94,7 @@ header nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* box-shadow kaldırıldı */
+    /* box-shadow kaldırıldı - dümdüz görünüm için */
 }
 
 .hero h1 {
