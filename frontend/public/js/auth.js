@@ -2,8 +2,9 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // BURAYI KENDİ BACKEND SERVİSİNİN RENDER URL'İ İLE DEĞİŞTİR!
-    // Örnek: https://fotogram-backend-abcdef.onrender.com
-    const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Lütfen burayı güncelleyin!
+    // Örnek: https://fotogram-backend-xxxx.onrender.com
+    // KESİN KONTROL: URL'İN SONUNDA '/' OLMADIĞINDAN EMİN OL!
+    const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // KESİN KONTROL: BU URL DOĞRU MU?
 
     // Tüm gerekli DOM elementlerini seç
     const authModal = document.getElementById('authModal');
@@ -46,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             authMessage.textContent = '';
         }
         if (authForm) {
-            authForm.reset();
+            authForm.reset(); // Formu sıfırla
         }
     }
 
@@ -60,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setAuthMode(mode) {
         isRegisterMode = mode === 'register';
-        if (authForm) authForm.reset();
+        if (authForm) authForm.reset(); // Mod değiştiğinde formu sıfırla
 
         if (modalTitle) modalTitle.textContent = isRegisterMode ? 'Kayıt Ol' : 'Giriş Yap';
         if (submitButton) submitButton.textContent = isRegisterMode ? 'Kayıt Ol' : 'Giriş Yap';
@@ -70,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Zaten hesabın var mı? <a href="#" id="toggleLogin">Giriş Yap</a>' :
                 'Hesabın yok mu? <a href="#" id="toggleRegister">Kayıt Ol</a>';
 
+            // Dinamik olarak oluşturulan linklere event listener ekle
             document.getElementById('toggleLogin')?.addEventListener('click', (e) => {
                 e.preventDefault();
                 setAuthMode('login');
@@ -80,27 +82,32 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        // Alanların görünürlüğünü ayarla
         if (emailGroup) emailGroup.style.display = 'block';
         if (passwordGroup) passwordGroup.style.display = 'block';
         if (usernameGroup) usernameGroup.style.display = isRegisterMode ? 'block' : 'none';
         if (confirmPasswordGroup) confirmPasswordGroup.style.display = isRegisterMode ? 'block' : 'none';
         if (forgotPasswordLink) forgotPasswordLink.style.display = isRegisterMode ? 'none' : 'block';
 
-        if (authMessage) authMessage.style.display = 'none';
+        if (authMessage) authMessage.style.display = 'none'; // Mod değişince mesajı gizle
     }
 
+    // Butonlara olay dinleyicileri ekle
     registerButtonHeader?.addEventListener('click', (e) => { e.preventDefault(); setAuthMode('register'); openModal(); });
     loginButtonHeader?.addEventListener('click', (e) => { e.preventDefault(); setAuthMode('login'); openModal(); });
     registerButtonMain?.addEventListener('click', (e) => { e.preventDefault(); setAuthMode('register'); openModal(); });
     loginButtonMain?.addEventListener('click', (e) => { e.preventDefault(); setAuthMode('login'); openModal(); });
     closeButton?.addEventListener('click', closeModal);
 
+    // Modal dışına tıklayınca kapat
     authModal?.addEventListener('click', (e) => { if (e.target === authModal) { closeModal(); } });
+    // Esc tuşu ile kapat
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && authModal && authModal.style.display === 'flex') { closeModal(); } });
+
 
     // Form gönderimi (Backend API çağrısı)
     authForm?.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Varsayılan form gönderme davranışını engelle
         showMessage('', ''); // Önceki mesajı temizle
 
         const email = emailInput?.value.trim();
@@ -110,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Basit frontend validasyonları
         if (isRegisterMode) {
-            if (!username || !email || !password || !confirmPassword) {
+            if (!username || !email || !password || !confirmPassword) { // !password kontrolü eklendi
                 showMessage('Lütfen tüm alanları doldurun.', 'error');
                 return;
             }
@@ -130,10 +137,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let body = {};
 
         if (isRegisterMode) {
-            url = `${API_BASE_URL}/api/auth/register`; // KESİN KONTROL: BURADA API_BASE_URL KULLANILIYOR
+            url = `${API_BASE_URL}/api/auth/register`; // API_BASE_URL kullanılıyor
             body = { email, password, username, confirmPassword };
         } else {
-            url = `${API_BASE_URL}/api/auth/login`; // KESİN KONTROL: BURADA API_BASE_URL KULLANILIYOR
+            url = `${API_BASE_URL}/api/auth/login`; // API_BASE_URL kullanılıyor
             body = { email, password };
         }
 
@@ -146,41 +153,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(body)
             });
 
-            if (!response.ok) { // HTTP yanıtı 200-299 aralığında değilse
-                const errorData = await response.json();
+            if (!response.ok) { // HTTP yanıtı 200-299 aralığında değilse (hata kodu varsa)
+                const errorData = await response.json(); // Yanıtı JSON olarak ayrıştırmaya çalış
                 throw new Error(errorData.message || `HTTP Hata: ${response.status}`);
             }
 
-            const data = await response.json();
+            const data = await response.json(); // Başarılı yanıtı JSON olarak ayrıştır
 
             showMessage(data.message || 'İşlem Başarılı!', 'success');
 
             if (!isRegisterMode && data.token) { // Sadece başarılı girişte token kaydet
                 localStorage.setItem('token', data.token);
                 setTimeout(() => {
-                    window.location.href = '/dashboard.html';
-                }, 1000); // 1 saniye sonra dashboard'a yönlendir
+                    window.location.href = '/dashboard.html'; // 1 saniye sonra dashboard'a yönlendir
+                }, 1000);
             }
             if (isRegisterMode) {
                  setTimeout(() => {
                      closeModal();
                      setAuthMode('login'); // Kayıt sonrası otomatik Giriş ekranına geç
-                 }, 2000); // 2 saniye sonra kapat
+                 }, 2000); // 2 saniye sonra modalı kapat
             }
 
         } catch (error) {
             console.error('API İsteği Hatası:', error);
             let errorMessage = 'Sunucuya bağlanılamadı veya ağ hatası oluştu.';
-            if (error.message.includes('HTTP Hata') || error.message.includes('Şifreler uyuşmuyor')) {
-                errorMessage = error.message; // Backend'den gelen spesifik HTTP/validasyon hatasını göster
+            // Hata mesajını daha anlaşılır hale getir
+            if (error.message.includes('HTTP Hata')) {
+                errorMessage = error.message;
             } else if (error.message.includes('Failed to fetch')) {
-                errorMessage = 'Sunucuya ulaşılamıyor. Lütfen internet bağlantınızı kontrol edin.';
+                errorMessage = 'Sunucuya ulaşılamıyor. Lütfen internet bağlantınızı ve backend servisinizin aktifliğini kontrol edin.';
             } else if (error.message) {
-                errorMessage = error.message; // Custom hata mesajları
+                errorMessage = error.message;
             }
             showMessage(errorMessage, 'error');
         }
     });
 
-    setAuthMode('register'); // Sayfa yüklendiğinde varsayılan modu ayarla
+    // Sayfa yüklendiğinde varsayılan olarak modalı açmıyoruz.
+    // setAuthMode('register'); // BU SATIR YORUM SATIRI KALMALI VEYA SİLİNMELİ.
 });
