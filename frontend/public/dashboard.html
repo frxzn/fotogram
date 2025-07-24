@@ -79,19 +79,28 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Loglama yapamasa da, kodun çalıştığını varsayalım
-        // console.log('Dashboard script yüklendi ve DOM hazır.'); 
-
-        // Yetkisiz erişim kontrolünü 1 saniyelik gecikme ile yapalım
+        // Yetkisiz erişim kontrolünü 500ms gecikme ile yapalım (auth.js'deki 1000ms'ten kısa olsun)
         setTimeout(() => {
-            const loggedInUsername = localStorage.getItem('loggedInUsername');
-            
-            // Debug için alert kullanabiliriz, ama kullanıcının çok fazla uyarı görmemesi için yorum satırında bırakıyorum
-            // alert('localStorage.loggedInUsername değeri: ' + loggedInUsername); 
+            // localStorage'dan 'user' objesini JSON string olarak al
+            const userString = localStorage.getItem('user');
+            let loggedInUsername = null;
 
+            if (userString) {
+                try {
+                    const user = JSON.parse(userString);
+                    // 'user' objesi içinde 'username' veya 'email' anahtarı olup olmadığını kontrol et
+                    if (user && user.username) {
+                        loggedInUsername = user.username;
+                    } else if (user && user.email) { // Eğer backend sadece email gönderiyorsa
+                        loggedInUsername = user.email;
+                    }
+                } catch (e) {
+                    console.error("localStorage'daki 'user' verisi JSON olarak ayrıştırılamadı:", e);
+                }
+            }
+            
             // Kullanıcı adı yoksa, boşsa veya "null"/"undefined" stringi olarak kaydedilmişse yönlendir
-            if (!loggedInUsername || loggedInUsername.trim() === '' || loggedInUsername === 'null' || loggedInUsername === 'undefined') {
-                // console.warn('Giriş yapmamış veya geçersiz kullanıcı tespit edildi. index.html e yönlendiriliyor.');
+            if (!loggedInUsername || String(loggedInUsername).trim() === '' || loggedInUsername === 'null' || loggedInUsername === 'undefined') {
                 window.location.href = '/index.html';
                 return; // Yönlendirme yapıldığı için daha fazla kod çalıştırma
             }
@@ -100,31 +109,22 @@
             const usernameDisplayElement = document.getElementById('usernameDisplay'); 
             if (usernameDisplayElement) {
                 usernameDisplayElement.textContent = `Hoş Geldin, ${loggedInUsername}!`;
-                // console.log(`Kullanıcı adı güncellendi: Hoş Geldin, ${loggedInUsername}!`); 
             } 
-            // else {
-            // console.error("'usernameDisplay' ID'li element bulunamadı. Lütfen dashboard.html'i kontrol edin.");
-            // }
 
             // Çıkış Yap butonu olay dinleyicisi
             const logoutButton = document.getElementById('logoutButton');
             if (logoutButton) {
                 logoutButton.addEventListener('click', (e) => {
                     e.preventDefault(); 
-                    // console.log('Çıkış yap butonuna basıldı. localStorage temizleniyor...'); 
-                    localStorage.removeItem('loggedInUsername');
+                    localStorage.removeItem('token'); // Token'ı sil
+                    localStorage.removeItem('user'); // Kullanıcı objesini sil
                     
                     setTimeout(() => {
-                        // console.log('index.html e yönlendiriliyor. localStorage.loggedInUsername şimdi:', localStorage.getItem('loggedInUsername')); 
                         window.location.href = '/index.html'; 
                     }, 50); 
                 });
-            } 
-            // else {
-            // console.warn("'logoutButton' ID'li element bulunamadı. Lütfen dashboard.html'i kontrol edin.");
-            // }
-
-        }, 1000); // 1000 milisaniye (1 saniye) gecikme
+            }
+        }, 500); // 500 milisaniye gecikme
     });
 </script>
 </body>
