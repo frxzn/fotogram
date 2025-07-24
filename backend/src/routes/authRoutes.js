@@ -2,28 +2,26 @@
 
 const express = require('express');
 const {
-    register, // Fonksiyon isimlerini authController'daki gibi eşleştir
-    login,    // Fonksiyon isimlerini authController'daki gibi eşleştir
+    registerUser, // authController.js'deki isimleriyle eşleşmeli
+    loginUser,    // authController.js'deki isimleriyle eşleşmeli
     forgotPassword,
-    resetPassword, // Eğer resetPassword endpoint'ini kullanacaksan
-    verifyEmail    // E-posta doğrulama için
-} = require('../controllers/authController');
+    resetPassword,
+    verifyEmail   // Yeni eklenecek doğrulama fonksiyonu
+} = require('../controllers/authController'); // authController'dan tüm fonksiyonları import et
 
 const router = express.Router();
 
-// POST isteği ile /api/auth/register adresine gelen isteği register fonksiyonuna yönlendir
-router.post('/register', register);
+// POST isteği ile /api/auth/register adresine gelen isteği registerUser fonksiyonuna yönlendir
+router.post('/register', registerUser);
 
-// POST isteği ile /api/auth/login adresine gelen isteği login fonksiyonuna yönlendir
-router.post('/login', login);
+// POST isteği ile /api/auth/login adresine gelen isteği loginUser fonksiyonuna yönlendir
+router.post('/login', loginUser);
 
 // POST isteği ile /api/auth/forgot-password adresine gelen isteği forgotPassword fonksiyonuna yönlendir
 router.post('/forgot-password', forgotPassword);
 
-// PATCH isteği ile /api/auth/reset-password/:token adresine gelen isteği resetPassword fonksiyonuna yönlendir
-// Eğer şifre sıfırlama işlemi token ile yapılıyorsa bu da gereklidir.
-// Henüz resetPassword fonksiyonunu konuşmadık ama ilerde lazım olacak.
-// router.patch('/reset-password/:token', resetPassword); 
+// PUT isteği ile /api/auth/reset-password/:token adresine gelen isteği resetPassword fonksiyonuna yönlendir
+router.put('/reset-password/:token', resetPassword);
 
 // GET isteği ile /api/auth/verify-email/:token adresine gelen isteği verifyEmail fonksiyonuna yönlendir
 router.get('/verify-email/:token', verifyEmail);
