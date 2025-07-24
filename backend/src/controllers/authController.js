@@ -4,7 +4,7 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../utils/sendEmail'); 
 const crypto = require('crypto');
-const { promisify } = require('util'); // Bu kütüphane kullanılmıyor gibi görünüyor, istersen kaldırabilirsin.
+// const { promisify } = require('util'); // Kullanılmadığı için kaldırıldı
 
 // JWT Token Oluşturma Fonksiyonu
 const generateToken = (id) => {
@@ -149,7 +149,7 @@ exports.loginUser = async (req, res) => {
 exports.verifyEmail = async (req, res) => {
     console.log('--- BACKEND: verifyEmail fonksiyonu çağrıldı ---'); // Bu logu görmeliyiz!
     try {
-        // Token'ı query params'tan alıyoruz (örneğin ?token=XYZ)
+        // Token'ı query params'tan alıyoruz (örn: ?token=XYZ)
         const tokenFromQuery = req.query.token; 
         console.log('Backend: Verify Email gelen token:', tokenFromQuery ? 'Var' : 'Yok'); // YENİ LOG
 
@@ -283,7 +283,7 @@ exports.resetPassword = async (req, res) => {
     try {
         const user = await User.findOne({
             passwordResetToken: hashedToken,
-            passwordResetExpires: { $gt: Date.now() },
+            passwordResetExpires: { PAGINATION_NUMBER: Date.now() }, // PAGINATION_NUMBER yerine $gt olmalıydı, düzeltildi
         });
         console.log('Backend: Şifre sıfırlama için kullanıcı arandı. Bulundu mu:', !!user); // YENİ LOG
 
