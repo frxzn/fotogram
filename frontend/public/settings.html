@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayarlar - Fotogram</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css"> 
+    <link rel="stylesheet" href="css/dashboard.css"> <link rel="stylesheet" href="css/settings.css"> </head>
+<body>
+
+<header>
+    <div class="container">
+        <a href="/dashboard.html" class="logo-link">
+            <img src="assets/fotogramlogo.png" alt="Fotogram Logo" class="logo-img">
+        </a>
+        <nav>
+            <ul>
+                <li><a href="/dashboard.html">Anasayfa</a></li>
+                <li><a href="/profile.html">Profil</a></li>
+                <li><a href="#" id="logoutButton">Çıkış Yap</a></li> 
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="separator"></div>
+
+<main class="settings-content">
+    <div class="container">
+        <h2>Hesap Ayarları</h2>
+
+        <section class="settings-section">
+            <h3>Şifreyi Değiştir</h3>
+            <form id="changePasswordForm" class="settings-form">
+                <div class="form-group">
+                    <label for="currentPassword">Mevcut Şifre:</label>
+                    <input type="password" id="currentPassword" required autocomplete="current-password">
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Yeni Şifre:</label>
+                    <input type="password" id="newPassword" required autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label for="newPasswordConfirm">Yeni Şifreyi Onayla:</label>
+                    <input type="password" id="newPasswordConfirm" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn primary">Şifreyi Değiştir</button>
+                <div id="passwordMessage" class="message" style="display:none;"></div>
+            </form>
+        </section>
+
+        </div>
+</main>
+
+<div class="separator"></div>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Fotogram. Tüm Hakları Saklıdır.</p>
+        <p>Turan Software</p>
+    </div>
+</footer>
+
+<script src="js/settings.js"></script>
+
+</body>
+</html>
