@@ -2,12 +2,12 @@
 
 const express = require('express');
 const {
-    registerUser, // authController.js'deki isimleriyle eşleşmeli
-    loginUser,    // authController.js'deki isimleriyle eşleşmeli
+    registerUser, 
+    loginUser,    
     forgotPassword,
     resetPassword,
-    verifyEmail   // Yeni eklenecek doğrulama fonksiyonu
-} = require('../controllers/authController'); // authController'dan tüm fonksiyonları import et
+    verifyEmail   
+} = require('../controllers/authController'); 
 
 const router = express.Router();
 
@@ -23,7 +23,9 @@ router.post('/forgot-password', forgotPassword);
 // PUT isteği ile /api/auth/reset-password/:token adresine gelen isteği resetPassword fonksiyonuna yönlendir
 router.put('/reset-password/:token', resetPassword);
 
-// GET isteği ile /api/auth/verify-email/:token adresine gelen isteği verifyEmail fonksiyonuna yönlendir
-router.get('/verify-email/:token', verifyEmail);
+// --- BURASI DÜZELTİLDİ ---
+// GET isteği ile /api/auth/verify-email adresine gelen isteği verifyEmail fonksiyonuna yönlendir
+// Token artık bir yol parametresi değil, sorgu parametresi olarak bekleniyor (örn: ?token=XYZ)
+router.get('/verify-email', verifyEmail); 
 
 module.exports = router;
