@@ -1,4 +1,4 @@
-// frontend/public/js/main.js - DÜZELTİLMİŞ VERSİYON
+// frontend/public/js/main.js - GÜNCEL VE SON VERSİYON
 
 document.addEventListener('DOMContentLoaded', () => {
     // Doğru localStorage anahtarını kullan: 'loggedInUsername'
@@ -10,7 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Eğer kullanıcı adı localStorage'da varsa (yani giriş yapmışsa) dashboard'a yönlendir
     if (loggedInUser) {
         console.log('main.js: Kullanici tespit edildi, dashboard.html e yonlendiriliyor.'); 
-        window.location.href = '/dashboard.html';
+        // Yönlendirmeden önce kısa bir gecikme ekleyelim
+        setTimeout(() => {
+            window.location.href = '/dashboard.html';
+        }, 50); // Çok kısa bir gecikme
     }
     // Bu dosya, ana sayfadaki "Kayıt Ol / Giriş Yap" butonlarına tıklama olaylarını doğrudan yönetmez.
     // Bu butonların olay yönetimi ve modal açma/kapama işlemleri 'auth.js' dosyasında yapılır.
