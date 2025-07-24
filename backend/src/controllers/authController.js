@@ -21,7 +21,7 @@ const registerUser = async (req, res) => {
     const { username, email, password } = req.body;
 
     // Alanların dolu olup olmadığını kontrol et
-    if (!username || !email || !password) {
+    if (!username || !email || !!password) { // Şifrenin dolu olduğundan emin oluyoruz
         return res.status(400).json({ message: 'Lütfen tüm alanları doldurun.' });
     }
 
@@ -41,41 +41,65 @@ const registerUser = async (req, res) => {
         });
 
         if (user) {
-            // Kayıt başarılı ise kullanıcıya hoş geldin maili gönder
+            // Kayıt başarılı ise kullanıcıya kayıt doğrulama/hoş geldin maili gönder
             try {
-                const mailOptions = {
-                    email: user.email,
-                    subject: 'Fotogram\'a Hoş Geldin!',
-                    message: `Merhaba ${user.username},\n\nFotogram'a başarıyla kaydoldun! Uygulamamızı kullanmaya başlamak için giriş yapabilirsin.\n\nKeyifli paylaşımlar dileriz,\nFotogram Ekibi`,
-                    html: `
-                        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                            <h2 style="color: #000;">Fotogram\'a Hoş Geldin!</h2>
-                            <p>Merhaba <strong>${user.username}</strong>,</p>
-                            <p>Fotogram ailesine katıldığın için çok mutluyuz! Hesabın başarıyla oluşturuldu.</p>
-                            <p>Uygulamamızı keşfetmek ve fotoğraflarını paylaşmaya başlamak için şimdi giriş yapabilirsin:</p>
-                            <p style="text-align: center;">
-                                <a href="${process.env.FRONTEND_URL || 'https://fotogram-app.onrender.com'}" 
-                                   style="display: inline-block; padding: 10px 20px; background-color: #000; color: #fff; text-decoration: none; border-radius: 5px;">
-                                   Giriş Yap
+                // *** ÖNEMLİ: BURAYI GERÇEK BİR E-POSTA DOĞRULAMA TOKEN'I İLE GÜNCELLEMELİSİN ***
+                // Örneğin:
+                // const verificationToken = user.getVerificationToken(); // User modelinde bu metodu tanımlaman gerekecek
+                // await user.save();
+                // const verificationLink = `${process.env.FRONTEND_URL || 'https://fotogram-app.onrender.com'}/verify-email?token=${verificationToken}`;
+
+                // Şimdilik test için varsayılan bir link kullanıyorum, bu link bir yere gitmeyecek!
+                const verificationLink = `${process.env.FRONTEND_URL || 'https://fotogram-app.onrender.com'}/verify-email?token=GEÇİCİ_AKTİVASYON_TOKENİ`; // BU KISMI GÜNCELLE!
+
+
+                const registrationMailHtml = `
+                    <div style="font-family: 'Roboto', sans-serif; line-height: 1.6; color: #E0E0E0; background-color: #000000; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);">
+                        <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #333333;">
+                            <h1 style="color: #FFFFFF; font-size: 2.5em; margin: 0; letter-spacing: -1px;">Fotogram</h1>
+                        </div>
+                        <div style="padding: 30px 20px; background-color: #1A1A1A;">
+                            <p style="margin-bottom: 15px; color: #CCCCCC;">Merhaba,</p>
+                            <p style="margin-bottom: 15px; color: #CCCCCC;">Fotogram hesabınızı oluşturma talebinizi aldık. Kayıt işlemini tamamlamak için lütfen aşağıdaki butona tıklayın:</p>
+                            
+                            <p style="text-align: center; margin: 30px 0;">
+                                <a href="${verificationLink}" 
+                                   style="display: inline-block; padding: 12px 25px; background-color: #FFFFFF; color: #000000; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 1.1em; transition: background-color 0.3s ease; border: 2px solid #FFFFFF;">
+                                   Kaydı Tamamla
                                 </a>
                             </p>
-                            <p>Keyifli paylaşımlar dileriz,</p>
-                            <p><strong>Fotogram Ekibi</strong></p>
-                            <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                            <p style="font-size: 0.8em; color: #666;">Bu e-posta otomatik olarak gönderilmiştir. Lütfen bu e-postaya yanıt vermeyin.</p>
+                            <p style="text-align: center; margin-top: 15px; font-size: 0.9em; color: #999999;">
+                                Eğer yukarıdaki buton çalışmıyorsa, lütfen aşağıdaki bağlantıyı kopyalayıp tarayıcınızın adres çubuğuna yapıştırın:<br>
+                                <a href="${verificationLink}" style="word-break: break-all; color: #B3B3B3; text-decoration: underline;">${verificationLink}</a>
+                            </p>
+                            
+                            <p style="margin-top: 25px; font-size: 0.9em; color: #B3B3B3;">
+                                Bu e-posta size gönderilen kayıt bağlantısıdır. Eğer bu talebi siz yapmadıysanız, bu e-postayı görmezden gelebilirsiniz.
+                            </p>
+                            <p style="margin-top: 15px; color: #CCCCCC;">Teşekkürler,<br>Fotogram Ekibi</p>
                         </div>
-                    `,
-                };
-                await sendEmail(mailOptions);
-                console.log(`Kayıt sonrası hoş geldin maili ${user.email} adresine gönderildi.`);
+                        <div style="background-color: #000000; padding: 15px 20px; text-align: center; font-size: 0.85em; color: #B3B3B3; border-top: 1px solid #333333;">
+                            <p>&copy; ${new Date().getFullYear()} Fotogram. Tüm Hakları Saklıdır.</p>
+                            <p style="color: #FFFFFF; font-weight: 500; margin-top: 5px;">Turan Software</p>
+                        </div>
+                    </div>
+                `;
+
+                await sendEmail({
+                    email: user.email,
+                    subject: 'Fotogram Hesabınızı Doğrulayın', // Konu daha uygun
+                    message: 'Kaydı tamamlamak için lütfen aşağıdaki butona tıklayın.', // Düz metin versiyonu
+                    html: registrationMailHtml, // Kendi özel HTML'imizi gönderiyoruz
+                });
+                console.log(`Kayıt doğrulama maili ${user.email} adresine gönderildi.`);
             } catch (mailError) {
-                console.error(`Kayıt sonrası mail gönderme hatası (${user.email}):`, mailError);
+                console.error(`Kayıt doğrulama maili gönderme hatası (${user.email}):`, mailError);
                 // Mail gönderme hatası, kayıt işlemini engellememeli, sadece loglanmalı
             }
 
             // Başarılı yanıt
             res.status(201).json({
-                message: 'Kayıt başarılı! Şimdi giriş yapabilirsin.'
+                message: 'Kayıt başarılı! Hesabınızı doğrulamak için lütfen e-postanızı kontrol edin.'
                 // Kayıt sırasında token göndermiyoruz, kullanıcı giriş yapmalı
             });
         } else {
@@ -104,6 +128,12 @@ const loginUser = async (req, res) => {
         if (!user) {
             return res.status(401).json({ message: 'E-posta veya şifre hatalı.' });
         }
+
+        // Kullanıcı email doğrulaması gerekiyorsa burada kontrol edebilirsin
+        // if (!user.isVerified) {
+        //     return res.status(401).json({ message: 'Lütfen e-posta adresinizi doğrulayın.' });
+        // }
+
 
         // Girilen şifreyi hashlenmiş şifre ile karşılaştır
         const isMatch = await user.matchPassword(password);
@@ -161,30 +191,18 @@ const forgotPassword = async (req, res) => {
         // Bu link frontend'de reset-password sayfan olmalı
         const resetURL = `${process.env.FRONTEND_URL || 'https://fotogram-app.onrender.com'}/reset-password?token=${resetToken}`;
 
-        const message = `Şifrenizi sıfırlamak için lütfen aşağıdaki linke tıklayın:\n\n${resetURL}\n\nBu link 10 dakika içinde geçerliliğini yitirecektir.\n\nEğer bu isteği siz yapmadıysanız, lütfen bu e-postayı dikkate almayın.`;
+        // Mesaj artık daha spesifik, genel bilgilendirme sendEmail.js'deki taslakta
+        const message = `Şifreni sıfırlamak için aşağıdaki butona tıklayabilirsin. Bu link 10 dakika içinde geçerliliğini yitirecektir. Eğer bu isteği sen yapmadıysan, lütfen bu e-postayı dikkate alma.`;
 
         try {
             await sendEmail({
                 email: user.email,
                 subject: 'Şifre Sıfırlama Talebi',
                 message,
-                html: `
-                    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                        <h2 style="color: #000;">Şifre Sıfırlama Talebi</h2>
-                        <p>Merhaba ${user.username},</p>
-                        <p>Şifrenizi sıfırlamak için bir talep aldık. Aşağıdaki butona tıklayarak şifrenizi sıfırlayabilirsiniz:</p>
-                        <p style="text-align: center;">
-                            <a href="${resetURL}" 
-                               style="display: inline-block; padding: 10px 20px; background-color: #000; color: #fff; text-decoration: none; border-radius: 5px;">
-                               Şifreyi Sıfırla
-                            </a>
-                        </p>
-                        <p>Bu link <strong>10 dakika</strong> içinde geçerliliğini yitirecektir.</p>
-                        <p>Eğer bu isteği siz yapmadıysanız, lütfen bu e-postayı dikkate almayın.</p>
-                        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                        <p style="font-size: 0.8em; color: #666;">Fotogram Ekibi</p>
-                    </div>
-                `,
+                actionButton: {
+                    text: 'Şifreyi Sıfırla',
+                    link: resetURL
+                }
             });
 
             res.status(200).json({ message: 'Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.' });
