@@ -64,8 +64,8 @@ header nav ul li a:hover {
 
 /* Hero Section (Orta Bölüm) */
 .hero {
-    /* Siyaha kaçan koyu gri arkaplan */
-    background-color: #1a1a1a; 
+    /* Siyaha kaçan koyu gri arkaplan - DÜMDÜZ VE ŞEKİLSİZ */
+    background-color: #1a1a1a; /* Daha koyu bir gri tonu */
     color: #ffffff;
     text-align: center;
     padding: 100px 0;
@@ -73,7 +73,7 @@ header nav ul li a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 0 50px rgba(0,0,0,0.7); /* Hafif gölgelendirme */
+    /* box-shadow kaldırıldı - şekilli görünümü engellemek için */
 }
 
 .hero h1 {
