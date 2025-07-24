@@ -8,50 +8,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css"> 
     <link rel="stylesheet" href="css/auth.css"> 
-    <style>
-        /* Bu stil bloğu sadece logo ve slogan için eklemeler içeriyor, diğer stiller style.css'te */
-        header .container {
-            display: flex;
-            justify-content: space-between; /* Logo ve sloganı sola, nav'ı sağa hizala */
-            align-items: center;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap; /* Küçük ekranlarda alt alta geçebilir */
-        }
-
-        .header-left .logo-img {
-            height: 40px; /* Logo yüksekliği */
-            margin-right: 15px; /* Logo ile slogan arasına boşluk */
-            vertical-align: middle; /* Dikey hizalama */
-        }
-
-        .slogan {
-            font-size: 1.1em;
-            font-style: italic;
-            color: #ccc;
-            margin: 0; /* Varsayılan marginleri sıfırla */
-        }
-
-        /* Navigasyon menüsünü kaldırıyoruz */
-        header nav {
-            display: none; /* Navigasyonu tamamen gizle */
-        }
-    </style>
 </head>
 <body>
     
 <header>
         <div class="container">
-            <div class="header-left">
-                <img src="assets/fotogramlogo.png" alt="Fotogram Logo" class="logo-img"> <!-- LOGO BURAYA EKLENDİ -->
-                <p class="slogan">Fotoğrafın sosyal hali, Fotogram.</p>
-            </div>
+            <!-- Logo buraya eklendi, slogan kaldırıldı -->
+            <a href="/index.html" class="logo-link">
+                <img src="assets/fotogramlogo.png" alt="Fotogram Logo" class="logo-img">
+            </a>
             <nav>
                 <ul>
-                    <!-- Bu kısım boş kalacak, çünkü sloganı ekledik -->
+                    <!-- Navigasyon menüsü boş kalacak -->
                 </ul>
             </nav>
         </div>
