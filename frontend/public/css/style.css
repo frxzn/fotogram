@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: 'Roboto', sans-serif; /* Daha modern bir font */
+    font-family: 'Inter', sans-serif; /* Yazı tipi Inter olarak değiştirildi */
     background-color: #000000; /* Tam siyah arka plan */
     color: #e0e0e0; /* Açık gri metin */
     line-height: 1.6;
@@ -31,41 +31,53 @@ header {
 
 header .container {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Logo ve sloganı sola, nav'ı sağa hizala */
     align-items: center;
 }
 
+.header-left {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta geçebilir */
+}
+
 .logo {
-    font-size: 2.2em;
-    font-weight: 700;
+    /* Bu stil artık img etiketine uygulanmayacak, sadece h1 için */
+    font-size: 2.5em; /* Daha büyük logo */
+    font-weight: bold; /* Kalın font */
     color: #ffffff;
     letter-spacing: -1px;
+    margin: 0; /* Varsayılan marginleri sıfırla */
 }
 
-header nav ul {
-    list-style: none;
-    display: flex;
+.logo-img {
+    height: 40px; /* Logo yüksekliği */
+    margin-right: 15px; /* Logo ile slogan arasına boşluk */
+    vertical-align: middle; /* Dikey hizalama */
 }
 
-header nav ul li {
-    margin-left: 25px;
+.slogan {
+    font-size: 1.1em;
+    font-style: italic;
+    color: #ccc;
+    margin: 0; /* Varsayılan marginleri sıfırla */
 }
 
-header nav ul li a {
-    color: #e0e0e0;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
+header nav {
+    display: none; /* Navigasyonu tamamen gizle */
 }
 
-header nav ul li a:hover {
-    color: #ffffff;
+
+/* Ayırıcı Çizgi */
+.separator {
+    width: 100%;
+    height: 1px; /* İnce çizgi */
+    background-color: #333; /* Çizgi rengi */
 }
 
 /* Hero Section (Orta Bölüm) */
 .hero {
-    /* Siyaha kaçan koyu gri arkaplan - DÜMDÜZ VE ŞEKİLSİZ */
-    background-color: #1a1a1a; /* Daha koyu bir gri tonu */
+    background-color: #1a1a1a; /* Siyaha kaçan koyu gri arkaplan */
     color: #ffffff;
     text-align: center;
     padding: 100px 0;
@@ -73,7 +85,7 @@ header nav ul li a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* box-shadow kaldırıldı - şekilli görünümü engellemek için */
+    /* box-shadow kaldırıldı */
 }
 
 .hero h1 {
