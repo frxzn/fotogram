@@ -323,6 +323,28 @@ header nav ul li a:hover {
     color: var(--accent-color);
 }
 
+/* Footer Stilleri */
+footer {
+    background-color: var(--primary-bg); /* Header ile aynı arka plan */
+    color: var(--accent-color); /* Hafif gri yazı */
+    text-align: center;
+    padding: 30px 0; /* İç boşluk */
+    border-top: 1px solid var(--border-color); /* Üstte ince çizgi */
+    font-size: 0.95em;
+    margin-top: auto; /* Footer'ı sayfanın en altına iter */
+}
+
+footer p {
+    margin-bottom: 5px; /* Paragraflar arası boşluk */
+    line-height: 1.5;
+}
+
+footer p:last-child {
+    margin-bottom: 0; /* Son paragrafın alt boşluğunu kaldır */
+    font-weight: 500; /* Turan Software yazısı biraz daha kalın */
+    color: var(--text-color); /* Daha belirgin (beyaz) */
+}
+
 /* Responsive Tasarım */
 @media (max-width: 768px) {
     .logo {
@@ -358,5 +380,10 @@ header nav ul li a:hover {
 
     .modal-content {
         padding: 30px 20px;
+    }
+
+    /* Footer Responsive Düzenlemesi */
+    footer {
+        padding: 20px 15px;
     }
 }
