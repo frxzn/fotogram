@@ -1,4 +1,4 @@
-// backend/src/routes/authRoutes.js
+// backend/src/routes/authRoutes.js - GÜNCEL VE SON VERSİYON
 
 const express = require('express');
 const {
@@ -23,7 +23,6 @@ router.post('/forgot-password', forgotPassword);
 // PUT isteği ile /api/auth/reset-password/:token adresine gelen isteği resetPassword fonksiyonuna yönlendir
 router.put('/reset-password/:token', resetPassword);
 
-// --- BURASI DÜZELTİLDİ ---
 // GET isteği ile /api/auth/verify-email adresine gelen isteği verifyEmail fonksiyonuna yönlendir
 // Token artık bir yol parametresi değil, sorgu parametresi olarak bekleniyor (örn: ?token=XYZ)
 router.get('/verify-email', verifyEmail); 
