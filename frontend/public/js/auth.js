@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // BURAYI KENDİ BACKEND SERVİSİNİN RENDER URL'İ İLE DEĞİŞTİR!
     // Örnek: https://fotogram-backend-xxxx.onrender.com
     // KESİN KONTROL: URL'İN SONUNDA '/' OLMADIĞINDAN EMİN OL!
-    const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // KESİN KONTROL: BU URL DOĞRU MU?
+    const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // BURAYI KENDİ BACKEND URL'İNLE DEĞİŞTİR!
 
     // Tüm gerekli DOM elementlerini seç
     const authModal = document.getElementById('authModal');
@@ -117,12 +117,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Basit frontend validasyonları
         if (isRegisterMode) {
-            if (!username || !email || !password || !confirmPassword) { // !password kontrolü eklendi
+            if (!username || !email || !password || !confirmPassword) {
                 showMessage('Lütfen tüm alanları doldurun.', 'error');
                 return;
             }
             if (password !== confirmPassword) {
                 showMessage('Şifreler uyuşmuyor.', 'error');
+                return;
+            }
+            if (password.length < 6) {
+                showMessage('Şifre en az 6 karakter olmalıdır.', 'error');
                 return;
             }
         } else { // Login mode
@@ -137,10 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let body = {};
 
         if (isRegisterMode) {
-            url = `${API_BASE_URL}/api/auth/register`; // API_BASE_URL kullanılıyor
-            body = { email, password, username, confirmPassword };
+            url = `${API_BASE_URL}/api/auth/register`;
+            body = { email, password, username, confirmPassword }; // confirmPassword'u backend'e göndermiyoruz, sadece frontend'de doğrulama için
+            // Backend'e sadece 'email', 'password', 'username' gönderilmeli
+            body = { email, password, username }; // Güncellenmiş body
         } else {
-            url = `${API_BASE_URL}/api/auth/login`; // API_BASE_URL kullanılıyor
+            url = `${API_BASE_URL}/api/auth/login`;
             body = { email, password };
         }
 
@@ -153,9 +159,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(body)
             });
 
-            if (!response.ok) { // HTTP yanıtı 200-299 aralığında değilse (hata kodu varsa)
-                const errorData = await response.json(); // Yanıtı JSON olarak ayrıştırmaya çalış
-                throw new Error(errorData.message || `HTTP Hata: ${response.status}`);
+            // Yanıtı JSON olarak ayrıştırmadan önce hata durumunu kontrol et
+            if (!response.ok) {
+                let errorData;
+                try {
+                    errorData = await response.json(); // Hata yanıtını JSON olarak ayrıştırmaya çalış
+                } catch (jsonError) {
+                    console.error("JSON ayrıştırma hatası:", jsonError);
+                    throw new Error(`Sunucudan geçerli bir hata yanıtı alınamadı. HTTP Durum: ${response.status}`);
+                }
+                throw new Error(errorData.message || `HTTP Hata: ${response.status} - ${response.statusText}`);
             }
 
             const data = await response.json(); // Başarılı yanıtı JSON olarak ayrıştır
@@ -179,12 +192,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('API İsteği Hatası:', error);
             let errorMessage = 'Sunucuya bağlanılamadı veya ağ hatası oluştu.';
             // Hata mesajını daha anlaşılır hale getir
-            if (error.message.includes('HTTP Hata')) {
+            if (error.message) {
                 errorMessage = error.message;
             } else if (error.message.includes('Failed to fetch')) {
                 errorMessage = 'Sunucuya ulaşılamıyor. Lütfen internet bağlantınızı ve backend servisinizin aktifliğini kontrol edin.';
-            } else if (error.message) {
-                errorMessage = error.message;
             }
             showMessage(errorMessage, 'error');
         }
