@@ -4,335 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fotogram - Anılarını Paylaş</title>
-    <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/auth.css"> 
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
     <style>
-        /* Genel body stilleri - Bu kısım style.css'te de olabilir */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #121212; /* Genel arkaplan rengi */
-            color: #e0e0e0; /* Genel metin rengi */
-            display: flex;
-            flex-direction: column; /* İçerikleri dikey sırala */
-            min-height: 100vh; /* Ekran yüksekliği kadar olmasını sağlar */
-        }
-
-        /* Ayırıcı Çizgi Stili */
-        .separator {
-            width: 100%;
-            height: 1px; /* İnce çizgi */
-            background-color: #333; /* Çizgi rengi */
-            /* position ve z-index kaldırıldı, doğal akışta kalacak */
-        }
-
-        /* Orta Bölüm (Hero Section) - Fotoğrafın ve Ana Yazıların Olduğu Kısım */
-        .hero-section-container {
-            position: relative; /* Arka plan ve overlay için konumlandırma bağlamı */
-            flex-grow: 1; /* Kalan dikey alanı kaplamasını sağlar */
-            width: 100%;
-            background-image: url('assets/indexback.jpg'); /* <-- FOTOĞRAF YOLU BURADA! */
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 50px 20px; /* İç boşluk */
-            box-sizing: border-box;
-            /* z-index kaldırıldı, içeriğin z-index'i yeterli olacak */
-        }
-
-        /* Hero Section üzerindeki koyu katman (pseudo-element ile) */
-        .hero-section-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6); /* Siyah, %60 opaklık */
-            z-index: -1; /* İçeriğin arkasında kalsın */
-            pointer-events: none; /* KRİTİK DÜZELTME: Bu katman tıklamaları yakalamasın */
-        }
-
-        /* Hero Section İçeriği (Yazılar ve Butonlar) */
-        .hero-section-container .container {
-            position: relative; /* Overlay'in üzerinde olmasını sağlar */
-            z-index: 1; /* Overlay'in üzerinde olmalı */
-            max-width: 700px;
-            width: 100%;
-            color: #ffffff;
-            pointer-events: auto; /* KRİTİK DÜZELTME: İçerik ve butonlar tıklanabilir olsun */
-        }
-
-        .hero-section-container h1 {
-            font-size: 3.8em;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8); /* Metin okunabilirliğini artırır */
-        }
-
-        .hero-section-container p {
-            font-size: 1.4em;
-            line-height: 1.6;
-            margin-bottom: 40px;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); /* Metin okunabilirliğini artırır */
-        }
-
-        .cta-buttons {
-            pointer-events: auto; /* KRİTİK DÜZELTME: Buton kapsayıcısı tıklanabilir olsun */
-        }
-
-        .cta-buttons .btn {
-            margin: 0 15px;
-            padding: 15px 35px;
-            font-size: 1.2em;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            position: relative; /* Tıklanabilirliği garantilemek için */
-            z-index: 2; /* Hero içeriğinin üzerinde olmalı */
-            pointer-events: auto; /* KRİTİK DÜZELTME: Butonların kendisi tıklanabilir olsun */
-        }
-
-        .cta-buttons .btn.primary {
-            background-color: #007bff;
-            color: white;
-            border: none;
-        }
-
-        .cta-buttons .btn.primary:hover {
-            background-color: #0056b3;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        .cta-buttons .btn.secondary {
-            background-color: transparent;
-            color: #007bff;
-            border: 2px solid #007bff;
-        }
-
-        .cta-buttons .btn.secondary:hover {
-            background-color: #007bff;
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        /* Header ve Footer için mevcut stilinizden gelenler (style.css'ten) */
-        /* Eğer style.css'te yoksa ve bu HTML'deki header/footer için stil gerekiyorsa, buraya eklenmeli */
+        /* Bu stil bloğu sadece header için eklemeler içeriyor, diğer stiller style.css'te */
         header {
-            background-color: #1e1e1e;
+            background-color: #000; /* Siyah arka plan */
             padding: 20px 40px;
-            color: #ffffff;
-            font-size: 1.2em;
-            /* z-index: 10; */ /* Gerekirse eklenebilir */
-        }
-        header .container {
+            color: #fff;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px; /* Varsa container genişliğiniz */
-            margin: 0 auto;
         }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
         .logo {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #ffffff;
-            text-decoration: none;
+            font-size: 2.5em; /* Daha büyük logo */
+            font-weight: bold; /* Kalın font */
+            margin-right: 20px;
         }
+
+        .slogan {
+            font-size: 1.1em;
+            font-style: italic;
+            color: #ccc;
+        }
+
         footer {
-            background-color: #1e1e1e;
-            padding: 20px 40px;
+            background-color: #000; /* Siyah arka plan */
             color: #a0a0a0;
             font-size: 0.9em;
             text-align: center;
-            /* z-index: 10; */ /* Gerekirse eklenebilir */
-        }
-        footer .container {
-             max-width: 1200px; /* Varsa container genişliğiniz */
-             margin: 0 auto;
-        }
-
-
-        /* Auth Modal stilleri (auth.css'ten gelmeli, burada sadece genel görünüm için) */
-        .auth-modal { /* Bu modalın kendisi */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000; /* En üstte olmalı */
-            pointer-events: auto; /* Modalın kendisi tıklanabilir olmalı */
-        }
-
-        .auth-modal-content { /* Modalın içindeki beyaz kutu */
-            background-color: #1e1e1e;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
-            max-width: 400px;
-            width: 90%;
-            position: relative;
-            pointer-events: auto; /* Modal içeriği tıklanabilir olmalı */
-        }
-
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 1.8em;
-            color: #e0e0e0;
-            cursor: pointer;
-            transition: color 0.2s ease;
-            pointer-events: auto; /* Kapatma butonu tıklanabilir olmalı */
-        }
-
-        /* Diğer modal stilleri (h2, input-group, message, btn, toggle-links vb.) */
-        /* auth.css'ten gelmeli veya buraya eklenmeli */
-        .auth-modal h2 {
-            color: #ffffff;
-            margin-bottom: 25px;
-            font-size: 1.8em;
-        }
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.95em;
-            color: #a0a0a0;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            background-color: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 5px;
-            color: #e0e0e0;
-            font-size: 1em;
-            box-sizing: border-box;
-        }
-        .input-group input:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3);
-        }
-        .message {
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 0.9em;
-            font-weight: bold;
-            display: none;
-        }
-        .message.success {
-            background-color: #28a745;
-            color: white;
-        }
-        .message.error {
-            background-color: #dc3545;
-            color: white;
-        }
-        .btn.primary, .btn.secondary {
-            /* Zaten yukarıda cta-buttons .btn altında tanımlı */
-        }
-        .toggle-links {
-            margin-top: 20px;
-            font-size: 0.9em;
-            color: #a0a0a0;
-            display: flex;
-            justify-content: space-around;
-        }
-        .toggle-links a {
-            color: #007bff;
-            text-decoration: none;
-            transition: text-decoration 0.2s ease;
-        }
-        .toggle-links a:hover {
-            text-decoration: underline;
-        }
-
-
-        /* Responsive düzenlemeler */
-        @media (max-width: 768px) {
-            header .container, footer .container {
-                flex-direction: column;
-                text-align: center;
-            }
-            header nav ul {
-                margin-top: 10px;
-                justify-content: center;
-            }
-            header nav ul li {
-                margin: 0 15px;
-            }
-            .hero-section-container h1 {
-                font-size: 2.8em;
-            }
-            .hero-section-container p {
-                font-size: 1.2em;
-            }
-            .cta-buttons {
-                flex-direction: column;
-            }
-            .cta-buttons .btn {
-                margin: 10px 0;
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo {
-                font-size: 1.5em;
-            }
-            .hero-section-container h1 {
-                font-size: 2.2em;
-            }
-            .hero-section-container p {
-                font-size: 1em;
-            }
-            .cta-buttons .btn {
-                font-size: 1em;
-                padding: 10px 20px;
-            }
+            padding: 20px 40px;
         }
     </style>
 </head>
 <body>
-    <!-- Üst Header Bölümü -->
     <header>
-        <div class="container">
-            <h1 class="logo">Fotogram</h1>
-            <nav>
-                <ul>
-                    <!-- Bu linklerin tıklanabilmesi için JS ile modal açma fonksiyonuna bağlanması gerekecek -->
-                    <li><a href="#" id="headerRegisterLink">Kayıt Ol</a></li>
-                    <li><a href="#" id="headerLoginLink">Giriş Yap</a></li>
-                </ul>
-            </nav>
+        <div class="header-left">
+            <h1 class="logo">FOTOGRAM</h1>
+            <p class="slogan">Fotoğrafın sosyal hali, Fotogram.</p>
         </div>
-    </header>
+        </header>
 
-    <!-- Ayırıcı Çizgi -->
     <div class="separator"></div>
 
-    <!-- Orta Bölüm (Hero Section) - Fotoğrafın ve Ana Yazıların Olduğu Kısım -->
     <main class="hero-section-container">
-        <!-- İçerik zaten .container içinde, bu yüzden ekstra bir div'e gerek yok -->
         <div class="container">
             <h1>Anılarını Paylaş</h1>
             <p>Fotogram ile fotoğraf ve videolarını kolayca paylaş, arkadaşlarınla etkileşimde kal.</p>
@@ -343,10 +64,8 @@
         </div>
     </main>
 
-    <!-- Ayırıcı Çizgi -->
     <div class="separator"></div>
 
-    <!-- Alt Footer Bölümü -->
     <footer>
         <div class="container">
             <p>&copy; 2025 Fotogram. Tüm Hakları Saklıdır.</p>
@@ -354,8 +73,6 @@
         </div>
     </footer>
 
-    <!-- Auth Modal ve Forgot Password Modal (Sayfanın en dışında, diğer içeriklerden bağımsız olarak durmalı) -->
-    <!-- auth.js bu modal ID'lerini kullanıyor -->
     <div id="authModal" class="auth-modal" style="display: none;">
         <div class="auth-modal-content">
             <span class="close-button">&times;</span>
@@ -403,18 +120,12 @@
         </div>
     </div>
 
-    <!-- auth.js ve main.js dosyalarını en sonda dahil et -->
     <script src="js/auth.js"></script>
-    <script src="js/main.js"></script> 
-
+    <script src="js/main.js"></script>
     <script>
-        // auth.js'teki modal açma fonksiyonlarını çağır
-        // Bu kısım, auth.js dosyasının doğru yüklendiğini ve openAuthModal fonksiyonunun global olarak erişilebilir olduğunu varsayar.
         document.addEventListener('DOMContentLoaded', () => {
             const openAuthModalButtonMain = document.getElementById('openAuthModalButtonMain');
             const openAuthModalButtonSecondary = document.getElementById('openAuthModalButtonSecondary');
-            const headerRegisterLink = document.getElementById('headerRegisterLink');
-            const headerLoginLink = document.getElementById('headerLoginLink');
 
             if (openAuthModalButtonMain) {
                 openAuthModalButtonMain.addEventListener('click', () => {
@@ -428,28 +139,6 @@
 
             if (openAuthModalButtonSecondary) {
                 openAuthModalButtonSecondary.addEventListener('click', () => {
-                    if (typeof openAuthModal === 'function') {
-                        openAuthModal('login');
-                    } else {
-                        console.warn('openAuthModal fonksiyonu bulunamadı. auth.js dosyasının doğru yüklendiğinden emin olun.');
-                    }
-                });
-            }
-
-            if (headerRegisterLink) {
-                headerRegisterLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (typeof openAuthModal === 'function') {
-                        openAuthModal('register');
-                    } else {
-                        console.warn('openAuthModal fonksiyonu bulunamadı. auth.js dosyasının doğru yüklendiğinden emin olun.');
-                    }
-                });
-            }
-
-            if (headerLoginLink) {
-                headerLoginLink.addEventListener('click', (e) => {
-                    e.preventDefault();
                     if (typeof openAuthModal === 'function') {
                         openAuthModal('login');
                     } else {
