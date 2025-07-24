@@ -43,7 +43,7 @@ header .container {
 }
 
 .logo-img {
-    height: 60px; /* Logo yüksekliği - Daha büyük yapıldı */
+    height: 90px; /* Logo yüksekliği - Daha büyük yapıldı */
     width: auto; /* Oranını koru */
     display: block; /* Fazla boşlukları engelle */
 }
