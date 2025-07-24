@@ -4,16 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-posta Doğrulama - Fotogram</title>
-    <link rel="stylesheet" href="css/style.css"> <link rel="stylesheet" href="css/auth.css"> <style>
+    <link rel="stylesheet" href="css/style.css"> 
+    <link rel="stylesheet" href="css/auth.css"> <style>
+        /* Bu stil bloğu, verify-email.html sayfasına özel düzenlemeler içindir.
+           Genel stiller (background-color, font-family vb.) style.css içinde olmalı
+           ancak burada sayfanın ortalanması ve mesaj kutucuklarının görünümü için
+           gerekli minimum stiller bulunmaktadır. */
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #121212;
-            color: #e0e0e0;
-            font-family: 'Roboto', sans-serif;
+            background-color: #121212; /* Genel arkaplan rengi, style.css'den de gelebilir */
+            color: #e0e0e0; /* Genel metin rengi */
+            font-family: 'Roboto', sans-serif; /* Yazı tipi */
             margin: 0;
+            padding: 20px; /* Küçük ekranlarda kenarlardan boşluk */
+            box-sizing: border-box; /* Padding'in genişliğe dahil olması */
         }
         .container {
             background-color: #1e1e1e;
@@ -22,7 +29,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             text-align: center;
             max-width: 500px;
-            width: 90%;
+            width: 100%; /* Mobil uyumluluk için */
         }
         h1 {
             color: #ffffff;
@@ -66,6 +73,23 @@
         .login-link:hover {
             background-color: #0056b3;
         }
+
+        /* Responsive ayarlar */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            p {
+                font-size: 1em;
+            }
+            .login-link {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -76,7 +100,10 @@
     </div>
 
     <script>
-        const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Backend URL'si - Kendi Backend URL'n ile değiştirmeyi UNUTMA!
+        // Backend URL'si - Kendi Backend URL'n ile değiştirmeyi UNUTMA!
+        // Örn: 'https://senin-backend-uygulaman.onrender.com'
+        const API_BASE_URL = 'https://fotogram-backend.onrender.com'; 
+        
         const statusMessageElement = document.getElementById('statusMessage');
         const loginRedirectLink = document.getElementById('loginRedirectLink');
 
@@ -87,7 +114,7 @@
             if (!token) {
                 statusMessageElement.textContent = 'Doğrulama linki eksik. Lütfen doğru linki kullandığınızdan emin olun.';
                 statusMessageElement.className = 'message error';
-                loginRedirectLink.style.display = 'inline-block'; // Giriş linkini göster
+                loginRedirectLink.style.display = 'inline-block'; // Hata durumunda giriş linkini göster
                 return;
             }
 
@@ -98,16 +125,24 @@
                 if (response.ok) {
                     statusMessageElement.textContent = data.message || 'E-posta adresiniz başarıyla doğrulandı!';
                     statusMessageElement.className = 'message success';
+                    
+                    // BAŞARILI DURUMDA OTOMATİK YÖNLENDİRME EKLENDİ
+                    // Kullanıcıya mesajı göstermek için biraz bekle, sonra giriş sayfasına yönlendir.
+                    setTimeout(() => {
+                        window.location.href = '/index.html'; 
+                    }, 3000); // 3 saniye sonra yönlendir
+                    
                 } else {
+                    // Hata durumunda mesajı göster
                     statusMessageElement.textContent = data.message || 'E-posta doğrulaması başarısız oldu. Geçersiz veya süresi dolmuş link.';
                     statusMessageElement.className = 'message error';
+                    loginRedirectLink.style.display = 'inline-block'; // Hata durumunda giriş linkini göster
                 }
-                loginRedirectLink.style.display = 'inline-block'; // Giriş linkini göster
             } catch (error) {
                 console.error('Doğrulama sırasında ağ hatası:', error);
                 statusMessageElement.textContent = 'Doğrulama sırasında bir sorun oluştu. Lütfen daha sonra tekrar deneyin.';
                 statusMessageElement.className = 'message error';
-                loginRedirectLink.style.display = 'inline-block'; // Giriş linkini göster
+                loginRedirectLink.style.display = 'inline-block'; // Ağ hatası durumunda giriş linkini göster
             }
         });
     </script>
