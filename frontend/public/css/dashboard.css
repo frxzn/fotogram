@@ -1,142 +1,194 @@
-/* Dashboard Genel Stiller */
+/* frontend/public/css/dashboard.css */
+
 .dashboard-content {
-    padding: 50px 0;
-    background-color: #0d0d0d; /* Daha koyu arka plan */
-    flex-grow: 1;
+    padding: 40px 0;
 }
 
 .dashboard-content h2 {
-    font-size: 2.8em;
-    margin-bottom: 20px;
-    color: #ffffff;
+    font-size: 2.5em;
+    color: var(--primary-color);
     text-align: center;
-}
-
-.dashboard-content p {
-    font-size: 1.1em;
-    color: #b3b3b3;
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-/* Feed (Paylaşımlar) Bölümü */
-.feed {
     margin-bottom: 50px;
 }
 
-.feed h3 {
-    font-size: 2.2em;
-    color: #ffffff;
-    margin-bottom: 30px;
-    text-align: center;
+/* Create Post Section Styles */
+.create-post-section {
+    background-color: var(--secondary-background);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 40px;
+    max-width: 600px; /* Formu ortalamak için */
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.post-grid {
+.post-form .form-group {
+    margin-bottom: 20px;
+}
+
+.post-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+    color: var(--text-color-secondary);
+}
+
+.post-form input[type="file"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--background-color);
+    color: var(--text-color-light);
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.post-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--background-color);
+    color: var(--text-color-light);
+    font-size: 1em;
+    resize: vertical; /* Sadece dikeyde boyutlandırma */
+    box-sizing: border-box;
+    min-height: 80px;
+}
+
+.post-form input[type="file"]:focus,
+.post-form textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.3);
+}
+
+.post-form button.btn {
+    padding: 12px 30px;
+    font-size: 1.1em;
+    border-radius: var(--border-radius);
+    width: auto;
+    display: block;
+    margin-top: 25px;
+    margin-left: auto; /* Butonu ortalamak için */
+    margin-right: auto; /* Butonu ortalamak için */
+}
+
+.post-form .message {
+    margin-top: 15px;
+    padding: 10px 15px;
+    border-radius: var(--border-radius);
+    font-size: 0.95em;
+    display: none;
+}
+
+.post-form .message.error {
+    background-color: #ffe0e0;
+    color: #cc0000;
+    border: 1px solid #cc0000;
+}
+
+.post-form .message.success {
+    background-color: #e0ffe0;
+    color: #008000;
+    border: 1px solid #008000;
+}
+
+
+/* Post Feed Styles */
+.posts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Esnek sütunlar */
-    gap: 25px;
-    justify-content: center; /* Ortala */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+    gap: 30px; /* Gönderiler arası boşluk */
+    justify-content: center; /* Ortalamak için */
 }
 
 .post-card {
-    background-color: #1a1a1a;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    transition: transform 0.2s ease;
+    background-color: var(--secondary-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden; /* Resmin dışarı taşmasını engeller */
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Kartların aynı yükseklikte olmasını sağlar */
 }
 
-.post-card:hover {
-    transform: translateY(-5px);
+.post-card .post-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.post-card img {
+.post-card .post-header .user-photo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.post-card .post-header .username {
+    font-weight: 600;
+    color: var(--text-color-light);
+}
+
+.post-card .post-image {
     width: 100%;
-    height: 200px;
-    object-fit: cover; /* Resmi kutuya sığdır */
+    height: 300px; /* Sabit yükseklik veya aspect-ratio ile ayarlanabilir */
+    object-fit: cover; /* Resmin kartı doldurmasını sağlar */
     display: block;
 }
 
-.post-caption {
+.post-card .post-content {
     padding: 15px;
-    font-size: 0.95em;
-    color: #cccccc;
-    min-height: 50px; /* Caption için minimum yükseklik */
+    flex-grow: 1; /* İçeriğin kalan alanı doldurmasını sağlar */
 }
 
-/* Suggestions (Takip Edebileceğin Kişiler) Bölümü */
-.suggestions h3 {
-    font-size: 2.2em;
-    color: #ffffff;
-    margin-bottom: 30px;
-    text-align: center;
+.post-card .post-content .caption {
+    font-size: 1em;
+    color: var(--text-color-secondary);
+    margin-bottom: 10px;
+    line-height: 1.5;
 }
 
-.suggestion-list {
-    display: flex;
-    flex-wrap: wrap; /* Küçük ekranlarda alt alta geçsin */
-    justify-content: center;
-    gap: 20px;
-}
-
-.suggestion-card {
-    background-color: #1a1a1a;
-    border-radius: 10px;
+.post-card .post-footer {
     padding: 15px;
+    border-top: 1px solid var(--border-color);
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    width: 300px; /* Kart genişliği */
-}
-
-.suggestion-card img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%; /* Yuvarlak profil fotoğrafı */
-    object-fit: cover;
-}
-
-.suggestion-card span {
-    font-weight: 600;
-    color: #ffffff;
-    flex-grow: 1; /* Kullanıcı adının genişlemesi için */
-}
-
-.suggestion-card .btn {
-    padding: 8px 15px;
     font-size: 0.9em;
+    color: var(--text-color-secondary);
 }
 
-/* Responsive Düzenlemeler */
+.post-card .post-footer .post-date {
+    font-style: italic;
+}
+
+/* Duyarlı Tasarım */
 @media (max-width: 768px) {
+    .create-post-section {
+        padding: 20px;
+    }
     .dashboard-content h2 {
-        font-size: 2.2em;
+        font-size: 2em;
     }
-    .feed h3, .suggestions h3 {
-        font-size: 1.8em;
-    }
-    .post-grid {
-        grid-template-columns: 1fr; /* Küçük ekranlarda tek sütun */
-        padding: 0 15px;
-    }
-    .suggestion-card {
-        width: 100%; /* Küçük ekranlarda tam genişlik */
+    .posts-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     }
 }
 
 @media (max-width: 480px) {
-    .dashboard-content {
-        padding: 30px 0;
+    .create-post-section {
+        padding: 15px;
     }
     .dashboard-content h2 {
         font-size: 1.8em;
     }
-    .dashboard-content p {
-        font-size: 0.9em;
-        margin-bottom: 30px;
-    }
-    .feed h3, .suggestions h3 {
-        font-size: 1.6em;
+    .post-card .post-image {
+        height: 250px;
     }
 }
