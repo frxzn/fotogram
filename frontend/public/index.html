@@ -3,43 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fotogram - Anılarını Paylaş</title>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const loggedInUser = localStorage.getItem('loggedInUsername');
-            console.log('Index.html yüklendi. localStorage.loggedInUsername degeri:', loggedInUser); // DEBUG MESAJI
-
-            if (loggedInUser) { // Eğer localStorage'da kullanıcı adı varsa (giriş yapmış sayıyoruz)
-                console.log('Kullanici tespit edildi, dashboard.html e yonlendiriliyor.'); 
-                window.location.href = '/dashboard.html'; // Doğrudan dashboard'a yönlendir
-            }
-        });
-    </script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Fotogram - Fotoğraflarını Paylaş!</title>
     <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/auth.css"> 
-</head>
+    </head>
 <body>
-    
-<header>
+    <header>
         <div class="container">
-            <a href="/index.html" class="logo-link">
-                <img src="assets/fotogramlogo.png" alt="Fotogram Logo" class="logo-img">
-            </a>
+            <h1 class="logo">Fotogram</h1>
             <nav>
                 <ul>
+                    
                 </ul>
             </nav>
         </div>
-</header>
+    </header>
 
-    
-<div class="separator"></div>
-
-    
-<main class="hero">
+    <main class="hero">
         <div class="container">
             <h1>Anılarını Paylaş</h1>
             <p>Fotogram ile fotoğraf ve videolarını kolayca paylaş, arkadaşlarınla etkileşimde kal.</p>
@@ -50,18 +29,7 @@
         </div>
     </main>
 
-    
-<div class="separator"></div>
-
-    
-<footer>
-        <div class="container">
-            <p>© 2025 Fotogram. Tüm Hakları Saklıdır.</p>
-            <p>Turan Software</p>
-        </div>
-    </footer>
-
-    <div id="authModal" class="auth-modal" style="display: none;">
+    <div id="authModal" class="auth-modal">
         <div class="auth-modal-content">
             <span class="close-button">×</span>
             <h2 id="authTitle">Giriş Yap</h2>
@@ -93,7 +61,7 @@
         </div>
     </div>
 
-    <div id="forgotPasswordModal" class="auth-modal" style="display: none;">
+    <div id="forgotPasswordModal" class="auth-modal">
         <div class="auth-modal-content">
             <span class="close-button">×</span>
             <h2 id="forgotPasswordModalTitle">Şifremi Unuttum</h2>
@@ -108,36 +76,14 @@
         </div>
     </div>
 
+    <footer>
+        <div class="container">
+            <p>© 2025 Fotogram. Tüm Hakları Saklıdır.</p>
+            <p>Turan Software</p>
+        </div>
+    </footer>
+
     <script src="js/auth.js"></script>
     <script src="js/main.js"></script> 
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const openAuthModalButtonMain = document.getElementById('openAuthModalButtonMain');
-            const openAuthModalButtonSecondary = document.getElementById('openAuthModalButtonSecondary');
-
-            // "Şimdi Kayıt Ol" butonuna tıklama olayı
-            if (openAuthModalButtonMain) {
-                openAuthModalButtonMain.addEventListener('click', () => { // BURASI ÖNEMLİ: Parantez hatası düzeltildi
-                    if (typeof openModal === 'function') { // Auth.js'deki openModal fonksiyonunu çağır
-                        openModal('register'); 
-                    } else {
-                        console.warn('openModal fonksiyonu bulunamadı. auth.js dosyasının doğru yüklendiğinden emin olun.');
-                    }
-                });
-            }
-
-            // "Giriş Yap" butonuna tıklama olayı
-            if (openAuthModalButtonSecondary) {
-                openAuthModalButtonSecondary.addEventListener('click', () => {
-                    if (typeof openModal === 'function') { // Auth.js'deki openModal fonksiyonunu çağır
-                        openModal('login'); 
-                    } else {
-                        console.warn('openModal fonksiyonu bulunamadı. auth.js dosyasının doğru yüklendiğinden emin olun.');
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 </html>
