@@ -21,10 +21,26 @@ app.use(express.urlencoded({ extended: true })); // URL-encoded form data parser
 // Geçici olarak tüm origin'lere izin veriyoruz.
 // Frontend URL'in 'https://fotogram-app.onrender.com' olduğunda, daha sonra bu satırı değiştirebilirsin:
 // app.use(cors({ origin: 'https://fotogram-app.onrender.com' }));
-const cors = require('cors'); // cors paketini kurduğundan emin ol: npm install cors
+// ... (diğer require'lar ve başlangıç kodları)
+
+const app = express();
+
+// Middleware'ler
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
+
+// CORS Ayarları - ÇOK KRİTİK!
+const cors = require('cors'); 
+
+// Frontend URL'ini buraya yazmalısın. 
+// Senin frontend Render üzerinde çalıştığı için 'https://fotogram-frontend.onrender.com' olmalı.
 app.use(cors({
-  origin: '*' // Şimdilik tüm origin'lere izin veriyoruz
+  origin: 'https://fotogram-frontend.onrender.com', // Kendi frontend URL'ini buraya yapıştır!
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // İzin verilen HTTP metotları
+  allowedHeaders: ['Content-Type', 'Authorization'], // İzin verilen başlıklar
 }));
+
+// ... (diğer rotalar ve sunucu başlatma kodu)
 
 
 // Rotalar
