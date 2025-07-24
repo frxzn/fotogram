@@ -1,75 +1,103 @@
 // backend/src/models/User.js
 
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs'); // npm install bcryptjs
+const validator = require('validator'); // npm install validator
+const bcrypt = require('bcryptjs');     // npm install bcryptjs
+const crypto = require('crypto');       // Node.js'in dahili modülü
 
-// Kullanıcı şeması tanımı
-const userSchema = mongoose.Schema(
-    {
-        username: {
-            type: String,
-            required: [true, 'Kullanıcı adı gerekli'],
-            unique: true,
-            trim: true,
-            minlength: [3, 'Kullanıcı adı en az 3 karakter olmalı'],
-            maxlength: [30, 'Kullanıcı adı en fazla 30 karakter olmalı'],
-        },
-        email: {
-            type: String,
-            required: [true, 'E-posta gerekli'],
-            unique: true,
-            lowercase: true,
-            match: [/.+@.+\..+/, 'Geçerli bir e-posta adresi girin'],
-        },
-        password: {
-            type: String,
-            required: [true, 'Şifre gerekli'],
-            minlength: [6, 'Şifre en az 6 karakter olmalı'],
-            // select: false, // <-- BU SATIR YORUM SATIRI OLMALI VEYA SİLİNMELİ.
-                              // AuthController'da .select('+password') ile çekeceğiz.
-        },
-        profilePicture: {
-            type: String,
-            default: 'https://res.cloudinary.com/your_cloud_name/image/upload/v1/default_avatar.png', // Varsayılan avatar
-        },
+const userSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: [true, 'Kullanıcı adı gerekli'],
+        unique: true,
+        trim: true,
+        maxlength: [30, 'Kullanıcı adı 30 karakterden fazla olamaz.']
     },
-    {
-        timestamps: true, // createdAt ve updatedAt alanlarını otomatik ekler
+    email: {
+        type: String,
+        required: [true, 'E-posta adresi gerekli'],
+        unique: true,
+        lowercase: true,
+        validate: [validator.isEmail, 'Geçerli bir e-posta adresi girin.']
+    },
+    password: {
+        type: String,
+        required: [true, 'Şifre gerekli'],
+        minlength: [6, 'Şifre en az 6 karakter olmalıdır.'],
+        select: false // Şifrenin sorgularda dönmesini engelle
+    },
+    // passwordConfirm: Bu alanı direkt modelde tutmak yerine, controller'da validasyon için kullanmak daha güvenlidir.
+    // Eğer illa ki tutmak istersen, select: false ekle ve pre('save') hook'unda sil.
+    photo: String, // Profil fotoğrafı için
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+    emailVerificationToken: String, // E-posta doğrulama token'ı
+    emailVerificationExpires: Date, // E-posta doğrulama token'ının süresi
+    isVerified: { // E-posta doğrulanmış mı?
+        type: Boolean,
+        default: false // Varsayılan olarak doğrulanmamış
+    },
+    active: { // Kullanıcı hesabı aktif mi (silinmemiş mi)?
+        type: Boolean,
+        default: true,
+        select: false
     }
-);
+}, { timestamps: true }); // createdAt ve updatedAt otomatik eklenecek
 
-// Middleware: Şifreyi veritabanına kaydetmeden önce hashleme (PRE-SAVE HOOK)
-userSchema.pre('save', async function (next) {
-    // Şifre alanı değiştirilmediyse (yani yeni kullanıcı değilse veya şifre güncellenmiyorsa)
-    if (!this.isModified('password')) {
-        return next();
-    }
+// Şifreyi kaydetmeden önce hashleme
+userSchema.pre('save', async function(next) {
+    // Şifre değiştirilmediyse bir sonraki adıma geç
+    if (!this.isModified('password')) return next();
 
-    try {
-        const salt = await bcrypt.genSalt(10); // Hashleme gücü
-        this.password = await bcrypt.hash(this.password, salt);
-        next(); // Kaydetme işlemine devam et
-    } catch (error) {
-        next(error); // Hata durumunda sonraki middleware'e gönder
-    }
+    // Şifreyi hashle (12 salt faktörü ile)
+    this.password = await bcrypt.hash(this.password, 12);
+
+    // passwordConfirm alanını veritabanına kaydetmeden sil (çünkü sadece validasyon için kullanılır)
+    // this.passwordConfirm = undefined; // Eğer modelde bu alanı tutmuyorsan bu satıra gerek yok.
+    next();
 });
 
-// Instance Method: Kullanıcının girdiği şifreyi veritabanındaki hashlenmiş şifre ile karşılaştırma
-userSchema.methods.matchPassword = async function (enteredPassword) {
-    // Hata ayıklama için konsol logları (işlem bitince kaldırabilirsin)
-    // console.log("matchPassword metodunda this.password (hashlenmiş):", this.password);
-    // console.log("matchPassword metodunda enteredPassword (plaintext):", enteredPassword);
+// Şifre değiştirildiğinde passwordChangedAt alanını güncelle
+userSchema.pre('save', function(next) {
+    if (!this.isModified('password') || this.isNew) return next();
 
-    if (!this.password) {
-        console.error("matchPassword: Kullanıcının veritabanı şifresi (this.password) bulunamadı veya tanımsız.");
-        return false; // Şifre karşılaştırması başarısız sayılır
-    }
+    this.passwordChangedAt = Date.now() - 1000; // Token verilmeden önce şifre değiştirildi olarak işaretle
+    next();
+});
 
-    // bcrypt.compare: Girdi şifresini hashler ve veritabanındaki hash ile eşleşip eşleşmediğini kontrol eder.
-    return await bcrypt.compare(enteredPassword, this.password);
+// Kullanıcının girdiği şifreyi veritabanındaki hashlenmiş şifre ile karşılaştırma metodu
+userSchema.methods.correctPassword = async function(candidatePassword, userPassword) {
+    return await bcrypt.compare(candidatePassword, userPassword);
 };
 
-// Modeli oluştur ve dışa aktar
-const User = mongoose.model('User', userSchema);
+// Şifre sıfırlama token'ı oluşturma metodu
+userSchema.methods.createPasswordResetToken = function() {
+    const resetToken = crypto.randomBytes(32).toString('hex'); // Şifrelenmemiş token
+    
+    // Token'ı hashleyip veritabanına kaydet
+    this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 dakika geçerlilik süresi
 
+    return resetToken; // E-postaya gönderilecek şifrelenmemiş token'ı döndür
+};
+
+// E-posta doğrulama token'ı oluşturma metodu
+userSchema.methods.createEmailVerificationToken = function() {
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+
+    // Token'ı hashleyip veritabanına kaydet
+    this.emailVerificationToken = crypto.createHash('sha256').update(verificationToken).digest('hex');
+    this.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 saat geçerli
+
+    return verificationToken; // E-postaya gönderilecek şifrelenmemiş token'ı döndür
+};
+
+
+const User = mongoose.model('User', userSchema);
 module.exports = User;
