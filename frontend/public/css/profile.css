@@ -1,0 +1,115 @@
+/* frontend/public/css/profile.css */
+
+.profile-content {
+    padding: 40px 0;
+}
+
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    border: 3px solid var(--primary-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header h2 {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    color: var(--text-color-light);
+}
+
+.profile-header p {
+    font-size: 1.1em;
+    color: var(--text-color-light);
+    margin-bottom: 15px;
+}
+
+#editProfileButton {
+    padding: 10px 25px;
+    font-size: 1em;
+    border-radius: var(--border-radius);
+    transition: background-color 0.3s ease;
+}
+
+.user-posts {
+    margin-top: 40px;
+}
+
+.user-posts h3 {
+    font-size: 1.8em;
+    color: var(--text-color-light);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.post-card {
+    background-color: var(--secondary-background);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease-in-out;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+}
+
+.post-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.post-card .post-caption {
+    padding: 15px;
+    font-size: 0.95em;
+    color: var(--text-color-secondary);
+}
+
+/* Duyarlı Tasarım */
+@media (max-width: 768px) {
+    .profile-header h2 {
+        font-size: 1.8em;
+    }
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+    }
+    .post-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-content {
+        padding: 20px 0;
+    }
+    .profile-header h2 {
+        font-size: 1.5em;
+    }
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+    }
+    .post-grid {
+        grid-template-columns: 1fr; /* Küçük ekranlarda tek sütun */
+    }
+}
