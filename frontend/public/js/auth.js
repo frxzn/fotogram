@@ -275,3 +275,13 @@ forgotPasswordForm?.addEventListener('submit', async (e) => {
 document.addEventListener('DOMContentLoaded', () => {
     updateFormMode();
 });
+// frontend/public/js/auth.js dosyasının en altına ekle
+
+document.getElementById('openAuthModalButtonMain')?.addEventListener('click', () => {
+    isRegisterMode = true; // "Şimdi Kayıt Ol" butonu kayıt modunda açsın
+    openModal();
+});
+document.getElementById('openAuthModalButtonSecondary')?.addEventListener('click', () => {
+    isRegisterMode = false; // "Giriş Yap" butonu giriş modunda açsın
+    openModal();
+});
