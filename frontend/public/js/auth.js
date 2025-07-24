@@ -1,8 +1,8 @@
 // frontend/public/js/auth.js - GÜNCEL VE SON VERSİYON
 
 // BURADAKİ URL'Yİ KENDİ BACKEND URL'N İ İLE DEĞİŞTİR!!!
-// Lütfen buraya Render dashboard'undaki "fotogram-backend" servisinin Public URL'sini yapıştır.
-const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Örn: 'https://fotogram-backend-abcdef.onrender.com' veya 'https://fotogram-backend-04a11b61b369.herokuapp.com'
+// Lütfen buraya Render dashboard'ındaki "fotogram-backend" servisinin Public URL'sini yapıştır.
+const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Örn: 'https://fotogram-backend-abcdef.onrender.com'
 
 // DOM elementleri
 const authModal = document.getElementById('authModal');
@@ -109,20 +109,12 @@ function updateFormMode() {
 
 // Olay dinleyicileri (Null kontrolü ile daha güvenli)
 document.addEventListener('DOMContentLoaded', () => {
-    // Auth Modal Butonları (Ana sayfadaki)
-    openAuthModalButtonMain?.addEventListener('click', () => {
-        openModal('register'); // "Şimdi Kayıt Ol" butonu kayıt modunda açsın
-    });
-    openAuthModalButtonSecondary?.addEventListener('click', () => {
-        openModal('login'); // "Giriş Yap" butonu giriş modunda açsın
-    });
-
     // SADECE AUTH MODAL İÇİN KAPATMA BUTONU VE ARKA PLAN TIKLAMASI
     const authModalCloseButton = document.querySelector('#authModal .close-button');
     if (authModalCloseButton) {
         authModalCloseButton.addEventListener('click', closeModal);
     }
-    
+
     authModal?.addEventListener('click', (e) => {
         if (e.target === authModal) {
             closeModal();
@@ -153,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFormMode();
     });
 
-    // Şifremi Unuttum linkine ekstra stopPropagation eklendi (daha önceki deneme, burada kalabilir)
     forgotPasswordLink?.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation(); // Olayın yayılmasını engelle
@@ -197,7 +188,7 @@ authForm?.addEventListener('submit', async (e) => {
             showMessage('Şifre en az 6 karakter olmalıdır.', 'error');
             return;
         }
-        
+
         requestBody = { username, email, password }; // confirmPassword backend'e gönderilmez
         apiUrl = `${API_BASE_URL}/api/auth/register`;
         successMessage = 'Kayıt başarılı! Hesabınızı doğrulamak için lütfen e-postanızı kontrol edin.';
@@ -243,9 +234,8 @@ authForm?.addEventListener('submit', async (e) => {
                 console.log('Ayarlanan Kullanıcı Adı:', usernameToSet);
                 console.log('localStorage.loggedInUsername (Hemen Sonra):', localStorage.getItem('loggedInUsername'));
                 console.log('Yönlendirme Başlatılıyor...');
-                
+
                 // Yönlendirme için daha belirgin bir setTimeout kullan (200ms)
-                // Bu, tarayıcının localStorage'ı işlemesi ve navigasyon yapması için yeterli zaman tanır.
                 setTimeout(() => {
                     window.location.href = '/dashboard.html'; 
                 }, 200); 
