@@ -7,12 +7,12 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const loggedInUser = localStorage.getItem('loggedInUsername'); // Kullanıcı adını kontrol et
-            // Veya eğer token kullanıyorsan:
-            // const authToken = localStorage.getItem('authToken'); 
+            const loggedInUser = localStorage.getItem('loggedInUsername');
+            console.log('Index.html yüklendi. localStorage.loggedInUsername degeri:', loggedInUser); // DEBUG MESAJI
 
-            if (loggedInUser) { // Eğer kullanıcı giriş yapmışsa (loggedInUsername varsa)
-                window.location.href = '/dashboard.html'; // Dashboard sayfasına yönlendir
+            if (loggedInUser) { // Eğer localStorage'da kullanıcı adı varsa (giriş yapmış sayıyoruz)
+                console.log('Kullanici tespit edildi, dashboard.html e yonlendiriliyor.'); 
+                window.location.href = '/dashboard.html'; // Doğrudan dashboard'a yönlendir
             }
         });
     </script>
