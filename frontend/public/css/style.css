@@ -48,7 +48,7 @@ header .container {
 }
 
 .logo-img {
-    height: 60px; /* Logonun kendi yüksekliği. Bu değeri büyütebilirsin. */
+    height: 150px; /* Logonun kendi yüksekliği. Bu değeri büyütebilirsin. */
     max-height: 70px; /* Header'dan taşmasını engellemek için maksimum yükseklik */
     width: auto; /* Oranını koru */
     display: block; /* Fazla boşlukları engelle */
