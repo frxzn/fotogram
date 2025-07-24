@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fotogram - Anılarını Paylaş</title>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loggedInUser = localStorage.getItem('loggedInUsername'); // Kullanıcı adını kontrol et
+            // Veya eğer token kullanıyorsan:
+            // const authToken = localStorage.getItem('authToken'); 
+
+            if (loggedInUser) { // Eğer kullanıcı giriş yapmışsa (loggedInUsername varsa)
+                window.location.href = '/dashboard.html'; // Dashboard sayfasına yönlendir
+            }
+        });
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css"> 
     <link rel="stylesheet" href="css/auth.css"> 
@@ -17,7 +30,7 @@
             </a>
             <nav>
                 <ul>
-                    </ul>
+                </ul>
             </nav>
         </div>
 </header>
