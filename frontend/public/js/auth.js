@@ -1,7 +1,8 @@
 // frontend/public/js/auth.js
 
 // BURADAKİ URL'Yİ KENDİ BACKEND URL'N İLE DEĞİŞTİR!!!
-const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Örn: 'https://your-backend-name.render.com' veya 'https://fotogram-backend-04a11b61b369.herokuapp.com'
+// Lütfen buraya Render dashboard'undaki "fotogram-backend" servisinin Public URL'sini yapıştır.
+const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Örn: 'https://fotogram-backend-abcdef.onrender.com' veya 'https://fotogram-backend-04a11b61b369.herokuapp.com'
 
 // DOM elementleri
 const authModal = document.getElementById('authModal');
@@ -121,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     closeButtons.forEach(button => {
         button?.addEventListener('click', closeModal); // Tüm kapatma butonlarına ekle
     });
-    
+
     authModal?.addEventListener('click', (e) => {
         if (e.target === authModal) {
             closeModal();
@@ -189,7 +190,7 @@ authForm?.addEventListener('submit', async (e) => {
             showMessage('Şifre en az 6 karakter olmalıdır.', 'error');
             return;
         }
-        
+
         requestBody = { username, email, password }; // confirmPassword backend'e gönderilmez
         apiUrl = `${API_BASE_URL}/api/auth/register`;
         successMessage = 'Kayıt başarılı! Hesabınızı doğrulamak için lütfen e-postanızı kontrol edin.';
@@ -229,7 +230,7 @@ authForm?.addEventListener('submit', async (e) => {
             const usernameToSet = email.split('@')[0]; // E-postadan kullanıcı adını türet
             localStorage.setItem('loggedInUsername', usernameToSet); // KRİTİK: Bu anahtar index.html ve dashboard.html tarafından okunur
             console.log('Login successful. localStorage.loggedInUsername ayarlandi:', usernameToSet); // DEBUG MESAJI
-            
+
             // 50ms sonra dashboard'a yönlendir (Render'ın önbellek/yükleme zamanlamasına yardımcı olabilir)
             setTimeout(() => {
                 window.location.href = '/dashboard.html'; 
@@ -269,7 +270,7 @@ forgotPasswordForm?.addEventListener('submit', async (e) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ email })
-        });
+            });
 
         console.log('Şifre sıfırlama API Yanıtı Geldi. Durum Kodu:', response.status); // DEBUG MESAJI
         const data = await response.json();
