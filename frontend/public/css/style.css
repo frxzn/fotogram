@@ -48,7 +48,7 @@ header .container {
 }
 
 .logo-img {
-    height: 150px; /* Logo yüksekliği 150px olarak ayarlandı */
+    height: 500px; /* Logo yüksekliği 150px olarak ayarlandı */
     /* max-height: 70px; kuralı kaldırıldı! Bu yüzden büyümüyordu. */
     width: auto; /* Oranını koru */
     display: block;
