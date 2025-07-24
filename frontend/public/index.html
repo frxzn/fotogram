@@ -3,87 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fotogram - Fotoğraflarını Paylaş!</title>
-    <link rel="stylesheet" href="css/style.css"> 
-    </head>
-<body>
-    <header>
-        <div class="container">
-            <h1 class="logo">Fotogram</h1>
-            <nav>
-                <ul>
-                    <li><a href="#" id="openAuthModalButton">Giriş Yap / Kayıt Ol</a></li> 
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <title>Fotogram - Anılarını Paylaş</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <style>
+        /* Genel body stilleri style.css'te olmalı, burada sadece arka plan için eklemeler */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            color: #e0e0e0;
+            background-color: #121212; /* Genel fallback renk */
+        }
 
-    <main class="hero">
-        <div class="container">
-            <h1>Anılarını Paylaş</h1>
-            <p>Fotogram ile fotoğraf ve videolarını kolayca paylaş, arkadaşlarınla etkileşimde kal.</p>
-            <div class="cta-buttons">
-                <button id="openAuthModalButtonMain" class="btn primary">Şimdi Kayıt Ol</button>
-                <button id="openAuthModalButtonSecondary" class="btn secondary">Giriş Yap</button>
+        /* Arka plan resmini tutacak ana kapsayıcı */
+        .background-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh; /* Sayfanın en az ekran yüksekliği kadar olmasını sağlar */
+            background-image: url('assets/indexback.jpg'); /* <-- FOTOĞRAF YOLU BURAYA EKLENDİ! */
+            background-size: cover; /* Resmi kapsayıcıya sığacak şekilde ölçekler */
+            background-position: center center; /* Resmi ortalar */
+            background-repeat: no-repeat; /* Resmin tekrarlanmasını engeller */
+            background-attachment: fixed; /* Sayfa kaydırıldığında resmin sabit kalmasını sağlar (parallax etkisi) */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Resmin üzerine koyacağımız hafif karanlık katman (overlay) */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Siyah, %60 opaklık */
+            z-index: 1; /* İçeriğin arkasında kalmasını sağlar */
+        }
+
+        /* Mevcut içeriği tutacak kapsayıcı */
+        .content-wrapper {
+            position: relative; /* Overlay'in üzerinde olmasını sağlar */
+            z-index: 2; /* Overlay'in üzerinde olmalı */
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Mevcut stil ayarlarınız (style.css ve auth.css'ten gelenler) buraya uygulanacaktır */
+        /* Örneğin, .hero-section, .auth-buttons, .auth-modal gibi elementlerin stilleri */
+
+        .hero-section h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Metin okunabilirliğini artırır */
+        }
+
+        .hero-section p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            color: #f0f0f0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); /* Metin okunabilirliğini artırır */
+        }
+
+        .auth-buttons .btn {
+            margin: 0 10px;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .auth-buttons .btn.primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+
+        .auth-buttons .btn.primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .auth-buttons .btn.secondary {
+            background-color: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+        }
+
+        .auth-buttons .btn.secondary:hover {
+            background-color: #007bff;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Auth Modal stilleri (auth.css'ten gelmeli, burada sadece genel görünüm için) */
+        .auth-modal {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+            max-width: 400px;
+            width: 90%;
+            margin: 20px auto; /* Ortalamak için */
+        }
+
+        /* Responsive düzenlemeler */
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5em;
+            }
+            .hero-section p {
+                font-size: 1.1em;
+            }
+            .auth-buttons {
+                flex-direction: column;
+            }
+            .auth-buttons .btn {
+                margin: 10px 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-container">
+        <div class="overlay"></div>
+        <div class="content-wrapper">
+            <header class="hero-section">
+                <h1>Anılarını Paylaş</h1>
+                <p>Fotogram ile fotoğraf ve videolarını kolayca paylaş, arkadaşlarınla etkileşimde kal.</p>
+                <div class="auth-buttons">
+                    <button class="btn primary" id="registerBtn">Şimdi Kayıt Ol</button>
+                    <button class="btn secondary" id="loginBtn">Giriş Yap</button>
+                </div>
+            </header>
+
+            <!-- Auth Modal -->
+            <div id="authModal" class="auth-modal-overlay" style="display: none;">
+                <div class="auth-modal">
+                    <button class="close-btn" id="closeModalBtn">&times;</button>
+                    <h2 id="modalTitle">Giriş Yap</h2>
+                    <form id="authForm">
+                        <div class="input-group" id="usernameGroup" style="display: none;">
+                            <label for="username">Kullanıcı Adı</label>
+                            <input type="text" id="username" name="username" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="email">E-posta</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="password">Şifre</label>
+                            <input type="password" id="password" name="password" required>
+                        </div>
+                        <div class="input-group" id="confirmPasswordGroup" style="display: none;">
+                            <label for="confirmPassword">Şifre Onayı</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                        <div id="authMessage" class="message" style="display: none;"></div>
+                        <button type="submit" class="btn primary" id="submitAuthBtn">Giriş Yap</button>
+                    </form>
+                    <p class="toggle-mode-text">
+                        Hesabın yok mu? <a href="#" id="toggleToRegister">Şimdi Kayıt Ol</a>
+                    </p>
+                    <p class="forgot-password-text">
+                        <a href="#" id="forgotPasswordLink">Şifremi Unuttum</a>
+                    </p>
+                </div>
             </div>
         </div>
-    </main>
-
-    <div id="authModal" class="auth-modal">
-        <div class="auth-modal-content">
-            <span class="close-button">&times;</span>
-            <h2 id="authTitle">Giriş Yap</h2>
-            <form id="authForm">
-                <div class="input-group" id="usernameGroup" style="display: none;">
-                    <label for="username">Kullanıcı Adı</label>
-                    <input type="text" id="username" name="username">
-                </div>
-                <div class="input-group">
-                    <label for="email">E-posta</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="input-group">
-                    <label for="password">Şifre</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                <div class="input-group" id="confirmPasswordGroup" style="display: none;">
-                    <label for="confirmPassword">Şifreyi Onayla</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword">
-                </div>
-                <div id="message" class="message" style="display: none;"></div>
-                <button type="submit" id="submitButton" class="btn primary">Giriş Yap</button>
-                <div class="toggle-links" id="toggleLinks">
-                    <a href="#" id="showRegister">Kayıt Ol</a>
-                    <a href="#" id="showLogin" style="display: none;">Giriş Yap</a>
-                    <a href="#" id="forgotPasswordLink">Şifremi Unuttum?</a>
-                </div>
-            </form>
-        </div>
     </div>
 
-    <div id="forgotPasswordModal" class="auth-modal">
-        <div class="auth-modal-content">
-            <span class="close-button">&times;</span>
-            <h2 id="forgotPasswordModalTitle">Şifremi Unuttum</h2>
-            <form id="forgotPasswordForm">
-                <div class="input-group">
-                    <label for="forgotPasswordEmail">E-posta</label>
-                    <input type="email" id="forgotPasswordEmail" required>
-                </div>
-                <button type="submit" id="forgotPasswordSubmitButton" class="btn primary">Şifre Sıfırlama Bağlantısı Gönder</button>
-                <div id="forgotPasswordMessage" class="message" style="display: none;"></div>
-            </form>
-        </div>
-    </div>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Fotogram. Tüm Hakları Saklıdır.</p>
-            <p>Turan Software</p>
-        </div>
-    </footer>
-
+    <!-- auth.js dosyasını en sonda dahil et -->
     <script src="js/auth.js"></script>
-    <script src="js/main.js"></script> 
 </body>
 </html>
