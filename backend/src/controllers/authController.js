@@ -2,14 +2,14 @@
 
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const sendEmail = require('../utils/sendEmail'); // Güncel sendEmail.js'i kullanacak
+const sendEmail = require('../utils/sendEmail'); 
 const crypto = require('crypto');
 const { promisify } = require('util');
 
 // JWT Token Oluşturma Fonksiyonu
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN,
+        expiresIn: process.env.JWT_EXPIRES_IN, // Bu ortam değişkeninin Render'da doğru ayarlandığından emin ol!
     });
 };
 
@@ -41,6 +41,7 @@ exports.registerUser = async (req, res) => {
         const verificationToken = newUser.createEmailVerificationToken();
         await newUser.save({ validateBeforeSave: false });
 
+        // E-posta doğrulama linkini yeni HTML dosyası adına göre güncelle
         const verifyURL = `${process.env.FRONTEND_URL}/email-verification-status.html?token=${verificationToken}`;
 
         try {
@@ -124,9 +125,21 @@ exports.loginUser = async (req, res) => {
 // @route   GET /api/auth/verify-email/:token
 // @access  Public
 exports.verifyEmail = async (req, res) => {
+    console.log('--- BACKEND: verifyEmail fonksiyonu çağrıldı ---'); // Bu logu görmeliyiz!
     try {
         // Token'ı query params'tan alıyoruz (örneğin ?token=XYZ)
-        const hashedToken = crypto.createHash('sha256').update(req.query.token).digest('hex');
+        // Frontend'den gelen token'ın URL'de parametre olarak geldiğini varsayıyoruz.
+        const tokenFromQuery = req.query.token; 
+        if (!tokenFromQuery) {
+            console.error('Doğrulama tokenı URL parametrelerinde bulunamadı.');
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Doğrulama linki eksik veya hatalı.'
+            });
+        }
+
+        const hashedToken = crypto.createHash('sha256').update(tokenFromQuery).digest('hex');
+        console.log('Hashed Token:', hashedToken);
 
         const user = await User.findOne({
             emailVerificationToken: hashedToken,
@@ -134,6 +147,7 @@ exports.verifyEmail = async (req, res) => {
         });
 
         if (!user) {
+            console.error('Geçersiz doğrulama linki veya süresi dolmuş. Kullanıcı bulunamadı.');
             return res.status(400).json({
                 status: 'fail',
                 message: 'Geçersiz doğrulama linki veya süresi dolmuş.'
@@ -143,15 +157,16 @@ exports.verifyEmail = async (req, res) => {
         user.isVerified = true;
         user.emailVerificationToken = undefined;
         user.emailVerificationExpires = undefined;
-        await user.save({ validateBeforeSave: false });
+        await user.save({ validateBeforeSave: false }); // Doğrulama sonrası validasyon yapma
 
+        console.log(`Kullanıcı ${user.email} başarıyla doğrulandı.`);
         res.status(200).json({
             status: 'success',
             message: 'E-posta adresiniz başarıyla doğrulandı! Artık giriş yapabilirsiniz.'
         });
 
     } catch (error) {
-        console.error('E-posta doğrulama hatası:', error);
+        console.error('E-posta doğrulama sırasında beklenmeyen hata:', error);
         res.status(500).json({
             status: 'error',
             message: 'E-posta doğrulama sırasında bir hata oluştu.'
