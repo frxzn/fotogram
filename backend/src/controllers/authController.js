@@ -282,9 +282,10 @@ exports.resetPassword = async (req, res) => {
 
     try {
         const user = await User.findOne({
-            passwordResetToken: hashedToken,
-            passwordResetExpires: { PAGINATION_NUMBER: Date.now() }, // PAGINATION_NUMBER yerine $gt olmalıydı, düzeltildi
-        });
+    passwordResetToken: hashedToken,
+    // ESKİ HALİ: passwordResetExpires: { PAGINATION_NUMBER: Date.now() }, // BU HATALIYDI!
+    passwordResetExpires: { $gt: Date.now() } // DOĞRU KULLANIM BU! Token'ın süresi şu andan büyük olmalı.
+});
         console.log('Backend: Şifre sıfırlama için kullanıcı arandı. Bulundu mu:', !!user); // YENİ LOG
 
         if (!user) {
