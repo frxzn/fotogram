@@ -26,7 +26,7 @@ header {
     background-color: #000000; /* Tam siyah */
     color: #ffffff;
     padding: 0;
-    min-height: 160px; /* Header'ın minimum yüksekliği logo boyutuna göre artırıldı */
+    min-height: 160px; /* Header'ın minimum yüksekliği logo boyutuna göre ayarlandı */
     border-bottom: 1px solid #222222; /* İnce bir çizgi */
     display: flex; /* İçeriği dikeyde ortalamak için */
     align-items: center; /* İçeriği dikeyde ortala */
@@ -44,18 +44,18 @@ header .container {
     display: flex;
     align-items: center;
     text-decoration: none;
-    height: 100%;
+    height: 100%; /* Parent'ının yüksekliğini alsın */
 }
 
 .logo-img {
-    height: 500px; /* Logo yüksekliği 150px olarak ayarlandı */
-    /* max-height: 70px; kuralı kaldırıldı! Bu yüzden büyümüyordu. */
+    height: 150px; /* Logo yüksekliği. Burayı istediğin gibi ayarla. */
     width: auto; /* Oranını koru */
     display: block;
+    /* Önceki max-height kuralı kaldırıldı */
 }
 
 header nav {
-    display: flex;
+    display: flex; /* Navigasyon menüsü boş kalacağı için görünmez */
 }
 
 header nav ul {
