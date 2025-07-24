@@ -1,338 +1,222 @@
-/* Genel Ayarlar ve Reset */
-* {
+/* Genel Stil Ayarları */
+body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Roboto', sans-serif; /* Daha modern bir font */
-    background-color: #000000; /* Tam siyah arka plan */
-    color: #e0e0e0; /* Açık gri metin */
-    line-height: 1.6;
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212; /* Genel arkaplan rengi */
+    color: #e0e0e0; /* Genel metin rengi */
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    flex-direction: column; /* İçerikleri dikey sırala */
+    min-height: 100vh; /* Ekran yüksekliği kadar olmasını sağlar */
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    max-width: 1200px; /* İçerik genişliği */
+    margin: 0 auto; /* Ortala */
+    padding: 0 20px; /* Yan boşluklar */
+    box-sizing: border-box; /* Padding'in genişliğe dahil olması */
 }
 
-/* Header */
+/* Header Bölümü */
 header {
-    background-color: #0d0d0d; /* Koyu gri */
-    color: #ffffff;
-    padding: 15px 0;
-    border-bottom: 1px solid #222222; /* İnce bir çizgi */
-}
-
-header .container {
+    background-color: #000; /* Siyah arka plan */
+    padding: 20px 40px;
+    color: #fff;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative; /* Z-index için */
+    z-index: 10; /* Diğer katmanların üzerinde olsun */
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* Küçük ekranlarda alt alta geçebilir */
 }
 
 .logo {
-    font-size: 2.2em;
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: -1px;
+    font-size: 2.5em; /* Daha büyük logo */
+    font-weight: bold; /* Kalın font */
+    margin-right: 20px;
+    color: #ffffff; /* Logo rengi */
+    text-decoration: none; /* Link alt çizgisini kaldır */
 }
 
-header nav ul {
-    list-style: none;
+.slogan {
+    font-size: 1.1em;
+    font-style: italic;
+    color: #ccc;
+    margin: 0; /* Varsayılan marginleri sıfırla */
+}
+
+/* Ayırıcı Çizgi */
+.separator {
+    width: 100%;
+    height: 1px; /* İnce çizgi */
+    background-color: #333; /* Çizgi rengi */
+    position: relative; /* Z-index için */
+    z-index: 9; /* Header'ın altında, hero'nun üstünde */
+}
+
+/* Orta Bölüm (Hero Section) - Fotoğrafın ve Ana Yazıların Olduğu Kısım */
+.hero-section-container {
+    position: relative; /* ::before ve içeriğin konumlandırma bağlamı */
+    flex-grow: 1; /* Kalan dikey alanı kaplamasını sağlar */
+    width: 100%;
+    background-image: url('assets/indexback.jpg'); /* <-- FOTOĞRAF YOLU BURADA! */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
     display: flex;
-}
-
-header nav ul li {
-    margin-left: 25px;
-}
-
-header nav ul li a {
-    color: #e0e0e0;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-}
-
-header nav ul li a:hover {
-    color: #ffffff;
-}
-
-/* Hero Section */
-.hero {
-    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://source.unsplash.com/1600x900/?camera,photography') no-repeat center center/cover;
-    color: #ffffff;
-    text-align: center;
-    padding: 100px 0;
-    flex-grow: 1; /* Sayfanın geri kalanını kaplasın */
-    display: flex;
-    align-items: center;
     justify-content: center;
-    box-shadow: inset 0 0 50px rgba(0,0,0,0.7);
+    align-items: center;
+    text-align: center;
+    padding: 50px 20px; /* İç boşluk */
+    box-sizing: border-box;
 }
 
-.hero h1 {
+/* Hero Section üzerindeki koyu katman (pseudo-element ile) */
+.hero-section-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Siyah, %60 opaklık */
+    z-index: -1; /* İçeriğin arkasında kalsın */
+    pointer-events: none; /* Bu katman tıklamaları yakalamasın */
+}
+
+/* Hero Section İçeriği (Yazılar ve Butonlar) */
+.hero-section-container .container {
+    position: relative; /* Overlay'in üzerinde olmasını sağlar */
+    z-index: 1; /* Overlay'in üzerinde olmalı */
+    max-width: 700px; /* İçerik genişliği */
+    width: 100%;
+    color: #ffffff;
+    pointer-events: auto; /* İçerik ve butonlar tıklanabilir olsun */
+}
+
+.hero-section-container h1 {
     font-size: 3.8em;
-    margin-bottom: 20px;
-    font-weight: 700;
-    letter-spacing: -1px;
-    text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8); /* Metin okunabilirliğini artırır */
 }
 
-.hero p {
-    font-size: 1.3em;
+.hero-section-container p {
+    font-size: 1.4em;
+    line-height: 1.6;
     margin-bottom: 40px;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-    color: #cccccc;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); /* Metin okunabilirliğini artırır */
+}
+
+.cta-buttons {
+    pointer-events: auto; /* Buton kapsayıcısı tıklanabilir olsun */
 }
 
 .cta-buttons .btn {
-    display: inline-block;
+    margin: 0 15px;
     padding: 15px 35px;
+    font-size: 1.2em;
     border-radius: 8px;
-    text-decoration: none;
-    font-size: 1.1em;
     font-weight: 600;
-    margin: 0 10px;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
     cursor: pointer;
-    border: 2px solid;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    position: relative; /* Tıklanabilirliği garantilemek için */
+    z-index: 2; /* Hero içeriğinin üzerinde olmalı */
+    pointer-events: auto; /* Butonların kendisi tıklanabilir olsun */
 }
 
 .cta-buttons .btn.primary {
-    background-color: #ffffff;
-    color: #000000;
-    border-color: #ffffff;
+    background-color: #007bff;
+    color: white;
+    border: none;
 }
 
 .cta-buttons .btn.primary:hover {
-    background-color: #e0e0e0;
-    border-color: #e0e0e0;
+    background-color: #0056b3;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
 .cta-buttons .btn.secondary {
     background-color: transparent;
-    color: #ffffff;
-    border-color: #ffffff;
+    color: #007bff;
+    border: 2px solid #007bff;
 }
 
 .cta-buttons .btn.secondary:hover {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: #007bff;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
-/* Footer */
+/* Footer Bölümü */
 footer {
-    background-color: #0d0d0d;
-    color: #b3b3b3;
-    text-align: center;
-    padding: 20px 0;
+    background-color: #000; /* Siyah arka plan */
+    color: #a0a0a0;
     font-size: 0.9em;
-    border-top: 1px solid #222222;
-}
-
-footer p {
-    margin: 5px 0;
-}
-
-
-/* Auth Modal Styles */
-.auth-modal {
-    display: none; /* Varsayılan olarak gizli */
-    position: fixed; /* Ekranı kapla */
-    z-index: 1000; /* Diğer elementlerin üzerinde */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto; /* İçerik taşarsa kaydırılabilir */
-    background-color: rgba(0, 0, 0, 0.8); /* Yarı şeffaf siyah arka plan */
-    justify-content: center; /* İçeriği yatayda ortala */
-    align-items: center; /* İçeriği dikeyde ortala */
-}
-
-.auth-modal-content {
-    background-color: #1a1a1a; /* Koyu gri arka plan */
-    margin: auto;
-    padding: 30px;
-    border: 1px solid #333; /* Daha koyu kenarlık */
-    border-radius: 10px; /* Yuvarlatılmış köşeler */
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Gölgelendirme */
-    position: relative;
-    color: #e0e0e0; /* Açık gri metin rengi */
-}
-
-.auth-modal-content h2 {
     text-align: center;
-    margin-bottom: 25px;
-    color: #ffffff; /* Beyaz başlık */
-    font-size: 2em;
-    font-weight: 600;
+    padding: 20px 40px;
+    position: relative; /* Z-index için */
+    z-index: 10; /* Diğer katmanların üzerinde olsun */
 }
 
-.close-button {
-    color: #aaa;
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    font-size: 30px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: #eee;
-    text-decoration: none;
-}
-
-.input-group {
-    margin-bottom: 20px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: #b3b3b3; /* Açık gri etiket metni */
-    font-size: 0.95em;
-}
-
-.input-group input[type="text"],
-.input-group input[type="email"],
-.input-group input[type="password"] {
-    width: calc(100% - 20px); /* Padding için ayarlama */
-    padding: 12px 10px;
-    border: 1px solid #555; /* Koyu gri kenarlık */
-    border-radius: 6px;
-    background-color: #2a2a2a; /* Daha koyu input arka planı */
-    color: #ffffff; /* Beyaz input metni */
-    font-size: 1em;
-    box-sizing: border-box; /* Padding'i genişliğe dahil et */
-}
-
-.input-group input[type="text"]:focus,
-.input-group input[type="email"]:focus,
-.input-group input[type="password"]:focus {
-    border-color: #ffffff; /* Odaklandığında beyaz kenarlık */
-    outline: none;
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-}
-
-/* Modallardaki button[type="submit"] stilini hedefle */
-.auth-modal-content button[type="submit"] {
-    width: 100%;
-    padding: 15px;
-    background-color: #ffffff; /* Beyaz buton */
-    color: #000000; /* Siyah buton metni */
-    border: none;
-    border-radius: 6px;
-    font-size: 1.1em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    margin-top: 10px;
-}
-
-.auth-modal-content button[type="submit"]:hover {
-    background-color: #e0e0e0; /* Hafif griye dön */
-}
-
-.message {
-    text-align: center;
-    padding: 10px;
-    margin-top: 15px;
-    border-radius: 5px;
-    font-size: 0.9em;
-}
-
-.message.error {
-    background-color: #ff4d4d; /* Kırmızı hata */
-    color: #fff;
-}
-
-.message.success {
-    background-color: #4CAF50; /* Yeşil başarı */
-    color: #fff;
-}
-
-.toggle-links {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.toggle-links a {
-    color: #b3b3b3; /* Açık gri link */
-    text-decoration: none;
-    margin: 0 10px;
-    font-size: 0.95em;
-    transition: color 0.3s ease;
-}
-
-.toggle-links a:hover {
-    color: #ffffff; /* Beyaza dön */
-}
-
-/* Şifremi Unuttum linkine özel stil */
-#forgotPasswordLink {
-    display: block; /* Yeni satıra al */
-    margin-top: 10px; /* Üstten boşluk bırak */
-    font-size: 0.9em; /* Biraz küçült */
-    color: #888; /* Daha soluk bir renk */
-}
-
-#forgotPasswordLink:hover {
-    color: #ffffff;
-}
-
-/* responsive design for smaller screens */
+/* Responsive düzenlemeler */
 @media (max-width: 768px) {
-    .hero h1 {
+    header {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px 20px;
+    }
+    .header-left {
+        flex-direction: column;
+        margin-bottom: 10px;
+    }
+    .logo {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    .slogan {
+        font-size: 1em;
+    }
+    .hero-section-container h1 {
         font-size: 2.8em;
     }
-    .hero p {
+    .hero-section-container p {
+        font-size: 1.2em;
+    }
+    .cta-buttons {
+        flex-direction: column;
+    }
+    .cta-buttons .btn {
+        margin: 10px 0;
+        width: 100%;
+    }
+    footer {
+        padding: 15px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 2em;
+    }
+    .slogan {
+        font-size: 0.9em;
+    }
+    .hero-section-container h1 {
+        font-size: 2.2em;
+    }
+    .hero-section-container p {
         font-size: 1em;
     }
     .cta-buttons .btn {
-        padding: 12px 25px;
         font-size: 1em;
-        margin: 5px;
-    }
-}
-
-@media (max-width: 600px) {
-    header .container {
-        flex-direction: column;
-        text-align: center;
-    }
-    header nav ul {
-        margin-top: 10px;
-        justify-content: center;
-    }
-    header nav ul li {
-        margin: 0 10px;
-    }
-    .auth-modal-content {
-        padding: 20px;
-        width: 95%;
-    }
-    .auth-modal-content h2 {
-        font-size: 2em;
-    }
-    .close-button {
-        font-size: 24px;
-        top: 10px;
-        right: 15px;
-    }
-    .input-group input {
-        width: calc(100% - 20px);
+        padding: 10px 20px;
     }
 }
