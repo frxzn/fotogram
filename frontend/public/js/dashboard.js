@@ -1,48 +1,179 @@
-// frontend/public/js/dashboard.js - YENİ VE GÜNCEL KONTROLCÜ
+// frontend/public/js/dashboard.js
+
+const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Backend URL'nizi buraya yazın!
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('dashboard.js yüklendi.');
+    const logoutButton = document.getElementById('logoutButton');
+    const createPostForm = document.getElementById('createPostForm');
+    const postMessageDisplay = document.getElementById('postMessage');
+    const postsContainer = document.getElementById('postsContainer');
+    const loadingMessage = document.getElementById('loadingMessage');
+    const noPostsMessage = document.getElementById('noPostsMessage');
 
-    // 1. Yetkilendirme Kontrolü (Sayfa Yüklendiğinde İlk Yapılacak İşlem)
-    const loggedInUsername = localStorage.getItem('loggedInUsername');
-    console.log('dashboard.js: localStorage.loggedInUsername değeri:', loggedInUsername);
-
-    if (!loggedInUsername) {
-        // Eğer kullanıcı adı localStorage'da yoksa veya boşsa, giriş yapmamış demektir.
-        console.warn('dashboard.js: Kullanici giris yapmamis veya localStorage.loggedInUsername degeri bos. index.html e yonlendiriliyor.');
-        window.location.href = '/index.html'; 
-        return; // Yönlendirme yapıldığı için kodun geri kalanını çalıştırma
+    // Yardımcı mesaj gösterme fonksiyonu
+    function showMessage(message, type, displayElement) {
+        if (displayElement) {
+            displayElement.textContent = message;
+            displayElement.className = `message ${type}`;
+            displayElement.style.display = 'block';
+        }
     }
 
-    // 2. Kullanıcı Adını Yansıtma (Sadece Kullanıcı Giriş Yapmışsa Çalışacak)
-    const usernameDisplayElement = document.getElementById('usernameDisplay'); // dashboard.html'deki h2 elementinin ID'si
-    if (usernameDisplayElement) {
-        usernameDisplayElement.textContent = `Hoş Geldin, ${loggedInUsername}!`;
-        console.log(`dashboard.js: Karşılama mesajı güncellendi: Hoş Geldin, ${loggedInUsername}!`);
-    } else {
-        console.error("dashboard.js: 'usernameDisplay' ID'li element dashboard.html'de bulunamadı. Lütfen kontrol edin.");
+    // Mesaj temizleme fonksiyonu
+    function clearMessage(displayElement) {
+        if (displayElement) {
+            displayElement.textContent = '';
+            displayElement.className = 'message';
+            displayElement.style.display = 'none';
+        }
     }
 
-    // 3. Çıkış Yap Butonu İşlevselliği
-    const logoutButton = document.getElementById('logoutButton'); // dashboard.html'deki çıkış yap butonunun ID'si
+    // Giriş yapılmamışsa ana sayfaya yönlendir
+    const redirectToLogin = () => {
+        window.location.href = '/index.html';
+    };
+
+    // Yetki kontrolü
+    const checkAuth = () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            redirectToLogin();
+            return false;
+        }
+        return true;
+    };
+
+    if (!checkAuth()) {
+        return; // Yetkisizse fonksiyonu burada sonlandır
+    }
+
+    // Çıkış Yap butonu işlevselliği
     if (logoutButton) {
         logoutButton.addEventListener('click', (e) => {
-            e.preventDefault(); // Linkin varsayılan davranışını engelle
-            console.log('dashboard.js: Çıkış yap butonuna basildi. localStorage temizleniyor...');
-            localStorage.removeItem('loggedInUsername'); // Kullanıcı adını localStorage'dan sil
-            // Eğer bir JWT token da saklıyorsan, onu da silmelisin:
-            // localStorage.removeItem('jwtToken'); 
-
-            // Kısa bir gecikme sonrası index.html'e yönlendir (localStorage'ın güncellenmesi için)
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('user'); // Kullanıcı bilgilerini de temizle
             setTimeout(() => {
-                console.log('dashboard.js: index.html e yonlendiriliyor. localStorage.loggedInUsername şimdi:', localStorage.getItem('loggedInUsername'));
-                window.location.href = '/index.html';
-            }, 50); 
+                redirectToLogin();
+            }, 50);
         });
-    } else {
-        console.warn("dashboard.js: 'logoutButton' ID'li element dashboard.html'de bulunamadı. Lütfen kontrol edin.");
     }
 
-    // Buraya gelecekte dashboard'a özgü diğer JS kodları eklenecek
-    // Örneğin, fotoğraf yükleme, feed'i dinamik olarak doldurma, vs.
+    // Yeni Gönderi Oluşturma Formu Gönderimi
+    if (createPostForm) {
+        createPostForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            clearMessage(postMessageDisplay);
+
+            const token = localStorage.getItem('token');
+            if (!token) {
+                showMessage('Yetkilendirme hatası. Lütfen tekrar giriş yapın.', 'error', postMessageDisplay);
+                redirectToLogin();
+                return;
+            }
+
+            const formData = new FormData();
+            const photoFile = document.getElementById('postPhoto').files[0];
+            const caption = document.getElementById('postCaption').value.trim();
+
+            if (!photoFile) {
+                showMessage('Lütfen bir fotoğraf seçin.', 'error', postMessageDisplay);
+                return;
+            }
+
+            formData.append('photo', photoFile);
+            formData.append('caption', caption);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/posts`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                        // 'Content-Type': 'multipart/form-data' HEADER'I FormData kullanırken OTOMATİK AYARLANIR, elle yazma!
+                    },
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Gönderi oluşturma başarısız oldu.');
+                }
+
+                showMessage(data.message || 'Gönderi başarıyla paylaşıldı!', 'success', postMessageDisplay);
+                createPostForm.reset(); // Formu temizle
+                await fetchPosts(); // Gönderiler listesini yeniden yükle
+                
+            } catch (error) {
+                console.error('Gönderi oluşturma hatası:', error);
+                showMessage(error.message || 'Bir hata oluştu. Lütfen tekrar deneyin.', 'error', postMessageDisplay);
+            }
+        });
+    }
+
+    // Gönderileri Backend'den Çekme ve Ekrana Basma
+    const fetchPosts = async () => {
+        loadingMessage.style.display = 'block';
+        noPostsMessage.style.display = 'none';
+        postsContainer.innerHTML = ''; // Önceki gönderileri temizle
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/posts`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Gönderileri herkese açık çekiyoruz, token gerekmeyebilir.
+                    // Eğer sadece giriş yapmış kullanıcıların görmesini istersen buraya token ekleyebilirsin:
+                    // 'Authorization': `Bearer ${localStorage.getItem('token')}` 
+                },
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Gönderiler getirilemedi.');
+            }
+
+            if (data.data.posts.length === 0) {
+                noPostsMessage.style.display = 'block';
+            } else {
+                data.data.posts.forEach(post => {
+                    const postCard = document.createElement('div');
+                    postCard.className = 'post-card';
+                    
+                    const postDate = new Date(post.createdAt).toLocaleDateString('tr-TR', {
+                        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    });
+
+                    // Kullanıcı fotoğrafı ve kullanıcı adı Post modelinde populate ediliyor olmalı
+                    const userPhoto = post.user && post.user.photo ? post.user.photo : 'assets/default-user.png'; // Varsayılan profil resmi
+                    const username = post.user && post.user.username ? post.user.username : 'Bilinmeyen Kullanıcı';
+
+                    postCard.innerHTML = `
+                        <div class="post-header">
+                            <img src="${userPhoto}" alt="${username}" class="user-photo">
+                            <span class="username">${username}</span>
+                        </div>
+                        <img src="${post.photo}" alt="${post.caption}" class="post-image">
+                        <div class="post-content">
+                            <p class="caption">${post.caption || ''}</p>
+                            </div>
+                        <div class="post-footer">
+                            <span class="post-date">${postDate}</span>
+                            </div>
+                    `;
+                    postsContainer.appendChild(postCard);
+                });
+            }
+
+        } catch (error) {
+            console.error('Gönderiler çekilirken hata:', error);
+            showMessage(error.message || 'Gönderiler yüklenirken bir sorun oluştu.', 'error', postsContainer);
+        } finally {
+            loadingMessage.style.display = 'none';
+        }
+    };
+
+    // Sayfa yüklendiğinde gönderileri çek
+    fetchPosts();
 });
