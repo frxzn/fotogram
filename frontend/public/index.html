@@ -28,6 +28,8 @@
             background-color: #1e1e1e; /* Header arka planı */
             color: #ffffff;
             font-size: 1.2em;
+            position: relative; /* Z-index için gerekli */
+            z-index: 10; /* Diğer katmanların üzerinde olsun */
         }
 
         .main-header .logo {
@@ -64,6 +66,8 @@
             width: 100%;
             height: 1px; /* İnce çizgi */
             background-color: #333; /* Çizgi rengi */
+            position: relative; /* Z-index için gerekli */
+            z-index: 9; /* Header'ın altında, hero'nun üstünde */
         }
 
         /* Orta Bölüm (Hero Section) - Fotoğrafın burada olacak */
@@ -81,23 +85,25 @@
             text-align: center;
             padding: 50px 20px; /* İç boşluk */
             box-sizing: border-box;
+            z-index: 5; /* İçeriğin z-index'inden düşük, overlay'den yüksek */
         }
 
-        /* Hero Section üzerindeki koyu katman */
-        .hero-section-overlay {
+        /* Hero Section üzerindeki koyu katman (pseudo-element ile) */
+        .hero-section-container::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.6); /* Siyah, %60 opaklık */
-            z-index: 1;
+            z-index: -1; /* İçeriğin arkasında kalsın */
         }
 
         /* Hero Section İçeriği */
         .hero-content {
-            position: relative;
-            z-index: 2; /* Overlay'in üzerinde olmalı */
+            position: relative; /* Pseudo-element'in üzerinde olmasını sağlar */
+            z-index: 1; /* İçeriğin overlay'in üzerinde olmasını sağlar */
             max-width: 700px;
             width: 100%;
             color: #ffffff;
@@ -125,6 +131,8 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            position: relative; /* Butonların tıklanabilirliğini garantilemek için */
+            z-index: 2; /* İçeriğin üzerindeki z-index'den daha yüksek */
         }
 
         .auth-buttons .btn.primary {
@@ -159,6 +167,8 @@
             color: #a0a0a0;
             font-size: 0.9em;
             text-align: center;
+            position: relative; /* Z-index için gerekli */
+            z-index: 10; /* Diğer katmanların üzerinde olsun */
         }
 
         .main-footer a {
@@ -356,7 +366,7 @@
 
     <!-- Orta Bölüm (Hero Section) - Fotoğrafın ve Ana Yazıların Olduğu Kısım -->
     <main class="hero-section-container">
-        <div class="hero-section-overlay"></div>
+        <!-- Overlay artık pseudo-element ile yönetiliyor, bu div'e gerek yok -->
         <div class="hero-content">
             <h1>Anılarını Paylaş</h1>
             <p>Fotogram ile fotoğraf ve videolarını kolayca paylaş, arkadaşlarınla etkileşimde kal.</p>
@@ -417,12 +427,22 @@
         // Header'daki Kayıt Ol/Giriş Yap linklerini modalı açmaya bağla
         document.getElementById('registerNavLink').addEventListener('click', (e) => {
             e.preventDefault();
-            document.getElementById('registerBtn').click(); // Kayıt ol butonuna tıklar gibi modalı aç
+            // auth.js'teki modal açma fonksiyonunu çağır
+            if (typeof openAuthModal === 'function') {
+                openAuthModal('register');
+            } else {
+                console.warn('openAuthModal fonksiyonu bulunamadı. auth.js dosyasının doğru yüklendiğinden emin olun.');
+            }
         });
 
         document.getElementById('loginNavLink').addEventListener('click', (e) => {
             e.preventDefault();
-            document.getElementById('loginBtn').click(); // Giriş yap butonuna tıklar gibi modalı aç
+            // auth.js'teki modal açma fonksiyonunu çağır
+            if (typeof openAuthModal === 'function') {
+                openAuthModal('login');
+            } else {
+                console.warn('openAuthModal fonksiyonu bulunamadı. auth.js dosyasının doğru yüklendiğinden emin olun.');
+            }
         });
     </script>
 </body>
