@@ -14,6 +14,12 @@ console.log('--- UYGULAMA BAŞLANGICI: Gerekli modüller yüklendi ---');
 const app = express();
 console.log('--- UYGULAMA BAŞLANGICI: Express uygulaması oluşturuldu ---');
 
+// --- YENİ EKLENEN KISIM: PROXY'LERE GÜVEN ---
+// Render gibi bir proxy/load balancer arkasında çalışırken bu önemlidir.
+// '1' değeri, ilk proxy'ye güvenileceği anlamına gelir. 'true' da kullanılabilir.
+app.set('trust proxy', 1); 
+console.log('--- UYGULAMA BAŞLANGICI: Express proxy trust ayarı yapıldı ---');
+
 
 // MongoDB Veritabanı Bağlantısı
 const connectDB = async () => {
@@ -42,17 +48,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 console.log('--- UYGULAMA BAŞLANGICI: Middlewareler (JSON, URL-encoded) eklendi ---');
 
-// --- YENİ EKLENEN KISIM: GENEL İSTEK LOGLAYICI ---
-// Bu middleware, backend'e gelen her isteği loglar.
-// CORS ayarlarından önce veya sonra olabilir, ancak genellikle en başta tanımlanır.
+// --- GENEL İSTEK LOGLAYICI ---
 app.use((req, res, next) => {
     console.log(`--- İSTEK GELDİ --- Metot: ${req.method}, Yol: ${req.originalUrl}, IP: ${req.ip}`);
-    next(); // Bir sonraki middleware'e geç
+    next(); 
 });
 console.log('--- UYGULAMA BAŞLANGICI: Genel İstek Loglayıcı middleware eklendi ---');
 
 
-// CORS Ayarları (HATA AYIKLAMA AMAÇLI - GEÇİCİ OLARAK TÜM ORIGINLERE AÇIK)
+// CORS Ayarları (HATA AYIKLAMA AMAÇLI - TÜM ORIGINLERE AÇIK)
 app.use(cors()); 
 console.log(`--- UYGULAMA BAŞLANGICI: CORS middleware eklendi (Tüm originlere açık - HATA AYIKLAMA) ---`);
 
