@@ -24,7 +24,10 @@ const forgotPasswordEmailInput = document.getElementById('forgotPasswordEmail');
 const forgotPasswordMessage = document.getElementById('forgotPasswordMessage'); // Şifremi unuttum modalı mesaj alanı
 
 // "Şimdi Kayıt Ol" ve "Giriş Yap" düğmeleri için ana sayfa
-const openAuthModalButtonMain = document.getElementById('openAuthModalButtonMain');
+// Bu değişkenler index.html'deki butonlara erişmek için kullanılır.
+// auth.js içinde doğrudan bir işlevi yoktur, ancak diğer kısımlar için gerekli.
+// Bunlar `index.html` dosyasındaki inline script bloğunda kullanılır.
+const openAuthModalButtonMain = document.getElementById('openAuthModalButtonMain'); 
 const openAuthModalButtonSecondary = document.getElementById('openAuthModalButtonSecondary');
 
 let isRegisterMode = false; // Başlangıçta giriş modu (login)
@@ -46,6 +49,7 @@ function clearMessage(displayElement = messageDisplay) {
     }
 }
 
+// Global olarak erişilebilir hale getirildi
 function openModal(mode = 'login') { // Varsayılan olarak login modunda açılsın
     isRegisterMode = (mode === 'register');
     if (authModal) {
@@ -114,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (authModalCloseButton) {
         authModalCloseButton.addEventListener('click', closeModal);
     }
-
+    
     authModal?.addEventListener('click', (e) => {
         if (e.target === authModal) {
             closeModal();
@@ -188,7 +192,7 @@ authForm?.addEventListener('submit', async (e) => {
             showMessage('Şifre en az 6 karakter olmalıdır.', 'error');
             return;
         }
-
+        
         requestBody = { username, email, password }; // confirmPassword backend'e gönderilmez
         apiUrl = `${API_BASE_URL}/api/auth/register`;
         successMessage = 'Kayıt başarılı! Hesabınızı doğrulamak için lütfen e-postanızı kontrol edin.';
@@ -234,7 +238,7 @@ authForm?.addEventListener('submit', async (e) => {
                 console.log('Ayarlanan Kullanıcı Adı:', usernameToSet);
                 console.log('localStorage.loggedInUsername (Hemen Sonra):', localStorage.getItem('loggedInUsername'));
                 console.log('Yönlendirme Başlatılıyor...');
-
+                
                 // Yönlendirme için daha belirgin bir setTimeout kullan (200ms)
                 setTimeout(() => {
                     window.location.href = '/dashboard.html'; 
