@@ -1,8 +1,8 @@
-// frontend/public/js/auth.js - GÜNCEL VE SON VERSİYON
+// frontend/public/js/auth.js - GÜNCEL VE SON VERSİYON (Şifremi Unuttum Buton Fix - V2)
 
 // BURADAKİ URL'Yİ KENDİ BACKEND URL'N İ İLE DEĞİŞTİR!!!
 // Lütfen buraya Render dashboard'ındaki "fotogram-backend" servisinin Public URL'sini yapıştır.
-const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Örn: 'https://fotogram-backend-abcdef.onrender.com'
+const API_BASE_URL = 'SENİN_BACKEND_URL_BURAYA'; // Örn: 'https://fotogram-backend-abcdef.onrender.com'
 
 // DOM elementleri
 const authModal = document.getElementById('authModal');
@@ -15,7 +15,9 @@ const toggleLinks = document.getElementById('toggleLinks');
 const messageDisplay = document.getElementById('message'); // Auth modal mesaj alanı
 const usernameGroup = document.getElementById('usernameGroup');
 const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
-const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+
+// Şifremi Unuttum linki (Yeni: Tanımlama sırasını öne çektim)
+const forgotPasswordLink = document.getElementById('forgotPasswordLink'); 
 
 // Şifremi Unuttum Modalı için gerekli DOM elementleri
 const forgotPasswordModal = document.getElementById('forgotPasswordModal');
@@ -23,10 +25,7 @@ const forgotPasswordForm = document.getElementById('forgotPasswordForm');
 const forgotPasswordEmailInput = document.getElementById('forgotPasswordEmail');
 const forgotPasswordMessage = document.getElementById('forgotPasswordMessage'); // Şifremi unuttum modalı mesaj alanı
 
-// "Şimdi Kayıt Ol" ve "Giriş Yap" düğmeleri için ana sayfa
-// Bu değişkenler index.html'deki butonlara erişmek için kullanılır.
-// auth.js içinde doğrudan bir işlevi yoktur, ancak diğer kısımlar için gerekli.
-// Bunlar `index.html` dosyasındaki inline script bloğunda kullanılır.
+// "Şimdi Kayıt Ol" ve "Giriş Yap" düğmeleri için ana sayfa (Sadece varlık kontrolü için)
 const openAuthModalButtonMain = document.getElementById('openAuthModalButtonMain'); 
 const openAuthModalButtonSecondary = document.getElementById('openAuthModalButtonSecondary');
 
@@ -76,7 +75,10 @@ function openForgotPasswordModal() {
     }
     clearMessage(forgotPasswordMessage); // Şifremi unuttum modalındaki mesajı temizle
     forgotPasswordForm?.reset(); // Şifremi unuttum formunu sıfırla
-    closeModal(); // Ana auth modal açıksa kapat (önce ana modal kapanır, sonra şifre unuttum açılır)
+    // Ana auth modal açıkken şifremi unuttum modalını açıyorsak, ana modalı kapat
+    if (authModal && authModal.style.display === 'flex') {
+        closeModal(); 
+    }
 }
 
 function closeForgotPasswordModal() {
@@ -88,7 +90,12 @@ function closeForgotPasswordModal() {
 }
 
 function updateFormMode() {
-    if (authTitle && submitButton && usernameGroup && confirmPasswordGroup && showRegisterLink && showLoginLink && forgotPasswordLink) {
+    // Tüm elementlerin varlığını kontrol etmeden direkt kullanmak yerine,
+    // kontrol ederek null hatalarının önüne geçelim.
+    const elementsExist = authTitle && submitButton && usernameGroup && confirmPasswordGroup && 
+                          showRegisterLink && showLoginLink && forgotPasswordLink;
+
+    if (elementsExist) {
         if (isRegisterMode) {
             authTitle.textContent = 'Kayıt Ol';
             submitButton.textContent = 'Kayıt Ol';
@@ -108,10 +115,12 @@ function updateFormMode() {
         }
         authForm?.reset(); // Mod değiştiğinde formu sıfırla
         clearMessage(); // Mod değiştiğinde mesajı temizle
+    } else {
+        console.warn("auth.js: updateFormMode için gerekli bazı DOM elementleri bulunamadı.");
     }
 }
 
-// Olay dinleyicileri (Null kontrolü ile daha güvenli)
+// Olay dinleyicileri
 document.addEventListener('DOMContentLoaded', () => {
     // SADECE AUTH MODAL İÇİN KAPATMA BUTONU VE ARKA PLAN TIKLAMASI
     const authModalCloseButton = document.querySelector('#authModal .close-button');
@@ -149,11 +158,20 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFormMode();
     });
 
-    forgotPasswordLink?.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation(); // Olayın yayılmasını engelle
-        openForgotPasswordModal();
-    });
+    // *** ŞİFREMİ UNUTTUM BUTONU İÇİN KRİTİK KISIM ***
+    // Event listener'ın doğru elemente ve doğru fonksiyona bağlandığından emin olalım
+    // Elementin varlığını burada da kontrol edelim, garanti olsun.
+    if (forgotPasswordLink) { 
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault(); // Varsayılan link davranışını engelle
+            e.stopPropagation(); // Olayın üst elementlere yayılmasını engelle (Modal tıklamasıyla çakışmasın)
+            openForgotPasswordModal(); // Şifremi unuttum modalını aç
+            console.log("Şifremi unuttum butonuna tıklandı."); // Debug amaçlı log
+        });
+    } else {
+        console.warn("forgotPasswordLink elementi bulunamadı. Lütfen index.html'i kontrol edin.");
+    }
+    // *** KRİTİK KISIM SONU ***
 
     // Form modunu başlangıçta ayarla
     updateFormMode();
@@ -286,7 +304,7 @@ forgotPasswordForm?.addEventListener('submit', async (e) => {
 
         console.log('Şifre sıfırlama API Yanıtı Geldi. Durum Kodu:', response.status); // DEBUG MESAJI
         const data = await response.json();
-        console.log('Şifre sıfırlama API Yanıt Verisi:', data); // DEBUG MESAJI
+        console.log('API Yanıt Verisi:', data); // DEBUG MESAJI
 
         if (!response.ok) {
             throw new Error(data.message || 'Şifre sıfırlama isteği başarısız oldu.');
