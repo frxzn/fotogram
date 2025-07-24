@@ -5,17 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-posta Doğrulama - Fotogram</title>
     <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/auth.css"> <style>
-        /* Bu stil bloğu, verify-email.html sayfasına özel düzenlemeler içindir.
-           Genel stiller (background-color, font-family vb.) style.css içinde olmalı
-           ancak burada sayfanın ortalanması ve mesaj kutucuklarının görünümü için
-           gerekli minimum stiller bulunmaktadır. */
+    <link rel="stylesheet" href="css/auth.css"> 
+    <style>
+        /* Bu stil bloğu, verify-email.html sayfasına özel düzenlemeler içindir. */
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #121212; /* Genel arkaplan rengi, style.css'den de gelebilir */
+            background-color: #121212; /* Genel arkaplan rengi */
             color: #e0e0e0; /* Genel metin rengi */
             font-family: 'Roboto', sans-serif; /* Yazı tipi */
             margin: 0;
@@ -100,49 +98,76 @@
     </div>
 
     <script>
-        // Backend URL'si - Kendi Backend URL'n ile değiştirmeyi UNUTMA!
-        // Örn: 'https://senin-backend-uygulaman.onrender.com'
+        // Backend API'nizin temel URL'si. Burayı Render'daki backend URL'nizle DEĞİŞTİRMENİZ GEREKİYOR!
+        // Örneğin: 'https://senin-fotogram-backend-uygulaman.onrender.com'
         const API_BASE_URL = 'https://fotogram-backend.onrender.com'; 
         
         const statusMessageElement = document.getElementById('statusMessage');
         const loginRedirectLink = document.getElementById('loginRedirectLink');
 
+        // Mesaj gösterme yardımcı fonksiyonu
+        function showStatusMessage(message, type) {
+            if (statusMessageElement) {
+                statusMessageElement.textContent = message;
+                statusMessageElement.className = `message ${type}`;
+                statusMessageElement.style.display = 'block';
+            }
+        }
+
+        // Sayfa yüklendiğinde doğrulama işlemini başlat
         document.addEventListener('DOMContentLoaded', async () => {
+            console.log('DOM içeriği yüklendi. E-posta doğrulama başlatılıyor.');
+
             const params = new URLSearchParams(window.location.search);
             const token = params.get('token');
 
+            // URL'de token olup olmadığını kontrol et
             if (!token) {
-                statusMessageElement.textContent = 'Doğrulama linki eksik. Lütfen doğru linki kullandığınızdan emin olun.';
-                statusMessageElement.className = 'message error';
-                loginRedirectLink.style.display = 'inline-block'; // Hata durumunda giriş linkini göster
-                return;
+                console.error('URL üzerinde doğrulama tokenı bulunamadı.');
+                showStatusMessage('Doğrulama linki eksik. Lütfen doğru linki kullandığınızdan emin olun.', 'error');
+                loginRedirectLink.style.display = 'inline-block'; // Hata durumunda butonu göster
+                return; // Token yoksa işlemi durdur
             }
 
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/auth/verify-email?token=${token}`);
-                const data = await response.json();
+            console.log('Doğrulama tokenı alındı:', token.substring(0, 10) + '...'); // Tokenın tamamını loglama güvenlik için iyi değil
 
+            try {
+                console.log(`Backend'e istek gönderiliyor: ${API_BASE_URL}/api/auth/verify-email?token=${token}`);
+                
+                // Backend'e doğrulama isteğini gönder
+                const response = await fetch(`${API_BASE_URL}/api/auth/verify-email?token=${token}`, {
+                    method: 'GET', // GET isteği olarak gönderiyoruz
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                // Yanıtı JSON olarak ayrıştır
+                const data = await response.json();
+                console.log('Backend yanıtı alındı:', data);
+                console.log('HTTP Durum Kodu:', response.status);
+
+                // Yanıt başarılı ise (HTTP 2xx)
                 if (response.ok) {
-                    statusMessageElement.textContent = data.message || 'E-posta adresiniz başarıyla doğrulandı!';
-                    statusMessageElement.className = 'message success';
+                    showStatusMessage(data.message || 'E-posta adresiniz başarıyla doğrulandı!', 'success');
+                    console.log('E-posta başarıyla doğrulandı. Giriş sayfasına yönlendiriliyor...');
                     
-                    // BAŞARILI DURUMDA OTOMATİK YÖNLENDİRME EKLENDİ
                     // Kullanıcıya mesajı göstermek için biraz bekle, sonra giriş sayfasına yönlendir.
                     setTimeout(() => {
                         window.location.href = '/index.html'; 
                     }, 3000); // 3 saniye sonra yönlendir
                     
                 } else {
-                    // Hata durumunda mesajı göster
-                    statusMessageElement.textContent = data.message || 'E-posta doğrulaması başarısız oldu. Geçersiz veya süresi dolmuş link.';
-                    statusMessageElement.className = 'message error';
-                    loginRedirectLink.style.display = 'inline-block'; // Hata durumunda giriş linkini göster
+                    // Yanıt başarısız ise (HTTP 4xx, 5xx)
+                    console.error('Doğrulama başarısız. Backend mesajı:', data.message);
+                    showStatusMessage(data.message || 'E-posta doğrulaması başarısız oldu. Geçersiz veya süresi dolmuş link.', 'error');
+                    loginRedirectLink.style.display = 'inline-block'; // Hata durumunda butonu göster
                 }
             } catch (error) {
-                console.error('Doğrulama sırasında ağ hatası:', error);
-                statusMessageElement.textContent = 'Doğrulama sırasında bir sorun oluştu. Lütfen daha sonra tekrar deneyin.';
-                statusMessageElement.className = 'message error';
-                loginRedirectLink.style.display = 'inline-block'; // Ağ hatası durumunda giriş linkini göster
+                // Ağ hatası veya JSON ayrıştırma hatası gibi durumlar
+                console.error('E-posta doğrulama sırasında bir hata oluştu (Ağ/JSON):', error);
+                showStatusMessage('Doğrulama sırasında bir ağ sorunu oluştu veya geçersiz yanıt alındı. Lütfen daha sonra tekrar deneyin.', 'error');
+                loginRedirectLink.style.display = 'inline-block'; // Ağ hatası durumunda butonu göster
             }
         });
     </script>
