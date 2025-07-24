@@ -79,17 +79,19 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        console.log('Dashboard script yüklendi ve DOM hazır.');
+        // Loglama yapamasa da, kodun çalıştığını varsayalım
+        // console.log('Dashboard script yüklendi ve DOM hazır.'); 
 
-        // Yetkisiz erişim kontrolünü daha uzun bir gecikme ile yapalım
-        // Bu, auth.js'in localStorage'ı güncellemesi için ek süre tanır.
+        // Yetkisiz erişim kontrolünü 1 saniyelik gecikme ile yapalım
         setTimeout(() => {
             const loggedInUsername = localStorage.getItem('loggedInUsername');
-            console.log('--- Gecikme sonrası localStorage.loggedInUsername değeri (dashboard.html):', loggedInUsername);
+            
+            // Debug için alert kullanabiliriz, ama kullanıcının çok fazla uyarı görmemesi için yorum satırında bırakıyorum
+            // alert('localStorage.loggedInUsername değeri: ' + loggedInUsername); 
 
             // Kullanıcı adı yoksa, boşsa veya "null"/"undefined" stringi olarak kaydedilmişse yönlendir
             if (!loggedInUsername || loggedInUsername.trim() === '' || loggedInUsername === 'null' || loggedInUsername === 'undefined') {
-                console.warn('Giriş yapmamış veya geçersiz kullanıcı tespit edildi. index.html e yönlendiriliyor.');
+                // console.warn('Giriş yapmamış veya geçersiz kullanıcı tespit edildi. index.html e yönlendiriliyor.');
                 window.location.href = '/index.html';
                 return; // Yönlendirme yapıldığı için daha fazla kod çalıştırma
             }
@@ -98,29 +100,31 @@
             const usernameDisplayElement = document.getElementById('usernameDisplay'); 
             if (usernameDisplayElement) {
                 usernameDisplayElement.textContent = `Hoş Geldin, ${loggedInUsername}!`;
-                console.log(`Kullanıcı adı güncellendi: Hoş Geldin, ${loggedInUsername}!`); 
-            } else {
-                console.error("'usernameDisplay' ID'li element bulunamadı. Lütfen dashboard.html'i kontrol edin.");
-            }
+                // console.log(`Kullanıcı adı güncellendi: Hoş Geldin, ${loggedInUsername}!`); 
+            } 
+            // else {
+            // console.error("'usernameDisplay' ID'li element bulunamadı. Lütfen dashboard.html'i kontrol edin.");
+            // }
 
             // Çıkış Yap butonu olay dinleyicisi
             const logoutButton = document.getElementById('logoutButton');
             if (logoutButton) {
                 logoutButton.addEventListener('click', (e) => {
                     e.preventDefault(); 
-                    console.log('Çıkış yap butonuna basıldı. localStorage temizleniyor...'); 
+                    // console.log('Çıkış yap butonuna basıldı. localStorage temizleniyor...'); 
                     localStorage.removeItem('loggedInUsername');
                     
                     setTimeout(() => {
-                        console.log('index.html e yönlendiriliyor. localStorage.loggedInUsername şimdi:', localStorage.getItem('loggedInUsername')); 
+                        // console.log('index.html e yönlendiriliyor. localStorage.loggedInUsername şimdi:', localStorage.getItem('loggedInUsername')); 
                         window.location.href = '/index.html'; 
                     }, 50); 
                 });
-            } else {
-                console.warn("'logoutButton' ID'li element bulunamadı. Lütfen dashboard.html'i kontrol edin.");
-            }
+            } 
+            // else {
+            // console.warn("'logoutButton' ID'li element bulunamadı. Lütfen dashboard.html'i kontrol edin.");
+            // }
 
-        }, 1000); // Burayı 1000 milisaniyeye (1 saniye) ayarladık
+        }, 1000); // 1000 milisaniye (1 saniye) gecikme
     });
 </script>
 </body>
