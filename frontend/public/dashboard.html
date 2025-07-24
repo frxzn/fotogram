@@ -77,36 +77,36 @@
     </div>
 </footer>
 
-<script src="js/main.js"></script>
-<script src="js/auth.js"></script> 
-
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Kullanıcı adını gösterecek h2 elementini doğru ID ile seçelim
-        const usernameDisplayElement = document.getElementById('usernameDisplay'); 
+        // 1. Yetkisiz erişim kontrolü (İlk olarak bu kontrol yapılmalı)
         const loggedInUsername = localStorage.getItem('loggedInUsername');
-
         console.log('Dashboard yüklendi. localStorage.loggedInUsername degeri:', loggedInUsername); // DEBUG MESAJI
 
-        if (loggedInUsername && usernameDisplayElement) {
-            usernameDisplayElement.textContent = `Hoş Geldin, ${loggedInUsername}!`;
-        } 
-        // Burada, loggedInUsername yoksa index.html'e yönlendirme bloğunu kaldırdık.
-        // Bu kontrolü zaten index.html ve main.js yapacaktır. 
-        // Bu sayede döngüye düşme riskini ortadan kaldırdık.
-        else {
-            console.warn('loggedInUsername bulunamadi veya usernameDisplayElement yok. Kullanici adi gosterilemiyor.'); 
-            // Kullanıcı yoksa, main.js zaten index.html'e yönlendireceği için burada tekrar yönlendirme yapmıyoruz.
-            // Sadece log mesajı bırakıyoruz.
+        if (!loggedInUsername) {
+            console.warn('Giris yapmamis kullanici tespit edildi, index.html e yonlendiriliyor.');
+            window.location.href = '/index.html'; // Giriş yapmamışsa ana sayfaya yönlendir
+            return; // Yönlendirme yapıldığı için daha fazla kod çalıştırma
         }
 
-        // Çıkış Yap butonu olay dinleyicisi
+        // 2. Kullanıcı adını yansıtma
+        const usernameDisplayElement = document.getElementById('usernameDisplay'); 
+        if (usernameDisplayElement) {
+            usernameDisplayElement.textContent = `Hoş Geldin, ${loggedInUsername}!`;
+            console.log(`Kullanici adi guncellendi: Hoş Geldin, ${loggedInUsername}!`); 
+        } else {
+            console.error("'usernameDisplay' ID'li element bulunamadi. Lütfen dashboard.html'i kontrol edin.");
+        }
+
+        // 3. Çıkış Yap butonu olay dinleyicisi
         const logoutButton = document.getElementById('logoutButton');
         if (logoutButton) {
             logoutButton.addEventListener('click', (e) => {
                 e.preventDefault(); // Varsayılan link davranışını engelle
                 console.log('Çıkış yap butonuna basildi. localStorage temizleniyor...'); 
                 localStorage.removeItem('loggedInUsername'); // localStorage'dan kullanıcı adını sil
+                // Eğer oturum için başka bir token (JWT gibi) saklıyorsan, onu da silmelisin:
+                // localStorage.removeItem('jwtToken'); 
 
                 // Kısa bir gecikme sonrası index.html'e yönlendir
                 setTimeout(() => {
