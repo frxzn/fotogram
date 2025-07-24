@@ -3,68 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fotogram</title>
-    <link rel="stylesheet" href="css/style.css"> 
-    </head>
+    <title>Dashboard - Fotogram</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Dashboard'a özel veya mevcut stilleri destekleyen minimum stiller */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+        }
+        .dashboard-header {
+            background-color: #1e1e1e;
+            padding: 20px 0;
+            border-bottom: 1px solid #333;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        .dashboard-header .logo {
+            font-size: 2em;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .dashboard-header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+        .dashboard-header nav ul li {
+            margin-left: 20px;
+        }
+        .dashboard-header nav ul li a,
+        .dashboard-header nav ul li button {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .dashboard-header nav ul li a:hover,
+        .dashboard-header nav ul li button:hover {
+            background-color: #333;
+        }
+        .dashboard-header nav ul li button.btn-logout {
+            background-color: #dc3545;
+            color: white;
+        }
+        .dashboard-header nav ul li button.btn-logout:hover {
+            background-color: #c82333;
+        }
+        .dashboard-content {
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+        .dashboard-content h1 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+        .dashboard-content p {
+            font-size: 1.2em;
+            color: #bbb;
+            margin-bottom: 15px;
+        }
+        .welcome-message {
+            font-size: 1.5em;
+            color: #007bff;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
 <body>
-    <header>
-        </header>
+    <header class="dashboard-header">
+        <a href="/dashboard.html" class="logo">Fotogram</a>
+        <nav>
+            <ul>
+                <li><span id="welcomeUser"></span></li> 
+                <li><button id="logoutButton" class="btn-logout">Çıkış Yap</button></li>
+            </ul>
+        </nav>
+    </header>
 
-    <main>
-        <button id="openAuthModalButton">Giriş Yap / Kayıt Ol</button>
+    <main class="dashboard-content">
+        <h1>Hoş Geldin, <span class="welcome-message" id="displayUsername"></span>!</h1>
+        <p>Burası profilin, fotoğraf ve paylaşımlarını buradan yönetebilirsin.</p>
+        <p>Yakında daha fazla özellik eklenecek!</p>
     </main>
 
-    <div id="authModal" class="auth-modal">
-        <div class="auth-modal-content">
-            <span class="close-button">&times;</span>
-            <h2 id="authTitle">Giriş Yap</h2>
-            <form id="authForm">
-                <div class="input-group" id="usernameGroup" style="display: none;">
-                    <label for="username">Kullanıcı Adı</label>
-                    <input type="text" id="username">
-                </div>
-                <div class="input-group">
-                    <label for="email">E-posta</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="input-group">
-                    <label for="password">Şifre</label>
-                    <input type="password" id="password" required>
-                </div>
-                <div class="input-group" id="confirmPasswordGroup" style="display: none;">
-                    <label for="confirmPassword">Şifre Tekrar</label>
-                    <input type="password" id="confirmPassword">
-                </div>
-                <button type="submit" id="submitButton">Giriş Yap</button>
-                <div id="message" class="message" style="display: none;"></div>
-                <div class="toggle-links" id="toggleLinks">
-                    <a href="#" id="showRegister">Kayıt Ol</a>
-                    <a href="#" id="showLogin" style="display: none;">Giriş Yap</a>
-                    <a href="#" id="forgotPasswordLink">Şifremi Unuttum?</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="forgotPasswordModal" class="auth-modal">
-        <div class="auth-modal-content">
-            <span class="close-button">&times;</span>
-            <h2 id="forgotPasswordModalTitle">Şifremi Unuttum</h2>
-            <form id="forgotPasswordForm">
-                <div class="input-group">
-                    <label for="forgotPasswordEmail">E-posta</label>
-                    <input type="email" id="forgotPasswordEmail" required>
-                </div>
-                <button type="submit" id="forgotPasswordSubmitButton">Şifre Sıfırlama Bağlantısı Gönder</button>
-                <div id="forgotPasswordMessage" class="message" style="display: none;"></div>
-            </form>
-        </div>
-    </div>
-
-
-    <footer>
-        </footer>
-
-    <script src="js/auth.js"></script>
-    </body>
+    <script src="js/dashboard.js"></script> 
+</body>
 </html>
