@@ -1,32 +1,30 @@
-// frontend/public/js/auth.js - SON VE EN GÜNCEL VERSİYON (Giriş/Kayıt Buton Fix)
+// frontend/public/js/auth.js
 
-// BURADAKİ URL'Yİ KENDİ BACKEND URL'N İ İLE DEĞİŞTİR!!!
-// Lütfen buraya Render dashboard'ındaki "fotogram-backend" servisinin Public URL'sini yapıştır.
-const API_BASE_URL = 'SENİN_BACKEND_URL_BURAYA'; // Örn: 'https://fotogram-backend-abcdef.onrender.com'
+const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Backend URL'si - Kendi Backend URL'n ile değiştirmeyi UNUTMA!
 
 // DOM elementleri
 const authModal = document.getElementById('authModal');
 const authForm = document.getElementById('authForm');
+const closeButton = document.querySelector('.close-button'); // Auth modal kapatma butonu
 const showRegisterLink = document.getElementById('showRegister');
 const showLoginLink = document.getElementById('showLogin');
 const authTitle = document.getElementById('authTitle');
 const submitButton = document.getElementById('submitButton');
-const toggleLinks = document.getElementById('toggleLinks'); 
+const toggleLinks = document.getElementById('toggleLinks'); // Bu elementin ID'si HTML'de mevcut olmayabilir, kontrol et
 const messageDisplay = document.getElementById('message'); // Auth modal mesaj alanı
 const usernameGroup = document.getElementById('usernameGroup');
 const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
-const forgotPasswordLink = document.getElementById('forgotPasswordLink'); 
+const forgotPasswordLink = document.getElementById('forgotPasswordLink');
 
 // Şifremi Unuttum Modalı için gerekli DOM elementleri
 const forgotPasswordModal = document.getElementById('forgotPasswordModal');
 const forgotPasswordForm = document.getElementById('forgotPasswordForm');
 const forgotPasswordEmailInput = document.getElementById('forgotPasswordEmail');
 const forgotPasswordMessage = document.getElementById('forgotPasswordMessage'); // Şifremi unuttum modalı mesaj alanı
+const closeForgotPasswordModalButton = document.querySelector('#forgotPasswordModal .close-button');
 
-// "Şimdi Kayıt Ol" ve "Giriş Yap" düğmeleri için ana sayfa elementleri
-// Bu değişkenler index.html'deki butonlara erişmek için kullanılır.
-// Bu kısımların varlığını kontrol etmek önemlidir.
-const openAuthModalButtonMain = document.getElementById('openAuthModalButtonMain'); 
+// "Şimdi Kayıt Ol" ve "Giriş Yap" düğmeleri için ana sayfa
+const openAuthModalButtonMain = document.getElementById('openAuthModalButtonMain');
 const openAuthModalButtonSecondary = document.getElementById('openAuthModalButtonSecondary');
 
 let isRegisterMode = false; // Başlangıçta giriş modu (login)
@@ -48,9 +46,7 @@ function clearMessage(displayElement = messageDisplay) {
     }
 }
 
-// Global olarak erişilebilir hale getirildi
-function openModal(mode = 'login') { // Varsayılan olarak login modunda açılsın
-    isRegisterMode = (mode === 'register');
+function openModal() {
     if (authModal) {
         authModal.style.display = 'flex';
         clearMessage();
@@ -65,8 +61,6 @@ function closeModal() {
         clearMessage();
         authForm?.reset();
     }
-    // Auth modal kapatılırken şifremi unuttum modalı da kapansın
-    closeForgotPasswordModal(); 
 }
 
 function openForgotPasswordModal() {
@@ -75,10 +69,7 @@ function openForgotPasswordModal() {
     }
     clearMessage(forgotPasswordMessage); // Şifremi unuttum modalındaki mesajı temizle
     forgotPasswordForm?.reset(); // Şifremi unuttum formunu sıfırla
-    // Ana auth modal açıkken şifremi unuttum modalını açıyorsak, ana modalı kapat
-    if (authModal && authModal.style.display === 'flex') {
-        closeModal(); 
-    }
+    closeModal(); // Ana auth modal açıksa kapat
 }
 
 function closeForgotPasswordModal() {
@@ -90,12 +81,7 @@ function closeForgotPasswordModal() {
 }
 
 function updateFormMode() {
-    // Tüm elementlerin varlığını kontrol etmeden direkt kullanmak yerine,
-    // kontrol ederek null hatalarının önüne geçelim.
-    const elementsExist = authTitle && submitButton && usernameGroup && confirmPasswordGroup && 
-                          showRegisterLink && showLoginLink && forgotPasswordLink;
-
-    if (elementsExist) {
+    if (authTitle && submitButton && usernameGroup && confirmPasswordGroup && showRegisterLink && showLoginLink && forgotPasswordLink) {
         if (isRegisterMode) {
             authTitle.textContent = 'Kayıt Ol';
             submitButton.textContent = 'Kayıt Ol';
@@ -115,34 +101,26 @@ function updateFormMode() {
         }
         authForm?.reset(); // Mod değiştiğinde formu sıfırla
         clearMessage(); // Mod değiştiğinde mesajı temizle
-    } else {
-        console.warn("auth.js: updateFormMode için gerekli bazı DOM elementleri bulunamadı.");
     }
 }
 
 // Olay dinleyicileri (Null kontrolü ile daha güvenli)
 document.addEventListener('DOMContentLoaded', () => {
-    // SADECE AUTH MODAL İÇİN KAPATMA BUTONU VE ARKA PLAN TIKLAMASI
-    const authModalCloseButton = document.querySelector('#authModal .close-button');
-    if (authModalCloseButton) {
-        authModalCloseButton.addEventListener('click', closeModal);
-    }
-    
+    // Auth Modal Butonları (Ana sayfadaki)
+    openAuthModalButtonMain?.addEventListener('click', () => {
+        isRegisterMode = true; // "Şimdi Kayıt Ol" butonu kayıt modunda açsın
+        openModal();
+    });
+    openAuthModalButtonSecondary?.addEventListener('click', () => {
+        isRegisterMode = false; // "Giriş Yap" butonu giriş modunda açsın
+        openModal();
+    });
+
+    // Auth Modal içindeki butonlar
+    closeButton?.addEventListener('click', closeModal);
     authModal?.addEventListener('click', (e) => {
         if (e.target === authModal) {
             closeModal();
-        }
-    });
-
-    // SADECE FORGOT PASSWORD MODAL İÇİN KAPATMA BUTONU VE ARKA PLAN TIKLAMASI
-    const forgotPasswordModalCloseButton = document.querySelector('#forgotPasswordModal .close-button');
-    if (forgotPasswordModalCloseButton) {
-        forgotPasswordModalCloseButton.addEventListener('click', closeForgotPasswordModal);
-    }
-
-    forgotPasswordModal?.addEventListener('click', (e) => {
-        if (e.target === forgotPasswordModal) {
-            closeForgotPasswordModal();
         }
     });
 
@@ -158,40 +136,20 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFormMode();
     });
 
-    // Şifremi Unuttum butonu için olay dinleyicisi
-    if (forgotPasswordLink) { 
-        forgotPasswordLink.addEventListener('click', (e) => {
-            e.preventDefault(); // Varsayılan link davranışını engelle
-            e.stopPropagation(); // Olayın üst elementlere yayılmasını engelle (Modal tıklamasıyla çakışmasın)
-            openForgotPasswordModal(); // Şifremi unuttum modalını aç
-            console.log("Şifremi unuttum butonuna tıklandı."); // Debug amaçlı log
-        });
-    } else {
-        console.warn("forgotPasswordLink elementi bulunamadı. Lütfen index.html'i kontrol edin.");
-    }
+    forgotPasswordLink?.addEventListener('click', (e) => {
+        e.preventDefault();
+        openForgotPasswordModal();
+    });
 
-    // *** KRİTİK KISIM: ANA SAYFADAKİ "Şimdi Kayıt Ol" ve "Giriş Yap" BUTONLARI İÇİN EVENT LISTENERS ***
-    // Bu kısım, butona basıldığında `openModal` fonksiyonunu doğru modda çağırır.
-    if (openAuthModalButtonMain) {
-        openAuthModalButtonMain.addEventListener('click', (e) => {
-            e.preventDefault(); // Varsayılan link davranışını engelle
-            openModal('register'); 
-            console.log("'Şimdi Kayıt Ol' butonuna tıklandı. openModal('register') çağrıldı.");
-        });
-    } else {
-        console.warn("'openAuthModalButtonMain' elementi bulunamadı. Lütfen index.html'i kontrol edin.");
-    }
+    // Şifremi Unuttum modalı kapatma butonu
+    closeForgotPasswordModalButton?.addEventListener('click', closeForgotPasswordModal);
 
-    if (openAuthModalButtonSecondary) {
-        openAuthModalButtonSecondary.addEventListener('click', (e) => {
-            e.preventDefault(); // Varsayılan link davranışını engelle
-            openModal('login'); 
-            console.log("'Giriş Yap' butonuna tıklandı. openModal('login') çağrıldı.");
-        });
-    } else {
-        console.warn("'openAuthModalButtonSecondary' elementi bulunamadı. Lütfen index.html'i kontrol edin.");
-    }
-    // *** KRİTİK KISIM SONU ***
+    // Şifremi Unuttum modalı dışına tıklama olayı
+    forgotPasswordModal?.addEventListener('click', (e) => {
+        if (e.target === forgotPasswordModal) {
+            closeForgotPasswordModal();
+        }
+    });
 
     // Form modunu başlangıçta ayarla
     updateFormMode();
@@ -222,7 +180,7 @@ authForm?.addEventListener('submit', async (e) => {
         }
         // Şifre eşleşme kontrolü
         if (password !== confirmPassword) {
-            showMessage('Şifreler eşleşmiyor!', 'error'); 
+            showMessage('Şifreler eşleşmiyor.', 'error');
             return;
         }
         // Şifre uzunluk kontrolü
@@ -231,7 +189,7 @@ authForm?.addEventListener('submit', async (e) => {
             return;
         }
         
-        requestBody = { username, email, password }; // confirmPassword backend'e gönderilmez
+        requestBody = { username, email, password, confirmPassword }; // TÜM ALANLARI GÖNDER
         apiUrl = `${API_BASE_URL}/api/auth/register`;
         successMessage = 'Kayıt başarılı! Hesabınızı doğrulamak için lütfen e-postanızı kontrol edin.';
         errorMessage = 'Kayıt başarısız oldu.';
@@ -246,7 +204,6 @@ authForm?.addEventListener('submit', async (e) => {
     }
 
     try {
-        console.log('API İsteği Başlatılıyor:', apiUrl, 'Body:', requestBody); // DEBUG MESAJI
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
@@ -255,47 +212,25 @@ authForm?.addEventListener('submit', async (e) => {
             body: JSON.stringify(requestBody)
         });
 
-        console.log('API Yanıtı Geldi. Durum Kodu:', response.status); // DEBUG MESAJI
         const data = await response.json();
-        console.log('API Yanıt Verisi:', data); // DEBUG MESAJI
 
         if (!response.ok) {
             // Backend'den gelen hata mesajını göster
             throw new Error(data.message || errorMessage);
         }
 
+        // Başarı mesajını göster
         showMessage(data.message || successMessage, 'success');
 
-        if (!isRegisterMode) { // Sadece giriş modunda localStorage'a kullanıcı adı kaydet
-            // Backend'den 'username' alanı geliyorsa onu kullan, yoksa e-postadan türet
-            const usernameFromBackend = data.username; // Varsayılan olarak backend'den gelen username
-            let usernameToSet;
-
-            if (usernameFromBackend) {
-                usernameToSet = usernameFromBackend;
-            } else {
-                // Eğer backend username dönmüyorsa, email'in '@' öncesini al
-                const emailToUse = document.getElementById('email').value.trim();
-                usernameToSet = emailToUse.split('@')[0];
-            }
-            
-            if (usernameToSet) { // Kullanıcı adının boş olmadığından emin ol
-                localStorage.setItem('loggedInUsername', usernameToSet); 
-                console.log('--- GİRİŞ BAŞARILI DEBUG ---');
-                console.log('Ayarlanan Kullanıcı Adı (localStorage):', localStorage.getItem('loggedInUsername'));
-                console.log('Yönlendirme Başlatılıyor...');
-                
-                // Yönlendirme için setTimeout kullan (100-200ms)
-                // Bu, localStorage'ın güncellenmesi ve dashboard.html'in bu değeri okuması için zaman tanır.
-                setTimeout(() => {
-                    window.location.href = '/dashboard.html'; 
-                }, 200); 
-            } else {
-                console.error('Kullanıcı adı boş olduğu için localStorage ayarlanmadı. Yönlendirme yapılamadı.');
-                showMessage('Giriş başarılı ama kullanıcı adı alınamadı. Lütfen tekrar deneyin.', 'error');
-            }
-        } else { // Kayıt başarılı ise
-            console.log('Kayıt başarılı, giriş moduna geçiliyor...'); // DEBUG MESAJI
+        if (!isRegisterMode && data.token) {
+            // Giriş başarılı ise token'ı Local Storage'a kaydet
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user)); // Kullanıcı bilgilerini de kaydet
+            // 1 saniye sonra dashboard'a yönlendir
+            setTimeout(() => {
+                window.location.href = '/dashboard.html'; // Kullanıcının yönlendirileceği dashboard sayfası
+            }, 1000);
+        } else if (isRegisterMode) {
             // Kayıt başarılı ise kullanıcıya bilgi ver ve giriş moduna geçmesi için biraz bekle
             setTimeout(() => {
                 isRegisterMode = false; // Giriş moduna geç
@@ -304,7 +239,7 @@ authForm?.addEventListener('submit', async (e) => {
         }
 
     } catch (error) {
-        console.error('Kimlik doğrulama işlemi hatası:', error); // DEBUG MESAJI
+        console.error('Kimlik doğrulama işlemi hatası:', error);
         showMessage(error.message || 'Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
     }
 });
@@ -322,8 +257,7 @@ forgotPasswordForm?.addEventListener('submit', async (e) => {
     }
 
     try {
-        console.log('Şifre sıfırlama API isteği başlatılıyor:', `${API_BASE_URL}/api/auth/forgot-password`, 'Email:', email); // DEBUG MESAJI
-        const response = await fetch(apiUrl, {
+        const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -331,9 +265,7 @@ forgotPasswordForm?.addEventListener('submit', async (e) => {
             body: JSON.stringify({ email })
         });
 
-        console.log('Şifre sıfırlama API Yanıtı Geldi. Durum Kodu:', response.status); // DEBUG MESAJI
         const data = await response.json();
-        console.log('API Yanıt Verisi:', data); // DEBUG MESAJI
 
         if (!response.ok) {
             throw new Error(data.message || 'Şifre sıfırlama isteği başarısız oldu.');
@@ -343,7 +275,7 @@ forgotPasswordForm?.addEventListener('submit', async (e) => {
         setTimeout(closeForgotPasswordModal, 3000); // 3 saniye sonra modalı kapat
 
     } catch (error) {
-        console.error('Şifre sıfırlama hatası:', error); // DEBUG MESAJI
+        console.error('Şifre sıfırlama hatası:', error);
         showMessage(error.message || 'Şifre sıfırlama isteği gönderilirken bir hata oluştu.', 'error', forgotPasswordMessage);
     }
 });
