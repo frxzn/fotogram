@@ -25,8 +25,8 @@ body {
 header {
     background-color: #000000; /* Tam siyah */
     color: #ffffff;
-    padding: 0; /* Padding'i sıfırlıyoruz, yüksekliği min-height ile kontrol edeceğiz */
-    min-height: 80px; /* Header'ın minimum yüksekliğini belirle (logonun boyutuna göre ayarla) */
+    padding: 0;
+    min-height: 160px; /* Header'ın minimum yüksekliği logo boyutuna göre artırıldı */
     border-bottom: 1px solid #222222; /* İnce bir çizgi */
     display: flex; /* İçeriği dikeyde ortalamak için */
     align-items: center; /* İçeriği dikeyde ortala */
@@ -41,21 +41,21 @@ header .container {
 
 /* Logo Resim Stili */
 .logo-link {
-    display: flex; /* Resmin etrafındaki boşluğu kontrol etmek için */
+    display: flex;
     align-items: center;
-    text-decoration: none; /* Link alt çizgisini kaldır */
-    height: 100%; /* Parent'ının yüksekliğini alsın */
+    text-decoration: none;
+    height: 100%;
 }
 
 .logo-img {
-    height: 150px; /* Logonun kendi yüksekliği. Bu değeri büyütebilirsin. */
-    max-height: 70px; /* Header'dan taşmasını engellemek için maksimum yükseklik */
+    height: 150px; /* Logo yüksekliği 150px olarak ayarlandı */
+    /* max-height: 70px; kuralı kaldırıldı! Bu yüzden büyümüyordu. */
     width: auto; /* Oranını koru */
-    display: block; /* Fazla boşlukları engelle */
+    display: block;
 }
 
 header nav {
-    display: flex; /* Navigasyon menüsü boş kalacağı için görünmez */
+    display: flex;
 }
 
 header nav ul {
@@ -93,7 +93,7 @@ header nav ul li a:hover {
     color: #ffffff;
     text-align: center;
     padding: 100px 0;
-    flex-grow: 1; /* Sayfanın geri kalanını kaplasın */
+    flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -319,6 +319,12 @@ footer p {
 
 /* responsive design for smaller screens */
 @media (max-width: 768px) {
+    header {
+        min-height: 100px; /* Tabletlerde header yüksekliğini ayarla */
+    }
+    .logo-img {
+        height: 80px; /* Tabletlerde logo boyutunu ayarla */
+    }
     .hero h1 {
         font-size: 2.8em;
     }
@@ -334,10 +340,10 @@ footer p {
 
 @media (max-width: 600px) {
     header {
-        min-height: 60px; /* Küçük ekranlarda header yüksekliğini ayarla */
+        min-height: 80px; /* Küçük ekranlarda header yüksekliğini ayarla */
     }
     .logo-img {
-        height: 45px; /* Küçük ekranlarda logo boyutunu ayarla */
+        height: 60px; /* Küçük ekranlarda logo boyutunu ayarla */
     }
     header .container {
         flex-direction: column;
