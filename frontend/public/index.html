@@ -3,57 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fotogram - Anılarını Paylaş</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/auth.css">
-    <style>
-        /* Bu stil bloğu sadece header için eklemeler içeriyor, diğer stiller style.css'te */
-        header {
-            background-color: #000; /* Siyah arka plan */
-            padding: 20px 40px;
-            color: #fff;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 2.5em; /* Daha büyük logo */
-            font-weight: bold; /* Kalın font */
-            margin-right: 20px;
-        }
-
-        .slogan {
-            font-size: 1.1em;
-            font-style: italic;
-            color: #ccc;
-        }
-
-        footer {
-            background-color: #000; /* Siyah arka plan */
-            color: #a0a0a0;
-            font-size: 0.9em;
-            text-align: center;
-            padding: 20px 40px;
-        }
-    </style>
-</head>
+    <title>Fotogram - Fotoğraflarını Paylaş!</title>
+    <link rel="stylesheet" href="css/style.css"> 
+    </head>
 <body>
     <header>
-        <div class="header-left">
-            <h1 class="logo">FOTOGRAM</h1>
-            <p class="slogan">Fotoğrafın sosyal hali, Fotogram.</p>
+        <div class="container">
+            <h1 class="logo">Fotogram</h1>
+            <nav>
+                <ul>
+                    
+                </ul>
+            </nav>
         </div>
-        </header>
+    </header>
 
-    <div class="separator"></div>
-
-    <main class="hero-section-container">
+    <main class="hero">
         <div class="container">
             <h1>Anılarını Paylaş</h1>
             <p>Fotogram ile fotoğraf ve videolarını kolayca paylaş, arkadaşlarınla etkileşimde kal.</p>
@@ -64,18 +29,9 @@
         </div>
     </main>
 
-    <div class="separator"></div>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Fotogram. Tüm Hakları Saklıdır.</p>
-            <p>Turan Software</p>
-        </div>
-    </footer>
-
-    <div id="authModal" class="auth-modal" style="display: none;">
+    <div id="authModal" class="auth-modal">
         <div class="auth-modal-content">
-            <span class="close-button">&times;</span>
+            <span class="close-button">×</span>
             <h2 id="authTitle">Giriş Yap</h2>
             <form id="authForm">
                 <div class="input-group" id="usernameGroup" style="display: none;">
@@ -105,9 +61,9 @@
         </div>
     </div>
 
-    <div id="forgotPasswordModal" class="auth-modal" style="display: none;">
+    <div id="forgotPasswordModal" class="auth-modal">
         <div class="auth-modal-content">
-            <span class="close-button">&times;</span>
+            <span class="close-button">×</span>
             <h2 id="forgotPasswordModalTitle">Şifremi Unuttum</h2>
             <form id="forgotPasswordForm">
                 <div class="input-group">
@@ -120,33 +76,14 @@
         </div>
     </div>
 
+    <footer>
+        <div class="container">
+            <p>© 2025 Fotogram. Tüm Hakları Saklıdır.</p>
+            <p>Turan Software</p>
+        </div>
+    </footer>
+
     <script src="js/auth.js"></script>
-    <script src="js/main.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const openAuthModalButtonMain = document.getElementById('openAuthModalButtonMain');
-            const openAuthModalButtonSecondary = document.getElementById('openAuthModalButtonSecondary');
-
-            if (openAuthModalButtonMain) {
-                openAuthModalButtonMain.addEventListener('click', () => {
-                    if (typeof openAuthModal === 'function') {
-                        openAuthModal('register');
-                    } else {
-                        console.warn('openAuthModal fonksiyonu bulunamadı. auth.js dosyasının doğru yüklendiğinden emin olun.');
-                    }
-                });
-            }
-
-            if (openAuthModalButtonSecondary) {
-                openAuthModalButtonSecondary.addEventListener('click', () => {
-                    if (typeof openAuthModal === 'function') {
-                        openAuthModal('login');
-                    } else {
-                        console.warn('openAuthModal fonksiyonu bulunamadı. auth.js dosyasının doğru yüklendiğinden emin olun.');
-                    }
-                });
-            }
-        });
-    </script>
+    <script src="js/main.js"></script> 
 </body>
 </html>
