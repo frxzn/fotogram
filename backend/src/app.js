@@ -6,8 +6,8 @@ console.log('--- UYGULAMA BAŞLANGICI: Ortam değişkenleri yüklendi ---');
 
 const express = require('express');
 const mongoose = require('mongoose');
-const path = require('path'); // Frontend statik dosya sunumu için gerekli olabilir, şimdilik dursun
-const cors = require('cors'); // CORS middleware'i
+const path = require('path'); 
+const cors = require('cors'); 
 
 console.log('--- UYGULAMA BAŞLANGICI: Gerekli modüller yüklendi ---');
 
@@ -29,44 +29,46 @@ const connectDB = async () => {
         if (!process.env.MONGO_URI) {
             console.error('--- VERİTABANI HATASI: MONGO_URI ortam değişkeni tanımlı değil veya boş! ---');
         }
-        process.exit(1); // Uygulamadan çık
+        process.exit(1); 
     }
 };
 
-connectDB(); // Veritabanı bağlantısını başlat
+connectDB(); 
 console.log('--- UYGULAMA BAŞLANGICI: connectDB fonksiyonu çağrıldı ---');
 
 
 // Middleware'ler
-app.use(express.json()); // JSON istek gövdelerini ayrıştırmak için
-app.use(express.urlencoded({ extended: true })); // URL-encoded istek gövdelerini ayrıştırmak için
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
 console.log('--- UYGULAMA BAŞLANGICI: Middlewareler (JSON, URL-encoded) eklendi ---');
+
+// --- YENİ EKLENEN KISIM: GENEL İSTEK LOGLAYICI ---
+// Bu middleware, backend'e gelen her isteği loglar.
+// CORS ayarlarından önce veya sonra olabilir, ancak genellikle en başta tanımlanır.
+app.use((req, res, next) => {
+    console.log(`--- İSTEK GELDİ --- Metot: ${req.method}, Yol: ${req.originalUrl}, IP: ${req.ip}`);
+    next(); // Bir sonraki middleware'e geç
+});
+console.log('--- UYGULAMA BAŞLANGICI: Genel İstek Loglayıcı middleware eklendi ---');
 
 
 // CORS Ayarları (HATA AYIKLAMA AMAÇLI - GEÇİCİ OLARAK TÜM ORIGINLERE AÇIK)
-// Bu ayar, tüm originlerden gelen isteklere izin verir ve güvenlik riski taşır.
-// Sadece sorunu tespit etmek için kullanın. Sorun çözüldüğünde eski spesifik haline döneceğiz.
 app.use(cors()); 
 console.log(`--- UYGULAMA BAŞLANGICI: CORS middleware eklendi (Tüm originlere açık - HATA AYIKLAMA) ---`);
 
 
 // API Rotaları
-// authRoutes, userRoutes, photoRoutes, adminRoutes dosyalarını dahil et
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/photos', require('./routes/photoRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 console.log('--- UYGULAMA BAŞLANGICI: API Rotaları yüklendi ---');
 
-// --- DİKKAT: Frontend dosyalarını servis etme kısmı DEVRE DIŞI BIRAKILDI ---
-// Çünkü frontend ayrı bir Render servisi olarak yayınlanıyor (örn: fotogram-app).
-// Eğer frontend'i bu backend servisi üzerinden sunacaksanız, aşağıdaki kısmı aktif edin.
+// Frontend dosyalarını servis etme kısmı DEVRE DIŞI BIRAKILDI
 /*
 if (process.env.NODE_ENV === 'production' || process.env.SERVE_FRONTEND) {
-    // Frontend'in public klasörüne giden yolu ayarla
     app.use(express.static(path.join(__dirname, '../../frontend/public')));
 
-    // Tüm diğer GET isteklerini index.html'e yönlendir (SPA için)
     app.get('*', (req, res) => {
         res.sendFile(path.join(__dirname, '../../frontend/public', 'index.html'));
     });
@@ -75,7 +77,7 @@ if (process.env.NODE_ENV === 'production' || process.env.SERVE_FRONTEND) {
 */
 
 // Sunucuyu Render'ın atadığı port üzerinde dinlemeye başla
-const PORT = process.env.PORT || 5000; // Varsayılan olarak 5000 portunu kullan
+const PORT = process.env.PORT || 5000; 
 app.listen(PORT, () => {
     console.log(`--- SUNUCU BAŞLATILIYOR: Sunucu ${PORT} portunda çalışıyor. ---`);
 });
