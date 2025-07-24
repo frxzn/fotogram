@@ -28,8 +28,7 @@
             background-color: #1e1e1e; /* Header arka planı */
             color: #ffffff;
             font-size: 1.2em;
-            position: relative; /* Z-index için gerekli */
-            z-index: 10; /* Diğer katmanların üzerinde olsun */
+            /* position ve z-index kaldırıldı, doğal akışa bırakıldı */
         }
 
         .main-header .logo {
@@ -66,13 +65,12 @@
             width: 100%;
             height: 1px; /* İnce çizgi */
             background-color: #333; /* Çizgi rengi */
-            position: relative; /* Z-index için gerekli */
-            z-index: 9; /* Header'ın altında, hero'nun üstünde */
+            /* position ve z-index kaldırıldı, doğal akışa bırakıldı */
         }
 
         /* Orta Bölüm (Hero Section) - Fotoğrafın burada olacak */
         .hero-section-container {
-            position: relative;
+            position: relative; /* ::before ve içeriğin konumlandırılması için gerekli */
             flex-grow: 1; /* Orta bölümün kalan alanı kaplamasını sağlar */
             width: 100%;
             background-image: url('assets/indexback.jpg'); /* <-- FOTOĞRAF YOLU BURADA! */
@@ -85,7 +83,7 @@
             text-align: center;
             padding: 50px 20px; /* İç boşluk */
             box-sizing: border-box;
-            z-index: 5; /* İçeriğin z-index'inden düşük, overlay'den yüksek */
+            /* z-index kaldırıldı, içeriğin z-index'i yeterli olacak */
         }
 
         /* Hero Section üzerindeki koyu katman (pseudo-element ile) */
@@ -102,8 +100,8 @@
 
         /* Hero Section İçeriği */
         .hero-content {
-            position: relative; /* Pseudo-element'in üzerinde olmasını sağlar */
-            z-index: 1; /* İçeriğin overlay'in üzerinde olmasını sağlar */
+            position: relative; /* ::before (overlay) üzerinde olmasını sağlar */
+            z-index: 1; /* Overlay'in üzerinde olmalı */
             max-width: 700px;
             width: 100%;
             color: #ffffff;
@@ -131,8 +129,8 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            position: relative; /* Butonların tıklanabilirliğini garantilemek için */
-            z-index: 2; /* İçeriğin üzerindeki z-index'den daha yüksek */
+            position: relative; /* Tıklanabilirliği garantilemek için */
+            z-index: 2; /* Hero içeriğinin üzerinde olmalı */
         }
 
         .auth-buttons .btn.primary {
@@ -167,8 +165,7 @@
             color: #a0a0a0;
             font-size: 0.9em;
             text-align: center;
-            position: relative; /* Z-index için gerekli */
-            z-index: 10; /* Diğer katmanların üzerinde olsun */
+            /* position ve z-index kaldırıldı, doğal akışa bırakıldı */
         }
 
         .main-footer a {
@@ -366,7 +363,7 @@
 
     <!-- Orta Bölüm (Hero Section) - Fotoğrafın ve Ana Yazıların Olduğu Kısım -->
     <main class="hero-section-container">
-        <!-- Overlay artık pseudo-element ile yönetiliyor, bu div'e gerek yok -->
+        <!-- Overlay artık pseudo-element ile yönetiliyor -->
         <div class="hero-content">
             <h1>Anılarını Paylaş</h1>
             <p>Fotogram ile fotoğraf ve videolarını kolayca paylaş, arkadaşlarınla etkileşimde kal.</p>
