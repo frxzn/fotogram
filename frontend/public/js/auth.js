@@ -1,4 +1,4 @@
-// frontend/public/js/auth.js
+// frontend/public/js/auth.js - GÜNCEL VE SON VERSİYON
 
 // BURADAKİ URL'Yİ KENDİ BACKEND URL'N İ İLE DEĞİŞTİR!!!
 // Lütfen buraya Render dashboard'undaki "fotogram-backend" servisinin Public URL'sini yapıştır.
@@ -7,7 +7,6 @@ const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Örn: 'https://
 // DOM elementleri
 const authModal = document.getElementById('authModal');
 const authForm = document.getElementById('authForm');
-// closeButtons değişkeni artık kullanılmıyor, çünkü butonlar spesifik olarak hedefleniyor
 const showRegisterLink = document.getElementById('showRegister');
 const showLoginLink = document.getElementById('showLogin');
 const authTitle = document.getElementById('authTitle');
@@ -64,7 +63,6 @@ function closeModal() {
         authForm?.reset();
     }
     // Auth modal kapatılırken şifremi unuttum modalı da kapansın
-    // Bu satırın burada kalması doğru çünkü ana modal kapanırken bağlı modalı da kapatmak isteriz.
     closeForgotPasswordModal(); 
 }
 
@@ -155,8 +153,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFormMode();
     });
 
+    // Şifremi Unuttum linkine ekstra stopPropagation eklendi (daha önceki deneme, burada kalabilir)
     forgotPasswordLink?.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation(); // Olayın yayılmasını engelle
         openForgotPasswordModal();
     });
 
@@ -234,14 +234,25 @@ authForm?.addEventListener('submit', async (e) => {
         showMessage(data.message || successMessage, 'success');
 
         if (!isRegisterMode) { // Sadece giriş modunda localStorage'a kullanıcı adı kaydet
-            const usernameToSet = email.split('@')[0]; // E-postadan kullanıcı adını türet
-            localStorage.setItem('loggedInUsername', usernameToSet); // KRİTİK: Bu anahtar index.html ve dashboard.html tarafından okunur
-            console.log('Login successful. localStorage.loggedInUsername ayarlandi:', usernameToSet); // DEBUG MESAJI
-            
-            // 50ms sonra dashboard'a yönlendir (Render'ın önbellek/yükleme zamanlamasına yardımcı olabilir)
-            setTimeout(() => {
-                window.location.href = '/dashboard.html'; 
-            }, 50);
+            const emailToUse = document.getElementById('email').value.trim(); // E-posta alanından değeri al
+            const usernameToSet = emailToUse.split('@')[0]; // E-postadan kullanıcı adını türet
+
+            if (usernameToSet) { // Kullanıcı adının boş olmadığından emin ol
+                localStorage.setItem('loggedInUsername', usernameToSet); 
+                console.log('--- GİRİŞ BAŞARILI DEBUG ---');
+                console.log('Ayarlanan Kullanıcı Adı:', usernameToSet);
+                console.log('localStorage.loggedInUsername (Hemen Sonra):', localStorage.getItem('loggedInUsername'));
+                console.log('Yönlendirme Başlatılıyor...');
+                
+                // Yönlendirme için daha belirgin bir setTimeout kullan (200ms)
+                // Bu, tarayıcının localStorage'ı işlemesi ve navigasyon yapması için yeterli zaman tanır.
+                setTimeout(() => {
+                    window.location.href = '/dashboard.html'; 
+                }, 200); 
+            } else {
+                console.error('Kullanıcı adı boş olduğu için localStorage ayarlanmadı. Yönlendirme yapılamadı.');
+                showMessage('Giriş başarılı ama kullanıcı adı alınamadı. Lütfen tekrar deneyin.', 'error');
+            }
         } else { // Kayıt başarılı ise
             console.log('Kayıt başarılı, giriş moduna geçiliyor...'); // DEBUG MESAJI
             // Kayıt başarılı ise kullanıcıya bilgi ver ve giriş moduna geçmesi için biraz bekle
