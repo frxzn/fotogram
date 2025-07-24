@@ -3,111 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hesap Doğrulama</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        /* Bu sayfaya özel CSS'i buraya veya style.css'e ekleyebilirsiniz */
+    <title>E-posta Doğrulama - Fotogram</title>
+    <link rel="stylesheet" href="css/style.css"> <link rel="stylesheet" href="css/auth.css"> <style>
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #000;
+            background-color: #121212;
             color: #e0e0e0;
             font-family: 'Roboto', sans-serif;
             margin: 0;
         }
-        .verification-container {
-            background-color: #1a1a1a;
+        .container {
+            background-color: #1e1e1e;
             padding: 40px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             text-align: center;
             max-width: 500px;
             width: 90%;
         }
-        .verification-container h1 {
-            color: #fff;
+        h1 {
+            color: #ffffff;
             margin-bottom: 20px;
+            font-size: 2.2em;
         }
-        .verification-container p {
+        p {
             font-size: 1.1em;
-            margin-bottom: 30px;
+            line-height: 1.8;
+            margin-bottom: 25px;
         }
-        .verification-container .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #fff;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: bold;
+            display: none; /* Varsayılan olarak gizli */
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .message.success {
+            background-color: #28a745; /* Yeşil */
+            color: white;
         }
-        .verification-container a {
-            color: #fff;
-            text-decoration: underline;
+        .message.error {
+            background-color: #dc3545; /* Kırmızı */
+            color: white;
+        }
+        .loading {
+            color: #007bff; /* Mavi */
+        }
+        .login-link {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .login-link:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <div class="verification-container">
-        <h1>Hesabınız Doğrulanıyor...</h1>
-        <div class="loading-spinner"></div>
-        <p>Lütfen bekleyin, hesabınız doğrulanıyor. Eğer bu sayfa otomatik olarak yönlendirilmezse, ana sayfaya geri dönebilirsiniz.</p>
-        <a href="/">Ana Sayfaya Git</a>
+    <div class="container">
+        <h1>E-posta Doğrulanıyor...</h1>
+        <p id="statusMessage" class="loading">Hesabınız doğrulanıyor, lütfen bekleyin...</p>
+        <a href="/index.html" class="login-link" style="display: none;" id="loginRedirectLink">Giriş Sayfasına Git</a>
     </div>
+
     <script>
+        const API_BASE_URL = 'https://fotogram-backend.onrender.com'; // Backend URL'si - Kendi Backend URL'n ile değiştirmeyi UNUTMA!
+        const statusMessageElement = document.getElementById('statusMessage');
+        const loginRedirectLink = document.getElementById('loginRedirectLink');
+
         document.addEventListener('DOMContentLoaded', async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('token');
-            const messageDiv = document.querySelector('.verification-container p');
-            const spinner = document.querySelector('.loading-spinner');
-            const h1 = document.querySelector('.verification-container h1');
-            const homepageLink = document.querySelector('.verification-container a');
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
 
-            if (token && token !== 'GEÇİCİ_AKTİVASYON_TOKENİ') { // placeholder değilse
-                try {
-                    // BURADA BACKEND'E TOKEN'I DOĞRULAMA İSTEĞİ ATACAKSIN
-                    // const response = await fetch('https://fotogram-backend.onrender.com/api/auth/verify-email', {
-                    //     method: 'POST',
-                    //     headers: { 'Content-Type': 'application/json' },
-                    //     body: JSON.stringify({ token: token })
-                    // });
-                    // const data = await response.json();
-                    // if (response.ok) {
-                    //     h1.textContent = 'Hesap Doğrulandı!';
-                    //     messageDiv.textContent = 'Hesabınız başarıyla doğrulandı. Yönlendiriliyorsunuz...';
-                    //     spinner.style.display = 'none';
-                    //     setTimeout(() => {
-                    //         window.location.href = '/'; // Ana sayfaya yönlendir
-                    //     }, 3000);
-                    // } else {
-                    //     throw new Error(data.message || 'Hesap doğrulama başarısız oldu.');
-                    // }
-                    
-                    // Şimdilik sadece mesaj gösterecek
-                    h1.textContent = 'Doğrulama Linki Alındı';
-                    messageDiv.textContent = 'Doğrulama linkiniz alındı. (Bu geçici bir linktir ve henüz aktif değildir.) Ana sayfaya yönlendiriliyorsunuz...';
-                    spinner.style.display = 'none';
-                     setTimeout(() => {
-                        window.location.href = '/'; // Ana sayfaya yönlendir
-                    }, 5000);
+            if (!token) {
+                statusMessageElement.textContent = 'Doğrulama linki eksik. Lütfen doğru linki kullandığınızdan emin olun.';
+                statusMessageElement.className = 'message error';
+                loginRedirectLink.style.display = 'inline-block'; // Giriş linkini göster
+                return;
+            }
 
-                } catch (error) {
-                    h1.textContent = 'Doğrulama Hatası!';
-                    messageDiv.textContent = error.message || 'Hesabınız doğrulanırken bir sorun oluştu.';
-                    spinner.style.display = 'none';
-                    homepageLink.style.display = 'block';
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/verify-email?token=${token}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusMessageElement.textContent = data.message || 'E-posta adresiniz başarıyla doğrulandı!';
+                    statusMessageElement.className = 'message success';
+                } else {
+                    statusMessageElement.textContent = data.message || 'E-posta doğrulaması başarısız oldu. Geçersiz veya süresi dolmuş link.';
+                    statusMessageElement.className = 'message error';
                 }
-            } else {
-                h1.textContent = 'Geçersiz Doğrulama Linki';
-                messageDiv.textContent = 'Geçersiz bir doğrulama linkine tıkladınız veya link süresi dolmuş olabilir.';
-                spinner.style.display = 'none';
-                homepageLink.style.display = 'block';
+                loginRedirectLink.style.display = 'inline-block'; // Giriş linkini göster
+            } catch (error) {
+                console.error('Doğrulama sırasında ağ hatası:', error);
+                statusMessageElement.textContent = 'Doğrulama sırasında bir sorun oluştu. Lütfen daha sonra tekrar deneyin.';
+                statusMessageElement.className = 'message error';
+                loginRedirectLink.style.display = 'inline-block'; // Giriş linkini göster
             }
         });
     </script>
