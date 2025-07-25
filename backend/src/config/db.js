@@ -7,11 +7,15 @@ const connectDB = async () => {
         const conn = await mongoose.connect(process.env.MONGO_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
+            // Bağlantı zaman aşımını da biraz arttıralım, garanti olsun
+            connectTimeoutMS: 30000, // 30 saniye
+            socketTimeoutMS: 45000, // 45 saniye
         });
-        console.log(`MongoDB Bağlantısı Başarılı: ${conn.connection.host}`);
+        console.log(`✅ MongoDB Bağlantısı BAŞARILI: ${conn.connection.host}`);
     } catch (error) {
-        console.error(`MongoDB Bağlantı Hatası: ${error.message}`);
-        process.exit(1);
+        console.error(`❌ MongoDB Bağlantı HATASI: Bağlanılamadı! Detay: ${error.message}`);
+        console.error(`❌ Lütfen MONGO_URI'nizi ve MongoDB Atlas ağ erişim izinlerinizi kontrol edin.`);
+        process.exit(1); // Uygulamadan çık, çünkü veritabanı olmadan çalışamaz
     }
 };
 
