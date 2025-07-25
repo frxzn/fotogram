@@ -1,7 +1,7 @@
 // backend/src/controllers/postController.js
 
-const Post = require('../models/postModel'); // Model dosyasının adı 'postModel' olmalı
-const User = require('../models/userModel');   // User modelini içeri aktar (Model dosyasının adı 'userModel' olmalı)
+const Post = require('../models/Post'); // Model dosyasının adı 'postModel' olmalı
+const User = require('../models/User');   // User modelini içeri aktar (Model dosyasının adı 'userModel' olmalı)
 const multer = require('multer');
 const sharp = require('sharp');
 const path = require('path');
