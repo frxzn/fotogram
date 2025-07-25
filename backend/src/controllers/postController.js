@@ -5,124 +5,69 @@ const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
 
-// --- 1. Multer Depolama Alanı ve Dosya Filtresi ---
+// Multer konfigürasyonu, hala burada kalsın ama middleware'i kullanmayacağız şimdilik
 const multerStorage = multer.memoryStorage();
-
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    // Hatayı Express'in hata işleyicisine göndermek için `next(new Error(...))` kullanabiliriz
     cb(new Error('Sadece resim dosyaları yüklenebilir!'), false); 
   }
 };
-
 const upload = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
   limits: { fileSize: 10 * 1024 * 1024 } 
 });
-
-// Middleware: Gönderi fotoğrafını yüklemek için kullanılır
 exports.uploadPostPhoto = (req, res, next) => {
-  console.log('--- uploadPostPhoto (Multer) middleware\'i başladı ---');
-  upload.single('photo')(req, res, err => { // 'photo' frontend'den gelen form alanının adı
-    if (err instanceof multer.MulterError) {
-      // Multer'a özgü hatalar (boyut limiti, vb.)
-      console.error('--- HATA: MulterError yakalandı: ---', err);
-      return res.status(400).json({ status: 'fail', message: `Dosya yükleme hatası: ${err.message}` });
-    } else if (err) {
-      // Diğer bilinmeyen hatalar
-      console.error('--- HATA: Dosya yükleme sırasında bilinmeyen bir hata yakalandı: ---', err);
-      return res.status(500).json({ status: 'error', message: `Beklenmeyen bir hata oluştu: ${err.message}` });
-    }
-    console.log('Multer middleware\'i tamamlandı. req.file kontrol edilecek.');
-    next(); // Hata yoksa veya hata yakalanıp yanıt gönderildiyse devam et
-  });
+  console.log('Multer middleware aktif değil (devre dışı bırakıldı).');
+  next(); // Devre dışı olduğu için direkt next'e geçiyoruz
 };
 
 
 // --- Yeni Gönderi Oluşturma Fonksiyonu ---
 exports.createPost = async (req, res, next) => {
-  console.log('--- createPost fonksiyonu (kontrolcü) başladı ---');
-  console.log('createPost içinde req.body:', req.body);
-  console.log('createPost içinde req.file:', req.file); // Multer'dan sonra req.file'ı kontrol et
-
+  console.log('--- createPost fonksiyonu EN BAŞINDA ---'); // Fonksiyonun gerçekten buraya ulaşıp ulaşmadığını kontrol et
+  
+  // req objesini ve içindekileri detaylıca logla
+  console.log('DEBUG: req.body:', req.body);
+  console.log('DEBUG: req.file:', req.file); // Multer devre dışı olduğu için burası boş veya undefined olmalı
+  console.log('DEBUG: req.user:', req.user); 
+  
   if (!req.user || !req.user.id) {
-    console.error('--- HATA: createPost: req.user.id mevcut değil. ---');
-    return res.status(401).json({ status: 'fail', message: 'Yetkilendirme hatası: Kullanıcı oturum açmamış.' });
+    console.error('--- HATA: createPost: req.user veya req.user.id mevcut değil. ---');
+    return res.status(401).json({ status: 'fail', message: 'Yetkilendirme hatası: Kullanıcı oturum açmamış veya JWT hatası var.' });
   }
-  console.log('createPost: Kullanıcı ID:', req.user.id);
+  console.log('createPost: Kullanıcı ID mevcut:', req.user.id);
 
-  // --- Resim İşleme ve Kaydetme ---
-  if (req.file) {
-    console.log('createPost: Resim işleme süreci başlatılıyor.');
-    try {
-      const uploadDir = path.join(__dirname, '../public/img/posts');
-      if (!fs.existsSync(uploadDir)) {
-        console.log(`createPost: Hedef klasör "${uploadDir}" mevcut değil, oluşturuluyor...`);
-        fs.mkdirSync(uploadDir, { recursive: true });
-        console.log('createPost: Hedef klasör başarıyla oluşturuldu.');
-      } else {
-        console.log(`createPost: Hedef klasör "${uploadDir}" zaten mevcut.`);
-      }
-
-      req.file.filename = `post-${req.user.id}-${Date.now()}.jpeg`;
-      const filepath = path.join(uploadDir, req.file.filename);
-
-      console.log('createPost: Resim Sharp ile işleniyor:', req.file.originalname, '-> Hedef:', filepath);
-
-      await sharp(req.file.buffer)
-        .resize(500, 500)
-        .toFormat('jpeg')
-        .jpeg({ quality: 90 })
-        .toFile(filepath);
-
-      console.log(`createPost: Resim başarıyla işlendi ve kaydedildi: ${req.file.filename}`);
-      req.body.photo = req.file.filename;
-    } catch (err) {
-      console.error('--- HATA: createPost: Resim işleme veya kaydetme sırasında hata: ---', err);
-      // Hatanın detaylarını konsola yazdır
-      console.error('Hata Stack:', err.stack); 
-      return res.status(500).json({ status: 'error', message: 'Sunucu tarafında resim işlenirken kritik bir hata oluştu.' });
-    }
-  } else {
-    console.log('createPost: req.file bulunamadı. Gönderi fotoğrafsız oluşturuluyor.');
-    req.body.photo = null; 
-  }
-
-  // --- Gönderiyi Veritabanına Kaydetme ---
+  // Bu kısım şimdilik sadece test için. Gönderi kaydetme işlemini bypass ediyoruz.
   try {
-    console.log('createPost: Gönderi veritabanına kaydediliyor...');
-    const newPost = await Post.create({
+    const testPost = {
       user: req.user.id,
-      caption: req.body.caption,
-      photo: req.body.photo
-    });
-    console.log('createPost: Yeni gönderi başarıyla veritabanına kaydedildi:', newPost._id);
+      caption: req.body.caption || 'Test Açıklaması',
+      photo: null // Fotoğrafı devre dışı bıraktığımız için null
+    };
+    console.log('createPost: Test amaçlı gönderi objesi:', testPost);
 
+    // Gerçek veritabanı kaydını şimdilik yapmıyoruz, sadece başarılı yanıt döndürüyoruz
     res.status(201).json({
       status: 'success',
-      message: 'Gönderi başarıyla oluşturuldu!',
+      message: 'Gönderi (test amaçlı) başarıyla oluşturuldu!',
       data: {
-        post: newPost
+        post: testPost // Test objesini döndür
       }
     });
-    console.log('createPost: Fonksiyon başarıyla tamamlandı, yanıt gönderildi.');
-  } catch (err) {
-    console.error('--- HATA: createPost: Gönderi veritabanına kaydedilirken kritik bir hata oluştu: ---', err);
-    console.error('Hata Stack:', err.stack); // Hatanın detaylarını konsola yazdır
+    console.log('createPost: Fonksiyon TEST amaçlı tamamlandı, yanıt gönderildi.');
 
-    if (err.name === 'ValidationError') {
-      const errors = Object.values(err.errors).map(el => el.message);
-      return res.status(400).json({ status: 'fail', message: `Veri doğrulama hatası: ${errors.join('. ')}` });
-    }
-    return res.status(500).json({ status: 'error', message: 'Sunucu tarafında gönderi kaydedilirken kritik bir hata oluştu.' });
+  } catch (err) {
+    console.error('--- HATA: createPost: Genel yakalama bloğunda hata: ---', err);
+    console.error('Hata Stack:', err.stack);
+    res.status(500).json({ status: 'error', message: 'Sunucu tarafında bilinmeyen bir hata oluştu.' });
   }
 };
 
-// --- Diğer Post Fonksiyonları (Şimdilik boş haliyle kalabilirler) ---
 
+// --- Diğer Fonksiyonlar (Aynı Kalsın) ---
 exports.getAllPosts = async (req, res, next) => {
   console.log('--- getAllPosts fonksiyonu başladı ---');
   try {
@@ -164,7 +109,6 @@ exports.getPost = async (req, res, next) => {
   }
 };
 
-// Bu fonksiyonları henüz oluşturmadık, şimdilik boş bırakıyoruz
 exports.updatePost = async (req, res, next) => {
   console.log('--- updatePost fonksiyonu çağrıldı (Henüz içi dolu değil!) ---');
   res.status(501).json({ status: 'error', message: 'Bu fonksiyon henüz uygulanmadı!' });
