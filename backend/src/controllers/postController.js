@@ -1,11 +1,11 @@
 // backend/src/controllers/postController.js
 
-const Post = require('../models/Post'); // Model dosyasının adı 'postModel' olmalı
-const User = require('../models/User');   // User modelini içeri aktar (Model dosyasının adı 'userModel' olmalı)
+const Post = require('../models/Post'); // Modellerin 'Post.js' ve 'User.js' olduğunu varsayıyorum
+const User = require('../models/User');
 const multer = require('multer');
 const sharp = require('sharp');
 const path = require('path');
-const fs = require('fs'); // Dosya sistemi işlemleri için fs modülünü ekle
+const fs = require('fs');
 
 // --- 1. Multer Depolama Alanı ve Dosya Filtresi Tanımlaması ---
 const multerStorage = multer.memoryStorage(); // Dosyayı bellekte tutar, Sharp işleyecek
@@ -14,7 +14,6 @@ const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    // Hata durumunda, Express hata işleme middleware'ine iletilmek üzere bir hata döndür
     cb(new Error('Sadece resim dosyaları yüklenebilir!'), false);
   }
 };
@@ -31,15 +30,13 @@ exports.uploadPostPhoto = (req, res, next) => {
   upload.single('photo')(req, res, err => { // 'photo' frontend'den gelen form alanının adı olmalı
     if (err instanceof multer.MulterError) {
       console.error('--- HATA: MulterError yakalandı: ---', err);
-      // Daha spesifik Multer hataları için yanıt döndür
       return res.status(400).json({ status: 'fail', message: `Dosya yükleme hatası: ${err.message}` });
     } else if (err) {
-      // Diğer bilinmeyen hatalar
       console.error('--- HATA: Dosya yükleme sırasında bilinmeyen bir hata yakalandı: ---', err);
       return res.status(500).json({ status: 'error', message: `Beklenmeyen bir hata oluştu: ${err.message}` });
     }
     console.log('Multer middleware\'i tamamlandı. req.file kontrol edilecek.');
-    next(); // Hata yoksa veya hata yakalanıp yanıt gönderildiyse devam et
+    next();
   });
 };
 
@@ -48,78 +45,76 @@ exports.uploadPostPhoto = (req, res, next) => {
 exports.createPost = async (req, res, next) => {
   console.log('--- createPost fonksiyonu (kontrolcü) başladı ---');
   console.log('createPost içinde req.body:', req.body);
-  console.log('createPost içinde req.file:', req.file); // Multer'dan sonra req.file'ı kontrol et
+  console.log('createPost içinde req.file:', req.file);
 
-  // Kullanıcı ID kontrolü (Auth middleware'inden gelmeli)
   if (!req.user || !req.user.id) {
     console.error('--- HATA: createPost: req.user.id mevcut değil. ---');
     return res.status(401).json({ status: 'fail', message: 'Yetkilendirme hatası: Kullanıcı oturum açmamış.' });
   }
   console.log('createPost: Kullanıcı ID:', req.user.id);
 
-  // --- Resim İşleme ve Kaydetme ---
   if (req.file) {
     console.log('createPost: Resim işleme süreci başlatılıyor.');
     try {
-      // __dirname: Bu dosyanın (postController.js) bulunduğu dizin: backend/src/controllers
-      // Hedef klasör: backend/public/img/posts
-      // Bu yüzden 'controllers'dan '../' ile 'src'ye,
-      // 'src'den '../' ile 'backend'e çıkarız,
-      // sonra 'public/img/posts' yoluna gideriz.
-      const uploadDir = path.join(__dirname, '../../../public/img/posts'); // <<< BURASI DÜZELTİLDİ!
-      console.log(`createPost: Resim kaydedilecek hedef klasör: ${uploadDir}`); // Yeni log
+      // *** BURASI KESİN YOL OLARAK DÜZELTİLDİ! ***
+      // Render üzerindeki mutlak yolunu kullanmayı deniyoruz.
+      const uploadDir = '/opt/render/project/src/backend/public/img/posts';
+      console.log(`createPost: Resim kaydedilecek hedef klasör (mutlak yol): ${uploadDir}`);
 
-      // Klasörün varlığını kontrol et ve yoksa oluştur
-      if (!fs.existsSync(uploadDir)) {
+      const uploadDirExists = fs.existsSync(uploadDir);
+      console.log(`createPost: Hedef klasör mevcut mu? ${uploadDirExists}`);
+
+      if (!uploadDirExists) {
         console.log(`createPost: Hedef klasör "${uploadDir}" mevcut değil, oluşturuluyor...`);
-        // fs.mkdirSync yerine async versiyonu fs.promises.mkdir kullanmak daha iyi
         await fs.promises.mkdir(uploadDir, { recursive: true });
         console.log('createPost: Hedef klasör başarıyla oluşturuldu.');
       } else {
         console.log(`createPost: Hedef klasör "${uploadDir}" zaten mevcut.`);
       }
 
-      // Dosya adını oluştur
       const filename = `post-${req.user.id}-${Date.now()}.jpeg`;
       const filepath = path.join(uploadDir, filename);
+      console.log(`createPost: Resim kaydedilecek tam yol: ${filepath}`);
 
-      console.log('createPost: Resim Sharp ile işleniyor:', req.file.originalname, '-> Hedef:', filepath);
-
-      // Sharp ile resmi yeniden boyutlandır ve kaydet
+      console.log('createPost: Sharp nesnesi oluşturuluyor ve işleniyor...');
       await sharp(req.file.buffer)
-        .resize(500, 500, {
-            fit: sharp.fit.inside, // Resmin boyutlarını aşmadan sığdır
-            withoutEnlargement: true // Resim orijinal boyutundan büyükse büyütme
-        })
+        .resize(500, 500, { fit: sharp.fit.inside, withoutEnlargement: true })
         .toFormat('jpeg')
-        .jpeg({ quality: 90 }) // JPEG kalitesi
+        .jpeg({ quality: 90 })
         .toFile(filepath);
 
-      console.log(`createPost: Resim başarıyla işlendi ve kaydedildi: ${filename}`);
-      // Sadece dosya adını veritabanına kaydet (tam yolu değil)
-      req.body.photo = filename;
+      console.log(`createPost: Resim Sharp ile başarıyla işlendi ve kaydedildi: ${filename}`);
+
+      // --- KRİTİK KONTROL: Dosyanın gerçekten var olup olmadığını kontrol et ---
+      if (fs.existsSync(filepath)) {
+          console.log(`createPost: Dosya "${filepath}" gerçekten diskte bulundu.`);
+      } else {
+          console.error(`--- KRİTİK HATA: createPost: Dosya "${filepath}" diskte bulunamadı! Bu bir yazma izni veya disk hatası olabilir. ---`);
+          return res.status(500).json({ status: 'error', message: 'Resim dosyası sunucuda kaydedilemedi.' });
+      }
+      // --- KRİTİK KONTROL SONU ---
+
+      req.body.photo = filename; // Sadece dosya adını veritabanına kaydet
     } catch (err) {
       console.error('--- HATA: createPost: Resim işleme veya kaydetme sırasında hata: ---', err);
       console.error('Hata Stack:', err.stack);
-      // Resim işleme hatasında sunucu hatası döndür
       return res.status(500).json({ status: 'error', message: 'Sunucu tarafında resim işlenirken kritik bir hata oluştu.' });
     }
   } else {
     console.log('createPost: req.file bulunamadı. Gönderi fotoğrafsız oluşturuluyor.');
-    req.body.photo = null; // Fotoğraf yoksa null olarak kaydet
+    req.body.photo = null;
   }
 
-  // --- Gönderiyi Veritabanına Kaydetme ---
   try {
+    console.log('createPost: Gönderi veritabanına kaydedilmeden önce req.body.photo:', req.body.photo);
     console.log('createPost: Gönderi veritabanına kaydediliyor...');
     const newPost = await Post.create({
       user: req.user.id,
       caption: req.body.caption,
-      photo: req.body.photo // Kaydedilen dosya adını veya null'ı kullan
+      photo: req.body.photo
     });
     console.log('createPost: Yeni gönderi başarıyla veritabanına kaydedildi:', newPost._id);
 
-    // Başarılı yanıt
     res.status(201).json({
       status: 'success',
       message: 'Gönderi başarıyla oluşturuldu!',
@@ -132,22 +127,19 @@ exports.createPost = async (req, res, next) => {
     console.error('--- HATA: createPost: Gönderi veritabanına kaydedilirken kritik bir hata oluştu: ---', err);
     console.error('Hata Stack:', err.stack);
 
-    // Mongoose doğrulama hatalarını daha anlaşılır hale getir
     if (err.name === 'ValidationError') {
       const errors = Object.values(err.errors).map(el => el.message);
       return res.status(400).json({ status: 'fail', message: `Veri doğrulama hatası: ${errors.join('. ')}` });
     }
-    // Diğer veritabanı hataları
     return res.status(500).json({ status: 'error', message: 'Sunucu tarafında gönderi kaydedilirken kritik bir hata oluştu.' });
   }
 };
 
-// --- Diğer Post Fonksiyonları (Önceki Durumda Kaldı) ---
+// --- Diğer Post Fonksiyonları (Aynı Kalsın) ---
 
 exports.getAllPosts = async (req, res, next) => {
   console.log('--- getAllPosts fonksiyonu başladı ---');
   try {
-    // Populate ile gönderiyi yapan kullanıcı bilgilerini de çek (username ve photo)
     const posts = await Post.find().populate('user', 'username photo');
     console.log('getAllPosts: Tüm gönderiler başarıyla çekildi. Toplam:', posts.length);
     res.status(200).json({
@@ -186,7 +178,6 @@ exports.getPost = async (req, res, next) => {
   }
 };
 
-// Bu fonksiyonlar şu an için uygulanmamış olarak kalabilir
 exports.updatePost = async (req, res, next) => {
   console.log('--- updatePost fonksiyonu çağrıldı (Henüz içi dolu değil!) ---');
   res.status(501).json({ status: 'error', message: 'Bu fonksiyon henüz uygulanmadı!' });
