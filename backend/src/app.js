@@ -2,6 +2,7 @@
 
 const express = require('express');
 const dotenv = require('dotenv');
+const path = require('path'); // <<< Bu satırı buraya ekle!
 const mongoose = require('mongoose'); // Mongoose'u require et!
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes'); // Post rotalarını da ekleyelim
